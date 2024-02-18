@@ -1,10 +1,24 @@
 package Models
 
-class Patient(uid: Long, firstName: String, lastName: String, address: String, phone: String) :
+import org.json.JSONObject
+
+class Patient(
+    uid: Long,
+    firstName: String,
+    lastName: String,
+    address: String,
+    phone: String,
+    email: String,
+    password: String,
+    age: Int,
+    doctorUid: Long,
+    history: JSONObject,
+    prescription: List<Medication>
+) :
     User(
         uid, firstName, lastName,
         address,
-        phone
+        phone, email, password
     ) {
 
 

@@ -1,6 +1,6 @@
 package Models
 
-interface IUser {
+interface IUserFunctions {
     fun Login();
     fun SignIn();
     fun Logout();
