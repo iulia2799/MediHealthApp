@@ -13,7 +13,8 @@ class Patient(
     age: Int,
     doctorUid: Long,
     history: JSONObject,
-    prescription: List<Medication>
+    prescription: List<Medication>,
+    results: JSONObject
 ) :
     User(
         uid, firstName, lastName,

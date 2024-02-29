@@ -1,0 +1,158 @@
+<!--
+/*
+ *	This content is generated from the PSD File Info.
+ *	(Alt+Shift+Ctrl+I).
+ *
+ *	@desc
+ *	@file 		start
+ *	@date 		Tuesday 27th of February 2024 11:53:25 AM
+ *	@title 		Page 1
+ *	@author
+ *	@keywords
+ *	@generator 	Export Kit v1.3.figma
+ *
+*/
+ -->
+<figma xmlns:android="http://schemas.android.com/apk/res/android">
+    <layers android:name="start" android:path=" ek125_301_shape_effects/" >
+        <layer android:id="1:3" android:name="_bg__start" android:type="shape" android:shapeType="rectangle" android:color="0xFFFFFF" android:x="0" android:y="0" android:width="390" android:height="844">
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+        <layer android:id="1:4" android:name="disertation_project___virtualmed" android:type="text" android:font="JejuGothic" android:valign="top" android:truncate="disabled" android:justification="left" android:color="0x000000" android:size="40" android:x="81" android:y="126" android:width="258" android:height="44" >
+            <![CDATA[Disertation Project : VirtualMed]]>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+        <layer android:id="1:6" android:name="_rectangle_1" android:type="shape" android:shapeType="round rectangle" android:color="0x8CC5CD" android:radius="10" android:x="111" android:y="444" android:width="170" android:height="49">
+            <interactions>
+            </interactions>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+        <layer android:id="1:9" android:name="help" android:type="text" android:font="JejuGothic" valign="top" truncate="disabled" justification="center" color="0x000000" size="24" x="143" y="657" width="104.4" height="34.4" >
+            <![CDATA[Help]]>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+        <layer id="1:10" name="register" type="text" font="JejuGothic" valign="top" truncate="disabled" justification="center" color="0x000000" size="24" x="144" y="455" width="104.4" height="34.4" >
+            <![CDATA[Register]]>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+        <layer id="1:7" name="rectangle_2" type="shape" shapeType="round rectangle" color="0x8CC5CD" radius="10" x="110" y="646" width="170" height="49">
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+
+        <layer name="button" type="group" folderType="layerset" id="15:14" x="111" y="352" width="170" height="51" >
+            <layout>
+                <align>INHERIT</align>
+                <grow>0</grow>
+                <positioning>AUTO</positioning>
+                <mode>NONE</mode>
+                <overflow>NONE</overflow>
+                <spacing>0</spacing>
+                <axis>
+                    <primary>
+                        <alignItems>MIN</alignItems>
+                        <sizingMode>AUTO</sizingMode>
+                    </primary>
+                    <counter>
+                        <alignItems>MIN</alignItems>
+                        <sizingMode>FIXED</sizingMode>
+                    </counter>
+                </axis>
+                <padding>
+                    <top>0</top>
+                    <left>0</left>
+                    <bottom>0</bottom>
+                    <right>0</right>
+                </padding>
+            </layout>
+
+            <overlay>
+                <position>CENTER</position>
+                <interaction>NONE</interaction>
+                <background>
+                    <type>NONE</type>
+                </background>
+            </overlay>
+
+            <interactions>
+            </interactions>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+            <layer id="15:14" name="_bg__button" type="shape" shapeType="rectangle" color="0x" x="0" y="0" width="170" height="51">
+                <interactions>
+                </interactions>
+
+                <constraints>
+                    <horizontal>MIN</horizontal>
+                    <vertical>MIN</vertical>
+                </constraints>
+
+            </layer>
+            <layer id="1:5" name="defbtn" type="shape" shapeType="round rectangle" color="0x8CC5CD" radius="10" x="-1" y="-1" width="170" height="51" >
+                <effects>
+                    <effect type="frameFX" lineSize="1" color="0x77b9c3" alpha="1" />
+                    <effect type="dropShadow" distance="4" color="0x000000" alpha="25" blur="4" offsetX="0" offsetY="4" />
+                </effects>
+                <constraints>
+                    <horizontal>SCALE</horizontal>
+                    <vertical>SCALE</vertical>
+                </constraints>
+
+            </layer>
+            <layer id="1:8" name="login" type="text" font="JejuGothic" valign="top" truncate="disabled" justification="center" color="0x000000" size="24" x="33" y="12" width="104.4" height="34.4" >
+                <![CDATA[Login
+]]>
+
+                <interactions>
+                </interactions>
+
+                <constraints>
+                    <horizontal>SCALE</horizontal>
+                    <vertical>SCALE</vertical>
+                </constraints>
+
+            </layer>
+
+        </layer>
+        <layer id="1:11" name="help_ek1" type="text" font="JejuGothic" valign="top" truncate="disabled" justification="center" color="0x000000" size="24" x="143" y="657" width="104.4" height="34.4" >
+            <![CDATA[Help]]>
+
+            <constraints>
+                <horizontal>MIN</horizontal>
+                <vertical>MIN</vertical>
+            </constraints>
+
+        </layer>
+    </layers>
+</figma>
