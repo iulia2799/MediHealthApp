@@ -1,42 +1,42 @@
 package com.example.test
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CustomElevatedButton
-import com.example.test.Components.ElevatedButtonWithText
 import com.example.test.Components.GreetingUser
-import com.example.test.ui.theme.TestTheme
+import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.universalBackground
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TestTheme {
+
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.LightGray
+                    color = universalBackground
                 ) {
-                    Greeting("Iulia")
+                    Box(modifier = Modifier.height(200.dp).fillMaxWidth()) {
+                        Greeting("Iulia")
+                    }
+
                     CustomElevatedButton(
                         { WriteSomething() },
-                        Alignment.Center,
+                        Alignment.TopCenter,
                         "Click me !",
                         Modifier.padding(100.dp)
                     )
@@ -60,24 +60,4 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         GreetingUser(name, modifier)
     }
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TestTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.LightGray
-        ) {
-            Greeting("Iulia")
-            CustomElevatedButton(
-                { WriteSomething() },
-                Alignment.Center,
-                "Click me !",
-                Modifier.padding(100.dp)
-            )
-        }
-    }
 }
