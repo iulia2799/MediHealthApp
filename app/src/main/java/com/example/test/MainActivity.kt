@@ -1,5 +1,7 @@
 package com.example.test
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,11 +18,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.AppName
 import com.example.test.Components.CustomElevatedButton
 import com.example.test.Components.Greeting
 import com.example.test.Components.GreetingUser
+import com.example.test.Connect.LoginActivity
+import com.example.test.Connect.RegisterActivity
+import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 
@@ -33,44 +39,60 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = universalBackground
                 ) {
-                    Column(modifier = Modifier.height(500.dp).wrapContentWidth(Alignment.CenterHorizontally)) {
-                        Box(modifier = Modifier.height(200.dp).fillMaxWidth().wrapContentSize(Alignment.Center)) {
-                            Greeting()
-                        }
-                        CustomElevatedButton(
-                            { LoginPageEnter() },
-                            Alignment.TopCenter,
-                            "Login",
-                            Modifier.height(100.dp).padding(20.dp).fillMaxWidth()
-                        )
-                        CustomElevatedButton(
-                            { RegisterPageEnter() },
-                            Alignment.Center,
-                            "Register",
-                            Modifier.height(100.dp).padding(20.dp).fillMaxWidth()
-                        )
-                    }
-                    CustomElevatedButton(
-                        { HelpPageEnter() },
-                        Alignment.BottomCenter,
-                        "Help",
-                        Modifier.padding(100.dp)
-                    )
+                    Content()
                 }
             }
         }
     }
 }
 
-fun LoginPageEnter() {
-
+@Composable
+fun Content() {
+    val context = LocalContext.current
+    Column(modifier = Modifier
+        .height(500.dp)
+        .wrapContentWidth(Alignment.CenterHorizontally)) {
+        Box(modifier = Modifier
+            .height(200.dp)
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center)) {
+            Greeting()
+        }
+        CustomElevatedButton(
+            { LoginPageEnter(context) },
+            Alignment.TopCenter,
+            "Login",
+            Modifier
+                .height(100.dp)
+                .padding(20.dp)
+                .fillMaxWidth()
+        )
+        CustomElevatedButton(
+            { RegisterPageEnter(context) },
+            Alignment.Center,
+            "Register",
+            Modifier
+                .height(100.dp)
+                .padding(20.dp)
+                .fillMaxWidth()
+        )
+    }
+    CustomElevatedButton(
+        { HelpPageEnter(context) },
+        Alignment.BottomCenter,
+        "Help",
+        Modifier.padding(100.dp)
+    )
 }
 
-fun RegisterPageEnter() {
-
+fun LoginPageEnter(context: Context) {
+    context.startActivity(Intent(context, LoginActivity::class.java))
 }
 
-fun HelpPageEnter() {
-
+fun RegisterPageEnter(context: Context) {
+    context.startActivity(Intent(context, RegisterActivity::class.java))
 }
 
+fun HelpPageEnter(context: Context) {
+    context.startActivity(Intent(context, HelpPage::class.java))
+}

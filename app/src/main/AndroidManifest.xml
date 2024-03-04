@@ -63,6 +63,11 @@
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.App" />
         <activity
+            android:name=".Connect.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.App" />
+        <activity
             android:name=".Misc.HelpPage"
             android:exported="false"
             android:label="@string/title_activity_help_page"
