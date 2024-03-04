@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1010214631502",
+    "project_id": "medihealth-31f4a",
+    "storage_bucket": "medihealth-31f4a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010214631502:android:fad221d99b157746b96b1f",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFCl6DKK4lsCAweSvMalAosPKlQLMCABI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

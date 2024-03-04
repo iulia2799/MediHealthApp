@@ -4,17 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.test.Components.AppName
 import com.example.test.Components.CustomElevatedButton
+import com.example.test.Components.Greeting
 import com.example.test.Components.GreetingUser
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
@@ -23,21 +28,32 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = universalBackground
                 ) {
-                    Box(modifier = Modifier.height(200.dp).fillMaxWidth()) {
-                        Greeting("Iulia")
+                    Column(modifier = Modifier.height(500.dp).wrapContentWidth(Alignment.CenterHorizontally)) {
+                        Box(modifier = Modifier.height(200.dp).fillMaxWidth().wrapContentSize(Alignment.Center)) {
+                            Greeting()
+                        }
+                        CustomElevatedButton(
+                            { LoginPageEnter() },
+                            Alignment.TopCenter,
+                            "Login",
+                            Modifier.height(100.dp).padding(20.dp).fillMaxWidth()
+                        )
+                        CustomElevatedButton(
+                            { RegisterPageEnter() },
+                            Alignment.Center,
+                            "Register",
+                            Modifier.height(100.dp).padding(20.dp).fillMaxWidth()
+                        )
                     }
-
                     CustomElevatedButton(
-                        { WriteSomething() },
-                        Alignment.TopCenter,
-                        "Click me !",
+                        { HelpPageEnter() },
+                        Alignment.BottomCenter,
+                        "Help",
                         Modifier.padding(100.dp)
                     )
                 }
@@ -46,18 +62,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun WriteSomething() {
-    print("stop")
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .padding(10.dp),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        GreetingUser(name, modifier)
-    }
+fun LoginPageEnter() {
 
 }
+
+fun RegisterPageEnter() {
+
+}
+
+fun HelpPageEnter() {
+
+}
+
