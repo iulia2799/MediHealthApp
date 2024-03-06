@@ -14,16 +14,33 @@ import com.example.test.ui.theme.jejugothicFamily
 
 @Composable
 fun LargeTextField(value: String, modifier: Modifier) {
-    Text(modifier = modifier, text = value, fontFamily = jejugothicFamily, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+    Text(
+        modifier = modifier,
+        text = value,
+        fontFamily = jejugothicFamily,
+        fontSize = 25.sp,
+        fontWeight = FontWeight.Bold
+    )
 }
+
 @Composable
 fun MediumTextField(modifier: Modifier, value: String) {
-    Text(modifier = modifier,text = value, fontFamily = jejugothicFamily,  fontWeight = FontWeight.Normal)
+    Text(
+        modifier = modifier,
+        text = value,
+        fontFamily = jejugothicFamily,
+        fontWeight = FontWeight.Normal
+    )
 }
 
 @Composable
 fun SmallTextField(value: String) {
-    Text(text = value, fontFamily = jejugothicFamily, fontSize = 10.sp, fontWeight = FontWeight.Normal)
+    Text(
+        text = value,
+        fontFamily = jejugothicFamily,
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Normal
+    )
 }
 
 @Composable
@@ -46,5 +63,5 @@ fun AppName(modifier: Modifier = Modifier) {
         fontFamily = jejugothicFamily,
         fontSize = 34.sp,
         textAlign = TextAlign.Center
-        )
+    )
 }

@@ -33,8 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = universalBackground
+                    modifier = Modifier.fillMaxSize(), color = universalBackground
                 ) {
                     Content()
                 }
@@ -46,13 +45,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Content() {
     val context = LocalContext.current
-    Column(modifier = Modifier
-        .height(500.dp)
-        .wrapContentWidth(Alignment.CenterHorizontally)) {
-        Box(modifier = Modifier
-            .height(200.dp)
-            .fillMaxWidth()
-            .wrapContentSize(Alignment.Center)) {
+    Column(
+        modifier = Modifier
+            .height(500.dp)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    ) {
+        Box(
+            modifier = Modifier
+                .height(200.dp)
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.Center)
+        ) {
             Greeting()
         }
         CustomElevatedButton(
@@ -75,10 +78,7 @@ fun Content() {
         )
     }
     CustomElevatedButton(
-        { HelpPageEnter(context) },
-        Alignment.BottomCenter,
-        "Help",
-        Modifier.padding(100.dp)
+        { HelpPageEnter(context) }, Alignment.BottomCenter, "Help", Modifier.padding(100.dp)
     )
 }
 

@@ -19,16 +19,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.CenteredBox
 import com.example.test.Components.CustomElevatedButton
-import com.example.test.Components.CustomSwitch
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
-import com.example.test.Components.MediumTextField
 import com.example.test.Connect.ui.theme.TestTheme
 import com.example.test.ui.theme.universalBackground
 
@@ -52,51 +48,63 @@ fun Screen() {
         modifier = Modifier.fillMaxSize(),
         color = universalBackground
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-            .wrapContentWidth(Alignment.CenterHorizontally)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        ) {
             Spacer(modifier = Modifier.weight(1f))
-            Row{
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-                    .wrapContentHeight(Alignment.CenterVertically)) {
-                    LargeTextField(modifier = Modifier
+            Row {
+                Box(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentSize(Alignment.Center), value = "Login to account")
+                        .padding(24.dp)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                ) {
+                    LargeTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.Center), value = "Login to account"
+                    )
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)){
+                    .wrapContentSize(Alignment.Center)
+            ) {
                 CustomTextField(labelValue = "Email")
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)) {
+                    .wrapContentSize(Alignment.Center)
+            ) {
                 CustomTextField(labelValue = "Password")
             }
             Spacer(modifier = Modifier.weight(1f))
-            Row{
-                CustomElevatedButton(onClick = { GoToRegister(context) }, Alignment.Center,
+            Row {
+                CustomElevatedButton(
+                    onClick = { GoToRegister(context) }, Alignment.Center,
                     "Login",
                     Modifier
                         .height(100.dp)
                         .padding(20.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth()
+                )
             }
 
-            Row{
-                CustomElevatedButton(onClick = { Back(context) }, Alignment.Center,
+            Row {
+                CustomElevatedButton(
+                    onClick = { Back(context) }, Alignment.Center,
                     "Back",
                     Modifier
                         .height(100.dp)
                         .padding(20.dp)
-                        .fillMaxWidth())
+                        .fillMaxWidth()
+                )
             }
         }
     }
@@ -105,6 +113,7 @@ fun Screen() {
 fun LoginToAccount(context: Context) {
 
 }
+
 fun GoToRegister(context: Context) {
 
 }
