@@ -82,7 +82,7 @@ fun Screen() {
             }
             Spacer(modifier = Modifier.weight(1f))
             Row{
-                CustomElevatedButton(onClick = { Register(context) }, Alignment.Center,
+                CustomElevatedButton(onClick = { GoToRegister(context) }, Alignment.Center,
                     "Login",
                     Modifier
                         .height(100.dp)
@@ -91,7 +91,7 @@ fun Screen() {
             }
 
             Row{
-                CustomElevatedButton(onClick = { LoginToExistingAccount(context) }, Alignment.Center,
+                CustomElevatedButton(onClick = { Back(context) }, Alignment.Center,
                     "Back",
                     Modifier
                         .height(100.dp)

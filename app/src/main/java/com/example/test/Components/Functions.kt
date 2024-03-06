@@ -77,7 +77,7 @@ fun CustomElevatedButton(
 
 @Composable
 fun CustomSwitch(modifier: Modifier) {
-    var checked by remember { mutableStateOf(true) }
+    var checked by remember { mutableStateOf(false) }
     Switch(modifier = modifier, checked = checked, onCheckedChange = {checked = it},
         colors = SwitchDefaults.colors(
             checkedThumbColor = universalPrimary,
@@ -106,14 +106,13 @@ fun CustomSwitch(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(labelValue: String) {
-    var textValue = rememberSaveable { mutableStateOf("") }
+fun CustomTextField(text: String = "", labelValue: String, onTextChange: (String) -> Unit = {}) {
     OutlinedTextField(modifier = Modifier
         .width(185.dp)
         .padding(10.dp),
         shape = RoundedCornerShape(24.dp),
-        value = textValue.value,
-        onValueChange = { textValue.value = it},
+        value = text,
+        onValueChange = onTextChange,
         label = {
             Text(text = labelValue)
         },
