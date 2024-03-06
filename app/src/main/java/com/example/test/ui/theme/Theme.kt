@@ -27,7 +27,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-        primary = Purple40,
+        primary = universalPrimary,
         secondary = PurpleGrey40,
         tertiary = Pink40
 
@@ -42,10 +42,7 @@ private val LightColorScheme = lightColorScheme(
     */
 )
 
-val myCustomFontFamily = FontFamily(
-    Font(R.font.jejugothic, FontWeight.Normal)
-)
-val universalBackground = Color(0xffDCEAEE)
+
 
 @Composable
 fun AppTheme(

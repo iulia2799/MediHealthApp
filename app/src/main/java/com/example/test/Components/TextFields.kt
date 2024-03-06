@@ -6,22 +6,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.test.ui.theme.myCustomFontFamily
+import com.example.test.ui.theme.jejugothicFamily
 
 @Composable
-fun GreetingUser(name: String, modifier: Modifier = Modifier) {
-        Text(
-            text = "Hello $name!",
-            modifier = modifier,
-            fontFamily = myCustomFontFamily,
-            fontSize = 34.sp,
+fun LargeTextField(value: String, modifier: Modifier) {
+    Text(modifier = modifier, text = value, fontFamily = jejugothicFamily, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+}
+@Composable
+fun MediumTextField(modifier: Modifier, value: String) {
+    Text(modifier = modifier,text = value, fontFamily = jejugothicFamily,  fontWeight = FontWeight.Normal)
+}
 
-        )
+@Composable
+fun SmallTextField(value: String) {
+    Text(text = value, fontFamily = jejugothicFamily, fontSize = 10.sp, fontWeight = FontWeight.Normal)
 }
 
 @Composable
@@ -41,7 +43,7 @@ fun AppName(modifier: Modifier = Modifier) {
     Text(
         text = "MediHealth",
         modifier = modifier,
-        fontFamily = myCustomFontFamily,
+        fontFamily = jejugothicFamily,
         fontSize = 34.sp,
         textAlign = TextAlign.Center
         )

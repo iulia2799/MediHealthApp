@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.AppTheme
-import com.example.test.ui.theme.myCustomFontFamily
+import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalBackground
 
 class HelpPage : ComponentActivity() {
@@ -26,9 +26,9 @@ class HelpPage : ComponentActivity() {
                     color = universalBackground,
                 ) {
                     Column(modifier = Modifier.wrapContentHeight(Alignment.CenterVertically)) {
-                        Text(text = "Welcome!", fontFamily = myCustomFontFamily, fontSize = 34.sp)
-                        Text(text = "This a patient and doctor application. To get started, please login to your account or create a new one.", fontFamily = myCustomFontFamily, fontSize = 24.sp)
-                        Text(text = "You will be able to find your primary doctor, make appointments and chat.", fontFamily = myCustomFontFamily, fontSize = 24.sp)
+                        Text(text = "Welcome!", fontFamily = jejugothicFamily, fontSize = 34.sp)
+                        Text(text = "This a patient and doctor application. To get started, please login to your account or create a new one.", fontFamily = jejugothicFamily, fontSize = 24.sp)
+                        Text(text = "You will be able to find your primary doctor, make appointments and chat.", fontFamily = jejugothicFamily, fontSize = 24.sp)
                     }
                 }
             }
