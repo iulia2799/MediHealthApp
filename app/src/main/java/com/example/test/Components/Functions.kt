@@ -38,6 +38,7 @@ import com.example.test.ui.theme.unfocusedLabelColor
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
+import com.example.test.ui.theme.universalTertiary
 
 
 @Composable
@@ -80,7 +81,7 @@ fun CustomSwitch(modifier: Modifier) {
         colors = SwitchDefaults.colors(
             checkedThumbColor = universalPrimary,
             checkedTrackColor = unfocusedLabelColor,
-            uncheckedThumbColor = universalAccent,
+            uncheckedThumbColor = universalTertiary,
             uncheckedTrackColor = unfocusedLabelColor,
         ),
         thumbContent = if (checked) {

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.test.Components.Back
 import com.example.test.Components.CustomElevatedButton
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
@@ -33,7 +34,6 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TestTheme {
-                // A surface container using the 'background' color from the theme
                 Screen()
             }
         }
@@ -87,8 +87,19 @@ fun Screen() {
             Spacer(modifier = Modifier.weight(1f))
             Row {
                 CustomElevatedButton(
-                    onClick = { GoToRegister(context) }, Alignment.Center,
+                    onClick = { LoginToAccount(context) }, Alignment.Center,
                     "Login",
+                    Modifier
+                        .height(100.dp)
+                        .padding(20.dp)
+                        .fillMaxWidth()
+                )
+            }
+
+            Row {
+                CustomElevatedButton(
+                    onClick = { GoToRegister(context) }, Alignment.Center,
+                    "Create a new account",
                     Modifier
                         .height(100.dp)
                         .padding(20.dp)
@@ -115,9 +126,5 @@ fun LoginToAccount(context: Context) {
 }
 
 fun GoToRegister(context: Context) {
-
-}
-
-fun Back(context: Context) {
 
 }
