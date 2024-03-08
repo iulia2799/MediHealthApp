@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
@@ -22,6 +23,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.unfocusedLabelColor
@@ -81,7 +85,7 @@ fun CustomSwitch(modifier: Modifier) {
         colors = SwitchDefaults.colors(
             checkedThumbColor = universalPrimary,
             checkedTrackColor = unfocusedLabelColor,
-            uncheckedThumbColor = universalTertiary,
+            uncheckedThumbColor = universalPrimary,
             uncheckedTrackColor = unfocusedLabelColor,
         ),
         thumbContent = if (checked) {
@@ -105,7 +109,7 @@ fun CustomSwitch(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(text: String = "", labelValue: String, onTextChange: (String) -> Unit = {}) {
+fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> Unit = {}, type: String = "text") {
     OutlinedTextField(
         modifier = Modifier
             .width(185.dp)
@@ -128,6 +132,10 @@ fun CustomTextField(text: String = "", labelValue: String, onTextChange: (String
             disabledBorderColor = Color.DarkGray,
             disabledTextColor = Color.DarkGray
         ),
+        keyboardOptions = when(type) {
+            "password" -> KeyboardOptions(keyboardType = KeyboardType.Password)
+            else -> KeyboardOptions.Default
+        }
     )
 }
 

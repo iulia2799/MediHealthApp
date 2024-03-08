@@ -36,6 +36,7 @@ import com.example.test.Components.CustomElevatedButton
 import com.example.test.Components.CustomSwitch
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
+import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.MediumTextField
 import com.example.test.Connect.ui.theme.TestTheme
 import com.example.test.ui.theme.universalBackground
@@ -52,8 +53,7 @@ class RegisterActivity : ComponentActivity() {
             TestTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     ScreenR()
                 }
@@ -65,8 +65,7 @@ class RegisterActivity : ComponentActivity() {
     @Composable
     fun ScreenR() {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             ContentR()
         }
@@ -81,8 +80,6 @@ class RegisterActivity : ComponentActivity() {
         var password by remember { mutableStateOf("") }
         var phone by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -99,7 +96,8 @@ class RegisterActivity : ComponentActivity() {
                     LargeTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center), value = "Create a new account"
+                            .wrapContentSize(Alignment.Center),
+                        value = "Create a new account"
                     )
                 }
             }
@@ -111,25 +109,51 @@ class RegisterActivity : ComponentActivity() {
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(labelValue = "Last Name")
-
+                CustomTextField(
+                    text = lastName,
+                    labelValue = "Last Name",
+                    onTextChange = { newValue ->
+                        lastName = newValue
+                    })
             }
             Row {
-                CustomTextField(labelValue = "Email")
+                CustomTextField(
+                    text = email,
+                    labelValue = "Email",
+                    onTextChange = { newValue ->
+                        email = newValue
+                    })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(labelValue = "Password")
+                CustomTextField(
+                    text = password,
+                    labelValue = "Password",
+                    onTextChange = { newValue ->
+                        password = newValue
+                    },
+                    type = "password")
             }
             Row {
-                CustomTextField(labelValue = "Phone")
+                CustomTextField(
+                    text = phone,
+                    labelValue = "Phone",
+                    onTextChange = { newValue ->
+                        phone = newValue
+                    })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(labelValue = "Address")
+                CustomTextField(
+                    text = address,
+                    labelValue = "Address",
+                    onTextChange = { newValue ->
+                        address = newValue
+                    })
             }
             Row {
                 CenteredBox {
                     MediumTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center), value = "I am a licensed specialist"
+                            .wrapContentSize(Alignment.Center),
+                        value = "I am a licensed specialist"
                     )
                 }
 
@@ -146,11 +170,9 @@ class RegisterActivity : ComponentActivity() {
             Row {
                 CustomElevatedButton(
                     onClick = {
-                        //scope.launch {
-                        //    snackbarHostState.showSnackbar("Name $firstName")
-                        //}
                         Register(context, auth)
-                    }, Alignment.Center,
+                    },
+                    Alignment.Center,
                     "Register",
                     Modifier
                         .height(100.dp)
@@ -160,7 +182,8 @@ class RegisterActivity : ComponentActivity() {
             }
             Row {
                 CustomElevatedButton(
-                    onClick = { LoginToExistingAccount(context) }, Alignment.Center,
+                    onClick = { LoginPageEnter(context) },
+                    Alignment.Center,
                     "Login to existing account",
                     Modifier
                         .height(100.dp)
@@ -168,16 +191,11 @@ class RegisterActivity : ComponentActivity() {
                         .fillMaxWidth()
                 )
             }
-            SnackbarHost(hostState = snackbarHostState)
         }
     }
 
     fun Register(context: Context, auth: FirebaseAuth) {
-        //auth.createUserWithEmailAndPassword("iulia","iulia")
-    }
-
-    fun LoginToExistingAccount(context: Context) {
-        context.startActivity(Intent(context, LoginActivity::class.java))
+        //auth.createUserWithEmailAndPassword(,"iulia")
     }
 
 }

@@ -25,6 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CustomElevatedButton
 import com.example.test.Components.Greeting
+import com.example.test.Components.LoginPageEnter
+import com.example.test.Components.RegisterPageEnter
 import com.example.test.Connect.LoginActivity
 import com.example.test.Connect.RegisterActivity
 import com.example.test.Misc.HelpPage
@@ -93,13 +95,7 @@ fun Content() {
     )
 }
 
-fun LoginPageEnter(context: Context) {
-    context.startActivity(Intent(context, LoginActivity::class.java))
-}
 
-fun RegisterPageEnter(context: Context) {
-    context.startActivity(Intent(context, RegisterActivity::class.java))
-}
 
 fun HelpPageEnter(context: Context) {
     context.startActivity(Intent(context, HelpPage::class.java))
