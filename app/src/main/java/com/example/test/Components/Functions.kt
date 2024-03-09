@@ -33,6 +33,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.unfocusedLabelColor
@@ -40,7 +41,9 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
 
-
+var emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+var passwordPattern = "(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}"
+var textPattern = ".*"
 @Composable
 fun DefaultButton(
     onClick: () -> Unit,
@@ -101,7 +104,7 @@ fun CustomSwitch(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> Unit = {}, type: String = "text") {
+fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> Unit = {}, type: String = "text", pattern: String = textPattern) {
     OutlinedTextField(
         modifier = Modifier
             .width(185.dp)
@@ -127,7 +130,8 @@ fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> 
         keyboardOptions = when(type) {
             "password" -> KeyboardOptions(keyboardType = KeyboardType.Password)
             else -> KeyboardOptions.Default
-        }
+        },
+        isError = !text.matches(pattern.toRegex())
     )
 }
 

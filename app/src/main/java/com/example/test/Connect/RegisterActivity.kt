@@ -35,6 +35,8 @@ import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.emailPattern
+import com.example.test.Components.passwordPattern
 import com.example.test.Home
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
@@ -120,7 +122,8 @@ class RegisterActivity : ComponentActivity() {
                     labelValue = "Email",
                     onTextChange = { newValue ->
                         email = newValue
-                    })
+                    },
+                    pattern = emailPattern)
                 Spacer(modifier = Modifier.weight(1f))
                 CustomTextField(
                     text = password,
@@ -128,7 +131,8 @@ class RegisterActivity : ComponentActivity() {
                     onTextChange = { newValue ->
                         password = newValue
                     },
-                    type = "password"
+                    type = "password",
+                    pattern = passwordPattern
                 )
             }
             Row {
@@ -169,7 +173,9 @@ class RegisterActivity : ComponentActivity() {
             Row {
                 DefaultButton(
                     onClick = {
-                        Register(context, auth, email, password)
+                        auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { context.startActivity(Intent(context, Home::class.java)) }
+                            .addOnFailureListener { print("exception") }
                     },
                     Alignment.Center,
                     "Register",
@@ -192,11 +198,4 @@ class RegisterActivity : ComponentActivity() {
             }
         }
     }
-
-    fun Register(context: Context, auth: FirebaseAuth, email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { context.startActivity(Intent(context, Home::class.java)) }
-            .addOnFailureListener { print("exception") }
-    }
-
 }
