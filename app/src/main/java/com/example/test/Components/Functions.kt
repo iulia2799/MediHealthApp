@@ -12,9 +12,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -23,7 +22,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,25 +33,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.unfocusedLabelColor
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
-import com.example.test.ui.theme.universalTertiary
 
 
 @Composable
-fun CustomElevatedButton(
+fun DefaultButton(
     onClick: () -> Unit,
     alignment: Alignment,
     text: String,
     modifier: Modifier,
-    elevation: ButtonElevation = ButtonDefaults.buttonElevation(
-        10.dp, 10.dp, 10.dp, 10.dp, 10.dp
-    ), // Default elevation
     backgroundColor: Color = universalPrimary,
     contentColor: Color = Color.Black,
     fontFamily: FontFamily = jejugothicFamily,
@@ -63,13 +56,12 @@ fun CustomElevatedButton(
         modifier = modifier,
         contentAlignment = alignment,
     ) {
-        ElevatedButton(
+        Button(
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = backgroundColor,
                 contentColor = contentColor,
-            ),
-            elevation = elevation,
+            )
         ) {
             Text(text, style = TextStyle(fontFamily = fontFamily, fontWeight = fontWeight))
         }

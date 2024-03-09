@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,12 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.CustomElevatedButton
+import com.example.test.Components.DefaultButton
 import com.example.test.Components.Greeting
 import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.RegisterPageEnter
-import com.example.test.Connect.LoginActivity
-import com.example.test.Connect.RegisterActivity
 import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
@@ -51,16 +50,23 @@ fun MainSurface() {
     Surface(
         modifier = Modifier.fillMaxSize(), color = universalBackground
     ) {
-        Image(painter = mainBackground, contentDescription = null, contentScale = ContentScale.FillBounds, modifier = Modifier.fillMaxSize())
+        Image(
+            painter = mainBackground,
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize()
+        )
         Content()
     }
 }
+
 @Composable
 fun Content() {
     val context = LocalContext.current
     Column(
         modifier = Modifier
             .height(500.dp)
+            .padding(10.dp)
             .wrapContentWidth(Alignment.CenterHorizontally)
     ) {
         Box(
@@ -71,30 +77,32 @@ fun Content() {
         ) {
             Greeting()
         }
-        CustomElevatedButton(
+        DefaultButton(
             { LoginPageEnter(context) },
             Alignment.TopCenter,
             "Login",
             Modifier
-                .height(100.dp)
                 .padding(20.dp)
                 .fillMaxWidth()
         )
-        CustomElevatedButton(
+        DefaultButton(
             { RegisterPageEnter(context) },
             Alignment.Center,
             "Register",
             Modifier
-                .height(100.dp)
+                .padding(20.dp)
+                .fillMaxWidth()
+        )
+
+        DefaultButton(
+            { HelpPageEnter(context) }, Alignment.BottomCenter, "Help",
+            Modifier
                 .padding(20.dp)
                 .fillMaxWidth()
         )
     }
-    CustomElevatedButton(
-        { HelpPageEnter(context) }, Alignment.BottomCenter, "Help", Modifier.padding(100.dp)
-    )
-}
 
+}
 
 
 fun HelpPageEnter(context: Context) {

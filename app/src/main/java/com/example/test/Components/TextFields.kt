@@ -69,3 +69,14 @@ fun AppName(modifier: Modifier = Modifier) {
         textAlign = TextAlign.Center
     )
 }
+
+@Composable
+fun Welcome(modifier: Modifier = Modifier, name: String) {
+    Text(
+        text = "Welcome, ${name}!",
+        modifier = modifier,
+        fontFamily = jejugothicFamily,
+        fontSize = 24.sp,
+        textAlign = TextAlign.Left
+    )
+}

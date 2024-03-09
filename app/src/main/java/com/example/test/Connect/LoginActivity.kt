@@ -27,11 +27,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.Back
-import com.example.test.Components.CustomElevatedButton
+import com.example.test.Components.DefaultButton
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.RegisterPageEnter
-import com.example.test.Connect.ui.theme.TestTheme
+import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -43,7 +43,7 @@ class LoginActivity : ComponentActivity() {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
-            TestTheme {
+            AppTheme {
                 Screen()
             }
         }
@@ -99,7 +99,7 @@ class LoginActivity : ComponentActivity() {
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Row {
-                    CustomElevatedButton(
+                    DefaultButton(
                         onClick = { LoginToAccount(context) }, Alignment.Center,
                         "Login",
                         Modifier
@@ -110,7 +110,7 @@ class LoginActivity : ComponentActivity() {
                 }
 
                 Row {
-                    CustomElevatedButton(
+                    DefaultButton(
                         onClick = { RegisterPageEnter(context) }, Alignment.Center,
                         "Create a new account",
                         Modifier
@@ -121,7 +121,7 @@ class LoginActivity : ComponentActivity() {
                 }
 
                 Row {
-                    CustomElevatedButton(
+                    DefaultButton(
                         onClick = { Back(context) }, Alignment.Center,
                         "Back",
                         Modifier

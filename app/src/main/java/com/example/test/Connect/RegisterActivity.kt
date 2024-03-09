@@ -17,14 +17,11 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,13 +29,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
-import com.example.test.Components.CustomElevatedButton
+import com.example.test.Components.DefaultButton
 import com.example.test.Components.CustomSwitch
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.MediumTextField
-import com.example.test.Connect.ui.theme.TestTheme
+import com.example.test.Home
+import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -50,7 +48,7 @@ class RegisterActivity : ComponentActivity() {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
-            TestTheme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
@@ -130,7 +128,8 @@ class RegisterActivity : ComponentActivity() {
                     onTextChange = { newValue ->
                         password = newValue
                     },
-                    type = "password")
+                    type = "password"
+                )
             }
             Row {
                 CustomTextField(
@@ -168,9 +167,9 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomElevatedButton(
+                DefaultButton(
                     onClick = {
-                        Register(context, auth)
+                        Register(context, auth, email, password)
                     },
                     Alignment.Center,
                     "Register",
@@ -181,7 +180,7 @@ class RegisterActivity : ComponentActivity() {
                 )
             }
             Row {
-                CustomElevatedButton(
+                DefaultButton(
                     onClick = { LoginPageEnter(context) },
                     Alignment.Center,
                     "Login to existing account",
@@ -194,8 +193,10 @@ class RegisterActivity : ComponentActivity() {
         }
     }
 
-    fun Register(context: Context, auth: FirebaseAuth) {
-        //auth.createUserWithEmailAndPassword(,"iulia")
+    fun Register(context: Context, auth: FirebaseAuth, email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { context.startActivity(Intent(context, Home::class.java)) }
+            .addOnFailureListener { print("exception") }
     }
 
 }
