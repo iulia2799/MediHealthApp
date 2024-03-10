@@ -77,7 +77,6 @@ class Home : ComponentActivity() {
     @Composable
     fun HomeScaffold() {
         val context = LocalContext.current
-        var list = listOf<String>()
         Scaffold(topBar = {
             TopAppBar(
                 modifier = Modifier.shadow(
@@ -140,10 +139,11 @@ class Home : ComponentActivity() {
                 }
                 Row {
                     CenteredBox(){
-                        MonthCalendar(yearMonth = YearMonth.now(), list)
+                        MonthCalendar(yearMonth = YearMonth.now())
                     }
 
                 }
+                //if type user patient
                 Row {
                     DefaultButton(
                         onClick = {  },

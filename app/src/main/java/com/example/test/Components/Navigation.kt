@@ -29,12 +29,12 @@ fun RegisterPageEnter(context: Context) {
 }
 
 @Composable
-fun Listing(list: MutableList<Any>) {
+fun Listing(list: List<Any> = (0..20).toList()) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 60.dp)
     ){
         items(list){ x -> CenteredBox {
-
+            ListItem(content = x)
         }}
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.test.Components.Listing
 import com.example.test.ui.theme.AppTheme
 
 class History : ComponentActivity() {
@@ -23,6 +24,7 @@ class History : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting7("Android")
+                    Listing()
                 }
             }
         }
@@ -41,6 +43,10 @@ fun Greeting7(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview6() {
     AppTheme {
-        Greeting7("Android")
+        Surface(Modifier.fillMaxSize()) {
+            Greeting7("Android")
+            Listing()
+        }
+
     }
 }
