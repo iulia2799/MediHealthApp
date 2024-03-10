@@ -72,11 +72,10 @@ fun DefaultButton(
 }
 
 @Composable
-fun CustomSwitch(modifier: Modifier) {
-    var checked by remember { mutableStateOf(false) }
+fun CustomSwitch(modifier: Modifier, checked: Boolean, onStateChange: (Boolean) -> Unit) {
     Switch(modifier = modifier,
         checked = checked,
-        onCheckedChange = { checked = it },
+        onCheckedChange = onStateChange,
         colors = SwitchDefaults.colors(
             checkedThumbColor = universalPrimary,
             checkedTrackColor = unfocusedLabelColor,

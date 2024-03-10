@@ -6,9 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -20,8 +17,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,13 +36,22 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
-import java.time.LocalDate
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import java.time.YearMonth
-import java.time.format.TextStyle
 import java.util.*
 
 class Home : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+    private lateinit var userData: String
     override fun onCreate(savedInstanceState: Bundle?) {
+        auth = Firebase.auth
+        db = Firebase.firestore
+        //val currentUser = db.collection("users")
         super.onCreate(savedInstanceState)
         setContent {
             setContent()
@@ -72,7 +76,7 @@ class Home : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HomeScaffold() {
-        var context = LocalContext.current
+        val context = LocalContext.current
         var list = listOf<String>()
         Scaffold(topBar = {
             TopAppBar(
@@ -141,7 +145,22 @@ class Home : ComponentActivity() {
 
                 }
                 Row {
-                    //more
+                    DefaultButton(
+                        onClick = {  },
+                        Alignment.Center,
+                        "Doctors",
+                        Modifier
+                            .height(100.dp).width(200.dp)
+                            .padding(20.dp)
+                    )
+                    DefaultButton(
+                        onClick = { RegisterPageEnter(context) },
+                        Alignment.Center,
+                        "Results",
+                        Modifier
+                            .height(100.dp).width(200.dp)
+                            .padding(20.dp)
+                    )
                 }
             }
         }

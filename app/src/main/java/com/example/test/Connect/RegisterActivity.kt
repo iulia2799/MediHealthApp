@@ -1,5 +1,6 @@
 package com.example.test.Connect
 
+import Models.Doctor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -80,6 +81,7 @@ class RegisterActivity : ComponentActivity() {
         var password by remember { mutableStateOf("") }
         var phone by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
+        var checked by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -166,13 +168,21 @@ class RegisterActivity : ComponentActivity() {
                     CustomSwitch(
                         Modifier
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
-                    )
+                            .wrapContentSize(Alignment.Center),
+                        checked
+                    ) { newValue ->
+                        checked = newValue
+                    }
                 }
             }
             Row {
                 DefaultButton(
                     onClick = {
+                        if(checked){
+                            //val doc = Doctor(email = email, password = password, firstName = firstName, lastName = lastName, phone = phone,address = address)
+                        } else {
+                            //patient
+                        }
                         auth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener { context.startActivity(Intent(context, Home::class.java)) }
                             .addOnFailureListener { print("exception") }
