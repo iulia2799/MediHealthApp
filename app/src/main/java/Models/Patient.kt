@@ -3,7 +3,7 @@ package Models
 import org.json.JSONObject
 
 data class Patient(
-    var uid: Long,
+    var uid: String,
     var firstName: String,
     var lastName: String,
     var address: String,
@@ -11,10 +11,7 @@ data class Patient(
     var email: String,
     var password: String,
     var age: Int,
-    var doctorUid: Long,
-    var history: JSONObject,
-    var prescription: List<Medication>,
-    var results: JSONObject
+    var doctorUid: String = "0",
 ) {
 
 

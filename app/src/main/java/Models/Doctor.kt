@@ -1,7 +1,13 @@
 package Models
 
 data class Doctor(
-    var uid: Long, var firstName: String, var lastName: String, var address: String, var phone: String,
-    var email: String, var password: String, var patients: List<Patient>, var appointments: List<Appointment>, var officeHours: Schedule
-)  {
+    var uid: String,
+    var firstName: String,
+    var lastName: String,
+    var address: String,
+    var phone: String,
+    var email: String,
+    var password: String,
+    var officeHours: Schedule = Schedule("9:00", "17:00", "Monday", "Friday")
+) {
 }

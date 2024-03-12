@@ -1,5 +1,7 @@
 package com.example.test
 
+import Models.Doctor
+import Models.Patient
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,11 +49,11 @@ import java.util.*
 class Home : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var userData: String
+    private lateinit var datap: Patient
+    private lateinit var datad: Doctor
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         db = Firebase.firestore
-        //val currentUser = db.collection("users")
         super.onCreate(savedInstanceState)
         setContent {
             setContent()

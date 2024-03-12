@@ -11,7 +11,7 @@
     <string name="title_activity_history">History</string>
     <string name="title_activity_results">Results</string>
     <string name="title_activity_map">MapActivity</string>
-    <string name="title_activity_listing">Listing</string>
+
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

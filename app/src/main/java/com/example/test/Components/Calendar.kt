@@ -73,7 +73,7 @@ fun MonthCalendar(yearMonth: YearMonth) {
                                         10.dp
                                     )
                                 ).padding(10.dp), textAlign = TextAlign.Center,
-                            fontFamily = jejugothicFamily
+                            fontFamily = jejugothicFamily,
                         )
                     } else {
                         Text(text = "", modifier = Modifier.weight(1f))

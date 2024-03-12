@@ -1,9 +1,11 @@
 package com.example.test.Connect
 
 import Models.Doctor
+import Models.Patient
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -39,16 +41,22 @@ import com.example.test.Components.MediumTextField
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import java.util.UUID
 
 class RegisterActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
+        db = Firebase.firestore
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
@@ -81,6 +89,7 @@ class RegisterActivity : ComponentActivity() {
         var password by remember { mutableStateOf("") }
         var phone by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
+        var age by remember { mutableStateOf("") }
         var checked by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
@@ -104,15 +113,13 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomTextField(
-                    text = firstName,
+                CustomTextField(text = firstName,
                     labelValue = "First Name",
                     onTextChange = { newValue ->
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(
-                    text = lastName,
+                CustomTextField(text = lastName,
                     labelValue = "Last Name",
                     onTextChange = { newValue ->
                         lastName = newValue
@@ -120,37 +127,32 @@ class RegisterActivity : ComponentActivity() {
             }
             Row {
                 CustomTextField(
-                    text = email,
-                    labelValue = "Email",
-                    onTextChange = { newValue ->
+                    text = email, labelValue = "Email", onTextChange = { newValue ->
                         email = newValue
-                    },
-                    pattern = emailPattern)
+                    }, pattern = emailPattern
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 CustomTextField(
-                    text = password,
-                    labelValue = "Password",
-                    onTextChange = { newValue ->
+                    text = password, labelValue = "Password", onTextChange = { newValue ->
                         password = newValue
-                    },
-                    type = "password",
-                    pattern = passwordPattern
+                    }, type = "password", pattern = passwordPattern
                 )
             }
             Row {
-                CustomTextField(
-                    text = phone,
-                    labelValue = "Phone",
-                    onTextChange = { newValue ->
-                        phone = newValue
-                    })
+                CustomTextField(text = phone, labelValue = "Phone", onTextChange = { newValue ->
+                    phone = newValue
+                })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(
-                    text = address,
-                    labelValue = "Address",
-                    onTextChange = { newValue ->
-                        address = newValue
+                CustomTextField(text = address, labelValue = "Address", onTextChange = { newValue ->
+                    address = newValue
+                })
+            }
+            if(!checked) {
+                Row {
+                    CustomTextField(text = age, labelValue = "Age", onTextChange = { newValue ->
+                        age = newValue
                     })
+                }
             }
             Row {
                 CenteredBox {
@@ -168,8 +170,7 @@ class RegisterActivity : ComponentActivity() {
                     CustomSwitch(
                         Modifier
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center),
-                        checked
+                            .wrapContentSize(Alignment.Center), checked
                     ) { newValue ->
                         checked = newValue
                     }
@@ -178,14 +179,50 @@ class RegisterActivity : ComponentActivity() {
             Row {
                 DefaultButton(
                     onClick = {
-                        if(checked){
-                            //val doc = Doctor(email = email, password = password, firstName = firstName, lastName = lastName, phone = phone,address = address)
-                        } else {
-                            //patient
-                        }
-                        auth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener { context.startActivity(Intent(context, Home::class.java)) }
-                            .addOnFailureListener { print("exception") }
+
+                        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
+                                val uuid = UUID.randomUUID().toString()
+                                if (checked) {
+                                    val doc = Doctor(
+                                        uid = uuid,
+                                        email = email,
+                                        password = password,
+                                        firstName = firstName,
+                                        lastName = lastName,
+                                        phone = phone,
+                                        address = address,
+                                    )
+                                    db.collection("doctors").add(doc).addOnCompleteListener {
+                                        val localStorage = LocalStorage(context)
+                                        localStorage.putUserDetails(uuid, true)
+                                        context.startActivity(Intent(context, Home::class.java))
+                                    }.addOnFailureListener {
+                                        //oops
+                                    }
+                                } else {
+                                    val p = Patient(
+                                        uid = uuid,
+                                        email = email,
+                                        password = password,
+                                        firstName = firstName,
+                                        lastName = lastName,
+                                        phone = phone,
+                                        address = address,
+                                        age = age.toInt()
+                                    )
+                                    db.collection("patients").add(p).addOnCompleteListener {
+                                        Log.d("SUCCESS", it.isSuccessful.toString())
+                                        if(it.isSuccessful) {
+                                            val localStorage = LocalStorage(context)
+                                            localStorage.putUserDetails(uuid, false)
+                                            context.startActivity(Intent(context, Home::class.java))
+                                        }
+                                    }.addOnFailureListener {
+                                        it.message?.let { it1 -> Log.e("OOPS", it1) }
+                                    }
+                                }
+
+                            }.addOnFailureListener { print("exception") }
                     },
                     Alignment.Center,
                     "Register",

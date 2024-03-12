@@ -42,6 +42,7 @@ import com.example.test.Components.RegisterPageEnter
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
+import com.example.test.LocalStorage.CheckEmail
 import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
@@ -148,6 +149,7 @@ class LoginActivity : ComponentActivity() {
                                         }
                                     }
                                     .addOnSuccessListener {
+                                        CheckEmail(context = context, email = email)
                                         context.startActivity(
                                             Intent(
                                                 context,
