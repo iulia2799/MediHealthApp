@@ -1,7 +1,8 @@
 package Models
 
 data class Appointment(
-    val doctorUid: Long,
-    val patientUid: Long,
-    val date: java.util.Date
+    var doctorUid: Long,
+    var patientUid: Long,
+    var date: Long,
+    var alocatedTime: Long,
 )

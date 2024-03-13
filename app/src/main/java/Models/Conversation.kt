@@ -1,9 +1,9 @@
 package Models
 
-class Conversation(
-    id: String,
-    user1Uid: String,
-    user2Uid: String,
-    messages: String
+data class Conversation(
+    var id: String,
+    var user1Uid: String,
+    var user2Uid: String,
+    var messages: Array<String>
 ) {
 }

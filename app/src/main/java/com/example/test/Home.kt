@@ -34,6 +34,7 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.MonthCalendar
 import com.example.test.Components.RegisterPageEnter
 import com.example.test.Components.Welcome
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.universalBackground
@@ -64,6 +65,12 @@ class Home : ComponentActivity() {
     @Preview
     fun setContent() {
         val context = LocalContext.current
+        val local = LocalStorage(context)
+        val ref = local.getRef()
+        val type = local.getRole()
+        if(type.equals(true)) {
+
+        }
         AppTheme {
             // A surface container using the 'background' color from the theme
             HomeContent()

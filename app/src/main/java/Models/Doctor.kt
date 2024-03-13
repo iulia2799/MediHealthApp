@@ -8,6 +8,7 @@ data class Doctor(
     var phone: String,
     var email: String,
     var password: String,
+    var department: Department,
     var officeHours: Schedule = Schedule("9:00", "17:00", "Monday", "Friday")
 ) {
 }

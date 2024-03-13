@@ -1,6 +1,7 @@
 package Models
 
 enum class Department(val displayName: String) {
+    NA("No Selection"),
     MENTAL("Psychology"),
     NEUROLOGY("Neurology"),
     CARDIO("Cardiology"),

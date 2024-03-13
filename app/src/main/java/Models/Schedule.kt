@@ -1,9 +1,9 @@
 package Models
 
-class Schedule (
-    start: String,
-    end: String,
-    weekStart: String,
-    weekend: String
+data class Schedule (
+    var start: String,
+    var end: String,
+    var weekStart: String,
+    var weekend: String
 ){
 }
