@@ -3,15 +3,16 @@ package com.example.test.Misc
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalBackground
 
 class HelpPage : ComponentActivity() {
@@ -22,9 +23,13 @@ class HelpPage : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = universalBackground
+                    color = universalBackground,
                 ) {
-
+                    Column(modifier = Modifier.wrapContentHeight(Alignment.CenterVertically)) {
+                        Text(text = "Welcome!", fontFamily = jejugothicFamily, fontSize = 34.sp)
+                        Text(text = "This a patient and doctor application. To get started, please login to your account or create a new one.", fontFamily = jejugothicFamily, fontSize = 24.sp)
+                        Text(text = "You will be able to find your primary doctor, make appointments and chat.", fontFamily = jejugothicFamily, fontSize = 24.sp)
+                    }
                 }
             }
         }

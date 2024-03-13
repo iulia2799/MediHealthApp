@@ -10,19 +10,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.test.Misc.ui.theme.TestTheme
+import com.example.test.Components.Listing
+import com.example.test.ui.theme.AppTheme
 
 class History : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TestTheme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting7("Android")
+                    Listing()
                 }
             }
         }
@@ -40,7 +42,11 @@ fun Greeting7(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview6() {
-    TestTheme {
-        Greeting7("Android")
+    AppTheme {
+        Surface(Modifier.fillMaxSize()) {
+            Greeting7("Android")
+            Listing()
+        }
+
     }
 }

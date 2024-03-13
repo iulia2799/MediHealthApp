@@ -1,8 +1,13 @@
 package Models
 
-class Doctor(
-    uid: Long, firstName: String, lastName: String, address: String, phone: String,
-    email: String, password: String, patients: List<Patient>, appointments: List<Appointment>, officeHours: Schedule
-) :
-    User(uid, firstName, lastName, address, phone, email, password) {
+data class Doctor(
+    var uid: String,
+    var firstName: String,
+    var lastName: String,
+    var address: String,
+    var phone: String,
+    var email: String,
+    var password: String,
+    var officeHours: Schedule = Schedule("9:00", "17:00", "Monday", "Friday")
+) {
 }
