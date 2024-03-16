@@ -43,6 +43,7 @@ import com.example.test.Components.CenteredBox
 import com.example.test.Components.CustomSwitch
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
+import com.example.test.Components.FormSelector
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.MediumTextField
@@ -66,7 +67,7 @@ import java.util.UUID
 class RegisterActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private var departmentList = Department.values().toList()
+    private var departmentList = Department.values().map { it.displayName }
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         db = Firebase.firestore
@@ -167,7 +168,9 @@ class RegisterActivity : ComponentActivity() {
                 Spacer(modifier = Modifier.weight(1f))
             }
             if(!checked) {
-                Row (modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.Center)){
+                Row (modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.Center)){
                     Box(modifier = Modifier.wrapContentSize(Alignment.Center)) {
                         CustomTextField(text = age, labelValue = "Age", onTextChange = { newValue ->
                             age = newValue
@@ -177,51 +180,9 @@ class RegisterActivity : ComponentActivity() {
             } else {
                 Row{
                     CenteredBox {
-                        ExposedDropdownMenuBox(
-                            expanded = expanded,
-                            onExpandedChange = { expanded = !expanded },
-                        ) {
-                            OutlinedTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                readOnly = true,
-                                value = department.displayName,
-                                onValueChange = { Toast.makeText(context,department.displayName,Toast.LENGTH_LONG).show() },
-                                label = { Text("Department") },
-                                trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                                },
-                                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                                    unfocusedBorderColor = unfocusedLabelColor,
-                                    focusedBorderColor = universalAccent,
-                                    focusedLabelColor = universalAccent,
-                                    unfocusedLabelColor = unfocusedLabelColor,
-                                    textColor = Color.Black,
-                                    containerColor = universalPrimary,
-                                    errorLabelColor = universalError,
-                                    errorBorderColor = universalError,
-                                    disabledBorderColor = Color.DarkGray,
-                                    disabledTextColor = Color.DarkGray
-                                ),
-                            )
-
-                            ExposedDropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                modifier = Modifier.wrapContentSize(Alignment.Center)
-                            ) {
-                                departmentList.forEach { selectionOption ->
-                                    DropdownMenuItem(
-                                        text =  {
-                                            Text(text = department.displayName)
-                                        },
-                                        onClick = {
-                                            department = selectionOption
-                                            expanded = false
-                                        }
-                                    )
-                                }
-                            }
-                        }
+                        FormSelector(options = departmentList, selectedOption = department, onOptionSelected = {
+                            department = it
+                        })
                     }
 
                 }
@@ -255,6 +216,9 @@ class RegisterActivity : ComponentActivity() {
                         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                                 val uuid = UUID.randomUUID().toString()
                                 if (checked) {
+                                    val departmentValue = Department.values().find {
+                                        it.displayName == department
+                                    }
                                     val doc = Doctor(
                                         uid = uuid,
                                         email = email,
@@ -263,7 +227,7 @@ class RegisterActivity : ComponentActivity() {
                                         lastName = lastName,
                                         phone = phone,
                                         address = address,
-                                        department = department
+                                        department = departmentValue!!
                                     )
                                     db.collection("doctors").add(doc).addOnCompleteListener {
                                         val localStorage = LocalStorage(context)
