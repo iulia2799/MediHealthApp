@@ -26,14 +26,14 @@ fun LargeTextField(value: String, modifier: Modifier) {
 }
 
 @Composable
-fun MediumTextField(modifier: Modifier, value: String) {
+fun MediumTextField(modifier: Modifier, value: String, color: Color = Color.Black) {
     Text(
         modifier = modifier,
         text = value,
         fontFamily = jejugothicFamily,
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
-        color = Color.Black
+        color = color
     )
 }
 

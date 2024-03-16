@@ -1,8 +1,12 @@
 package Models
 
+import java.sql.Time
+
 data class Appointment(
-    var doctorUid: Long,
-    var patientUid: Long,
-    var date: Long,
-    var alocatedTime: Long,
+    var doctorUid: String,
+    var doctorName: String,
+    var patientUid: String,
+    var patientName: String,
+    var date: Time,
+    var alocatedTime: Time,
 )

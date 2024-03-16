@@ -3,6 +3,7 @@ package com.example.test
 import Models.Doctor
 import Models.Patient
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -30,10 +35,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
+import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.DefaultButton
-import com.example.test.Components.MonthCalendar
 import com.example.test.Components.RegisterPageEnter
 import com.example.test.Components.Welcome
+import com.example.test.Components.calendar.WeeklyDataSource
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
@@ -44,7 +50,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import java.time.YearMonth
 import java.util.*
 
 class Home : ComponentActivity() {
@@ -68,7 +73,8 @@ class Home : ComponentActivity() {
         val local = LocalStorage(context)
         val ref = local.getRef()
         val type = local.getRole()
-        if(type.equals(true)) {
+        Log.d("User reference", "User reference: $ref")
+        if (type) {
 
         }
         AppTheme {
@@ -128,13 +134,14 @@ class Home : ComponentActivity() {
                 modifier = Modifier.padding(padding),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                Row{
+                Row {
                     DefaultButton(
                         onClick = { RegisterPageEnter(context) },
                         Alignment.Center,
                         "Prescriptions",
                         Modifier
-                            .height(100.dp).width(200.dp)
+                            .height(100.dp)
+                            .width(200.dp)
                             .padding(20.dp)
                     )
                     DefaultButton(
@@ -142,24 +149,53 @@ class Home : ComponentActivity() {
                         Alignment.Center,
                         "History",
                         Modifier
-                            .height(100.dp).width(200.dp)
+                            .height(100.dp)
+                            .width(200.dp)
                             .padding(20.dp)
                     )
                 }
                 Row {
-                    CenteredBox(){
-                        MonthCalendar(yearMonth = YearMonth.now())
+                    CenteredBox {
+                        val source = WeeklyDataSource()
+                        var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
+                        CustomCalendar(sourceModel, onPrevClickListener = { startDate ->
+                            // refresh the CalendarUiModel with new data
+                            // by get data with new Start Date (which is the startDate-1 from the visibleDates)
+                            val finalStartDate = startDate.minusDays(1)
+                            Log.d("what","FDSFDSFSDFDSF")
+                            sourceModel = source.getData(
+                                startDate = finalStartDate,
+                                lastSelectedDate = sourceModel.currentDate.date
+                            )
+                        }, onNextClickListener = { endDate ->
+                            // refresh the CalendarUiModel with new data
+                            // by get data with new Start Date (which is the endDate+2 from the visibleDates)
+                            val finalStartDate = endDate.plusDays(2)
+                            sourceModel = source.getData(
+                                startDate = finalStartDate,
+                                lastSelectedDate = sourceModel.currentDate.date
+                            )
+                        }, onDateClickListener = { date ->
+                            // refresh the CalendarUiModel with new data
+                            // by changing only the `selectedDate` with the date selected by User
+                            sourceModel =
+                                sourceModel.copy(currentDate = date, week = sourceModel.week.map {
+                                    it.copy(
+                                        isSelected = it.date.isEqual(date.date)
+                                    )
+                                })
+                        })
                     }
 
                 }
-                //if type user patient
                 Row {
                     DefaultButton(
-                        onClick = {  },
+                        onClick = { },
                         Alignment.Center,
                         "Doctors",
                         Modifier
-                            .height(100.dp).width(200.dp)
+                            .height(100.dp)
+                            .width(200.dp)
                             .padding(20.dp)
                     )
                     DefaultButton(
@@ -167,7 +203,8 @@ class Home : ComponentActivity() {
                         Alignment.Center,
                         "Results",
                         Modifier
-                            .height(100.dp).width(200.dp)
+                            .height(100.dp)
+                            .width(200.dp)
                             .padding(20.dp)
                     )
                 }
