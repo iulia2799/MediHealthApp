@@ -1,5 +1,8 @@
 package com.example.test.appointment
 
+import Models.Appointment
+import android.content.Intent
+import android.os.Bundle
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,19 +20,27 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
+import com.example.test.LocalStorage.AnySerializable
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalTertiary
 
 @Composable
-@Preview
-fun AppointmentDialog(/*appointment: Appointment, onDismiss: () -> Unit*/) {
-    Dialog(onDismissRequest = { }) {
+fun AppointmentDialog(appointment: Appointment, onDelete: () -> Unit, onEdit: () -> Unit) {
+    val context = LocalContext.current
+    var intent = Intent(context, AppointmentManager::class.java)
+    intent.putExtra("myAppointment",AnySerializable(appointment))
+    Dialog(onDismissRequest = { }, properties = DialogProperties(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true
+    )) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -52,12 +63,14 @@ fun AppointmentDialog(/*appointment: Appointment, onDismiss: () -> Unit*/) {
             ) {
                 LargeTextField(value = "Appointment Details", modifier = Modifier.padding(4.dp))
                 Spacer(modifier = Modifier.weight(1f))
-                MediumTextField(modifier = Modifier.padding(10.dp), value = "Some value here")
+
+                MediumTextField(modifier = Modifier, value = "Doctor: ${appointment.doctorName}")
                 Spacer(modifier = Modifier.weight(1f))
-                //MediumTextField(modifier = Modifier, value = "Doctor: ${appointment.doctorName}")
-                //MediumTextField(modifier = Modifier, value = "Patient: ${appointment.patientName}")
-                //MediumTextField(modifier = Modifier, value = "Date: ${appointment.date.toDate()}")
-                //MediumTextField(modifier = Modifier, value = "Time: ${appointment.alocatedTime / 60} minutes")
+                MediumTextField(modifier = Modifier, value = "Patient: ${appointment.patientName}")
+                Spacer(modifier = Modifier.weight(1f))
+                MediumTextField(modifier = Modifier, value = "Date: ${appointment.date.toDate()}")
+                Spacer(modifier = Modifier.weight(1f))
+                MediumTextField(modifier = Modifier, value = "Time: ${appointment.alocatedTime / 60} minutes")
 
                 Row(
                     modifier = Modifier
@@ -67,7 +80,7 @@ fun AppointmentDialog(/*appointment: Appointment, onDismiss: () -> Unit*/) {
                 ) {
                     TextButton(
                         modifier = Modifier.padding(4.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = { onEdit },
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent,
                         )
@@ -76,7 +89,7 @@ fun AppointmentDialog(/*appointment: Appointment, onDismiss: () -> Unit*/) {
                     }
                     TextButton(
                         modifier = Modifier.padding(4.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = { onDelete },
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent
                         )
