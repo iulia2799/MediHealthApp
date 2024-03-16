@@ -54,7 +54,14 @@ class LocalStorage(context: Context) {
         val db = Firebase.firestore
         var result: Any? = null
         if (this.getRole()) {
-
+            val document = this.getRef()
+                ?.let {
+                    db.collection("doctors").document(it).get().addOnSuccessListener {
+                        if(it.exists()) {
+                            result = it.toObject<Doctor>()
+                        }
+                    }
+                }
         } else {
             val document = this.getRef()
                 ?.let {

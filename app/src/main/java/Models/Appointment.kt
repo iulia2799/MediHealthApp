@@ -1,12 +1,13 @@
 package Models
 
-import java.sql.Time
+import com.google.firebase.Timestamp
+
 
 data class Appointment(
     var doctorUid: String,
     var doctorName: String,
     var patientUid: String,
     var patientName: String,
-    var date: Time,
-    var alocatedTime: Time,
+    var date: Timestamp,
+    var alocatedTime: Long,
 )

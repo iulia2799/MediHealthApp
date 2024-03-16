@@ -1,7 +1,6 @@
 package com.example.test
 
-import Models.Doctor
-import Models.Patient
+import Models.Appointment
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -35,10 +35,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
-import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.RegisterPageEnter
 import com.example.test.Components.Welcome
+import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
@@ -50,13 +50,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
+import java.time.ZoneId
 import java.util.*
+import kotlin.properties.Delegates
 
 class Home : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private lateinit var datap: Patient
-    private lateinit var datad: Doctor
+    private var type by Delegates.notNull<Boolean>()
+    private lateinit var ref: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         db = Firebase.firestore
@@ -71,12 +75,10 @@ class Home : ComponentActivity() {
     fun setContent() {
         val context = LocalContext.current
         val local = LocalStorage(context)
-        val ref = local.getRef()
-        val type = local.getRole()
+        ref = local.getRef().toString()
+        type = local.getRole()
         Log.d("User reference", "User reference: $ref")
-        if (type) {
 
-        }
         AppTheme {
             // A surface container using the 'background' color from the theme
             HomeContent()
@@ -92,6 +94,8 @@ class Home : ComponentActivity() {
     @Composable
     fun HomeScaffold() {
         val context = LocalContext.current
+        val source = WeeklyDataSource()
+        var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
         Scaffold(topBar = {
             TopAppBar(
                 modifier = Modifier.shadow(
@@ -156,8 +160,7 @@ class Home : ComponentActivity() {
                 }
                 Row {
                     CenteredBox {
-                        val source = WeeklyDataSource()
-                        var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
+
                         CustomCalendar(sourceModel, onPrevClickListener = { startDate ->
                             // refresh the CalendarUiModel with new data
                             // by get data with new Start Date (which is the startDate-1 from the visibleDates)
@@ -187,6 +190,29 @@ class Home : ComponentActivity() {
                         })
                     }
 
+                }
+                Row{
+                    var results = listOf<Appointment>()
+                    val today = source.today
+                    val startOfDay = today.atStartOfDay(ZoneId.of("UTC"))
+                    val endOfDay = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
+                    if (type) {
+                        val query = db.collection("appointments").whereEqualTo("doctorUid",ref)
+                            .whereGreaterThanOrEqualTo("date",startOfDay).whereLessThan("date",endOfDay)
+                        query.get().addOnCompleteListener{
+                            if(it.isSuccessful) {
+                                results = it.result.documents.map { doc ->
+                                    doc.toObject<Appointment>()!!
+                                }
+                            }
+
+                        }
+                    }
+                    CenteredBox {
+                        LazyColumn{
+
+                        }
+                    }
                 }
                 Row {
                     DefaultButton(

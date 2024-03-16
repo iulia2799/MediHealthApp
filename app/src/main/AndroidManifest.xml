@@ -12,6 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
         tools:targetApi="31">
+        <activity
+            android:name=".messaging.ConvoList"
+            android:exported="false"
+            android:label="@string/title_activity_convo_list"
+            android:theme="@style/Theme.App" />
+        <activity
+            android:name=".messaging.Conversation"
+            android:exported="false"
+            android:label="@string/title_activity_conversation"
+            android:theme="@style/Theme.App" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
