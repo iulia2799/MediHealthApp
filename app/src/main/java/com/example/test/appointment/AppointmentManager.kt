@@ -1,6 +1,7 @@
 package com.example.test.appointment
 
 import Models.Appointment
+import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,7 +21,13 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,14 +43,19 @@ import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.convertMillisToDate
+import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
+import com.example.test.ui.theme.universalPrimary
+import com.example.test.ui.theme.universalTertiary
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.time.LocalDateTime
 
 class AppointmentManager : ComponentActivity() {
     private lateinit var appointment: Appointment
@@ -78,6 +91,7 @@ class AppointmentManager : ComponentActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     @Preview
     fun Content() {
@@ -87,7 +101,10 @@ class AppointmentManager : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             color = universalBackground
         ) {
-            Column(modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally), verticalArrangement = Arrangement.SpaceAround) {
+            Column(
+                modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.SpaceAround
+            ) {
                 Row {
                     LargeTextField(
                         value = "Edit Appointment", modifier = Modifier
@@ -98,9 +115,11 @@ class AppointmentManager : ComponentActivity() {
                     )
                 }
                 //temporary for preview
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
                     val doctor by remember { mutableStateOf("") }
                     val patient by remember { mutableStateOf("") }
                     CustomTextField(text = doctor, labelValue = "Search a doctor")
@@ -123,17 +142,24 @@ class AppointmentManager : ComponentActivity() {
                         //accepted or deleted
                     }
                 }
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
                     var date by remember { mutableStateOf("Change the date") }
                     var showToggle by remember { mutableStateOf(false) }
-                    Box(contentAlignment = Alignment.Center){
-                        DefaultButton(onClick = { showToggle = true }, alignment = Alignment.Center, text = "Edit Date", modifier = Modifier)
+                    Box(contentAlignment = Alignment.Center) {
+                        DefaultButton(
+                            onClick = { showToggle = true },
+                            alignment = Alignment.Center,
+                            text = date,
+                            modifier = Modifier
+                        )
                     }
-                    if(showToggle) {
-                        DatePickerCard(onSelection = {date = it},
-                            onDismiss = { showToggle = false})
+                    if (showToggle) {
+                        DatePickerCard(onSelection = { date = it },
+                            onDismiss = { showToggle = false })
                     }
                 }
                 Row(
@@ -141,15 +167,74 @@ class AppointmentManager : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    CustomTextField(text = "", labelValue = "Allocated time")
+                    val datetime = LocalDateTime.now()
+                    var state = remember {
+                        TimePickerState(
+                            is24Hour = true,
+                            initialHour = datetime.hour,
+                            initialMinute = datetime.minute
+                        )
+                    }
+                    var selectedOption = convertTimeToTimestamp(state.hour, state.minute)
+                    TimeInput(
+                        state = state,
+                        modifier = Modifier.padding(16.dp),
+                        colors = TimePickerDefaults.colors(
+                            timeSelectorSelectedContainerColor = universalAccent,
+                            timeSelectorUnselectedContainerColor = universalAccent,
+                            timeSelectorSelectedContentColor = universalPrimary,
+                            timeSelectorUnselectedContentColor = universalPrimary
+                        )
+                    )
+
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
+                    val datetime = LocalDateTime.now()
+                    var state = remember {
+                        TimePickerState(
+                            is24Hour = true,
+                            initialHour = datetime.hour,
+                            initialMinute = datetime.minute
+                        )
+                    }
+                    var selectedOption = convertTimeToTimestamp(state.hour, state.minute)
+                    TimeInput(
+                        state = state,
+                        modifier = Modifier.padding(16.dp),
+                        colors = TimePickerDefaults.colors(
+                            timeSelectorSelectedContainerColor = universalAccent,
+                            timeSelectorUnselectedContainerColor = universalAccent,
+                            timeSelectorSelectedContentColor = universalPrimary,
+                            timeSelectorUnselectedContentColor = universalPrimary
+                        )
+                    )
+
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
-                ){
+                ) {
 
-                    DefaultButton(onClick = { /*TODO*/ }, alignment = Alignment.CenterStart, text = "Confirm", modifier = Modifier.padding(4.dp))
+                    DefaultButton(
+                        onClick = {
+                            if(mode === "edit") {
+
+                            } else if (mode === "create") {
+
+                            } else if(mode === "confirm") {
+
+                            }
+                        },
+                        alignment = Alignment.CenterStart,
+                        text = "Confirm",
+                        modifier = Modifier.padding(4.dp)
+                    )
 
 
                 }
@@ -164,7 +249,7 @@ class AppointmentManager : ComponentActivity() {
     fun DatePickerCard(onSelection: (String) -> Unit, onDismiss: () -> Unit) {
         val state = rememberDatePickerState(selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis <= System.currentTimeMillis()
+                return utcTimeMillis >= System.currentTimeMillis()
             }
         })
         val selected = state.selectedDateMillis?.let {
@@ -182,7 +267,12 @@ class AppointmentManager : ComponentActivity() {
             )
         },
             dismissButton = {
-                DefaultButton(onClick = { onDismiss() }, alignment = Alignment.Center, text = "Cancel", modifier = Modifier.padding(4.dp))
+                DefaultButton(
+                    onClick = { onDismiss() },
+                    alignment = Alignment.Center,
+                    text = "Cancel",
+                    modifier = Modifier.padding(4.dp)
+                )
             }) {
             DatePicker(state = state)
         }
