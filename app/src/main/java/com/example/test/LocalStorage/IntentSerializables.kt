@@ -1,9 +1,10 @@
-package Models
+package com.example.test.LocalStorage
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
-
-
-data class Appointment(
+import kotlinx.parcelize.Parcelize
+@Parcelize
+data class AppointmentParceled(
     var ref: String? = null,
     var doctorUid: String,
     var doctorName: String,
@@ -11,4 +12,5 @@ data class Appointment(
     var patientName: String,
     var date: Timestamp,
     var alocatedTime: Long,
-)
+) : Parcelable
+

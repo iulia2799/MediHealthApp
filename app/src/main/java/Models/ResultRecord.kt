@@ -1,6 +1,6 @@
 package Models
 
-data class Result(
+data class ResultRecord(
     var patientRef: String,
     var doctorRef: String,
     var fileRefStorage: String,
