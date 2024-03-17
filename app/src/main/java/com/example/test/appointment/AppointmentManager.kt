@@ -3,14 +3,13 @@ package com.example.test.appointment
 import Models.Appointment
 import android.os.Build
 import android.os.Bundle
-import android.widget.DatePicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,11 +17,9 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,12 +39,10 @@ import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
-import com.example.test.ui.theme.universalTertiary
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.selects.select
 
 class AppointmentManager : ComponentActivity() {
     private lateinit var appointment: Appointment
@@ -83,17 +78,16 @@ class AppointmentManager : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     @Preview
     fun Content() {
         val context = LocalContext.current
-
+        localStorage = LocalStorage(context)
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = universalBackground
         ) {
-            Column(modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)) {
+            Column(modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally), verticalArrangement = Arrangement.SpaceAround) {
                 Row {
                     LargeTextField(
                         value = "Edit Appointment", modifier = Modifier
@@ -103,10 +97,22 @@ class AppointmentManager : ComponentActivity() {
                             )
                     )
                 }
+                //temporary for preview
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)){
+                    val doctor by remember { mutableStateOf("") }
+                    val patient by remember { mutableStateOf("") }
+                    CustomTextField(text = doctor, labelValue = "Search a doctor")
+                    CustomTextField(text = patient, labelValue = "Search a patient")
+                }
+                //
                 when (mode) {
                     "create" -> {
                         val doctor by remember { mutableStateOf("") }
                         val patient by remember { mutableStateOf("") }
+                        CustomTextField(text = doctor, labelValue = "Search a doctor")
+                        CustomTextField(text = patient, labelValue = "Search a patient")
                     }
 
                     "edit" -> {
@@ -117,7 +123,9 @@ class AppointmentManager : ComponentActivity() {
                         //accepted or deleted
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)) {
                     var date by remember { mutableStateOf("Change the date") }
                     var showToggle by remember { mutableStateOf(false) }
                     Box(contentAlignment = Alignment.Center){
@@ -133,7 +141,17 @@ class AppointmentManager : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    CustomTextField(text = "", labelValue = "Date")
+                    CustomTextField(text = "", labelValue = "Allocated time")
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ){
+
+                    DefaultButton(onClick = { /*TODO*/ }, alignment = Alignment.CenterStart, text = "Confirm", modifier = Modifier.padding(4.dp))
+
+
                 }
             }
 

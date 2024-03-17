@@ -22,6 +22,22 @@ class LocalStorage(context: Context) {
         editor.apply()
     }
 
+    fun putUserDetails(uid: String, specialist: Boolean, ref: String, gp: Int) {
+        editor.putString("UID", uid)
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putInt("DEP",gp)
+        editor.apply()
+    }
+    fun putUserDetails(uid: String, specialist: Boolean, ref: String, gp: Int, name: String) {
+        editor.putString("UID", uid)
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putInt("DEP",gp)
+        editor.putString("NAME",name)
+        editor.apply()
+    }
+
     fun putUserDetails(uid: String, specialist: Boolean) {
         editor.putString("UID", uid)
         editor.putBoolean("SP", specialist)
@@ -35,6 +51,13 @@ class LocalStorage(context: Context) {
 
     fun getUserUid(): String? {
         return preferences.getString("UID", "")
+    }
+
+    fun getDep(): Int {
+        return preferences.getInt("DEP", 0)
+    }
+    fun getName(): String? {
+        return preferences.getString("NAME", "")
     }
 
     fun getRole(): Boolean {
@@ -55,7 +78,7 @@ class LocalStorage(context: Context) {
         var result: Any? = null
         if (this.getRole()) {
             val document = this.getRef()
-                ?.let {
+                ?.let { it ->
                     db.collection("doctors").document(it).get().addOnSuccessListener {
                         if(it.exists()) {
                             result = it.toObject<Doctor>()
@@ -64,7 +87,7 @@ class LocalStorage(context: Context) {
                 }
         } else {
             val document = this.getRef()
-                ?.let {
+                ?.let { it ->
                     db.collection("patients").document(it).get().addOnSuccessListener {
                         if(it.exists()) {
                             result = it.toObject<Patient>()

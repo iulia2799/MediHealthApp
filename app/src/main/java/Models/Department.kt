@@ -8,9 +8,10 @@ enum class Department(val displayName: String) {
     GYN("GYN"),
     UROLOGY("Urology"),
     ORL("O.R.L."),
-    PNEUMOLOGY("LUNG ISSUES"),
+    PNEUMO("LUNG ISSUES"),
     GASTRO("GASTRO"),
     ENDOCRINOLOGY("ENDO"),
     ONCOLOGY("ONCO"),
-    DERM("Dermatology")
+    DERM("Dermatology"),
+    GP("General Practitioner"),
 }
