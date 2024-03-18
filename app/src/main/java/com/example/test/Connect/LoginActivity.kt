@@ -21,7 +21,6 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,13 +42,10 @@ import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
 import com.example.test.LocalStorage.CheckEmail
-import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
-import com.example.test.ui.theme.universalPrimary
-import com.example.test.ui.theme.universalTertiary
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

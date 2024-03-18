@@ -97,6 +97,9 @@ class AppointmentManager : ComponentActivity() {
     fun Content() {
         val context = LocalContext.current
         localStorage = LocalStorage(context)
+        var date by remember {
+            mutableStateOf(0L)
+        }
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = universalBackground
@@ -175,7 +178,7 @@ class AppointmentManager : ComponentActivity() {
                             initialMinute = datetime.minute
                         )
                     }
-                    var selectedOption = convertTimeToTimestamp(state.hour, state.minute)
+                    date = convertTimeToTimestamp(state.hour, state.minute)
                     TimeInput(
                         state = state,
                         modifier = Modifier.padding(16.dp),
@@ -189,32 +192,7 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                ) {
-                    val datetime = LocalDateTime.now()
-                    var state = remember {
-                        TimePickerState(
-                            is24Hour = true,
-                            initialHour = datetime.hour,
-                            initialMinute = datetime.minute
-                        )
-                    }
-                    var selectedOption = convertTimeToTimestamp(state.hour, state.minute)
-                    TimeInput(
-                        state = state,
-                        modifier = Modifier.padding(16.dp),
-                        colors = TimePickerDefaults.colors(
-                            timeSelectorSelectedContainerColor = universalAccent,
-                            timeSelectorUnselectedContainerColor = universalAccent,
-                            timeSelectorSelectedContentColor = universalPrimary,
-                            timeSelectorUnselectedContentColor = universalPrimary
-                        )
-                    )
 
-                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

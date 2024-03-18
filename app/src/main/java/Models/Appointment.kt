@@ -10,5 +10,5 @@ data class Appointment(
     var patientUid: String,
     var patientName: String,
     var date: Timestamp,
-    var alocatedTime: Long,
+    var alocatedTime: Long = 15 * 60,
 )

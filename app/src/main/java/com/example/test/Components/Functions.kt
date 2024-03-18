@@ -42,25 +42,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.offWhite
 import com.example.test.ui.theme.unfocusedLabelColor
 import com.example.test.ui.theme.universalAccent
+import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
 
 var emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
 var passwordPattern = "(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}"
 var textPattern = ".*"
+
 @Composable
 fun DefaultButton(
     onClick: () -> Unit,
     alignment: Alignment,
     text: String,
     modifier: Modifier,
-    backgroundColor: Color = universalPrimary,
+    backgroundColor:Color = universalPrimary,
     contentColor: Color = Color.Black,
     fontFamily: FontFamily = jejugothicFamily,
     fontWeight: FontWeight = FontWeight.Normal
@@ -113,7 +117,13 @@ fun CustomSwitch(modifier: Modifier, checked: Boolean, onStateChange: (Boolean) 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> Unit = {}, type: String = "text", pattern: String = textPattern) {
+fun CustomTextField(
+    text: String,
+    labelValue: String,
+    onTextChange: (String) -> Unit = {},
+    type: String = "text",
+    pattern: String = textPattern
+) {
     OutlinedTextField(
         modifier = Modifier
             .width(185.dp)
@@ -125,17 +135,48 @@ fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> 
             Text(text = labelValue)
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedLabelColor = unfocusedLabelColor,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.DarkGray,
+            errorTextColor = universalError,
+            focusedContainerColor = universalPrimary,
+            unfocusedContainerColor = universalPrimary,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = universalPrimary,
+            cursorColor = universalAccent,
+            errorCursorColor = universalError,
             unfocusedBorderColor = unfocusedLabelColor,
             focusedBorderColor = universalAccent,
-            focusedLabelColor = universalAccent,
-            errorLabelColor = universalError,
             errorBorderColor = universalError,
             disabledBorderColor = Color.DarkGray,
-            disabledTextColor = Color.DarkGray,
-            focusedTextColor = Color.Black,
-            focusedContainerColor = universalPrimary,
-            unfocusedContainerColor = universalPrimary
+            focusedLeadingIconColor = universalAccent,
+            unfocusedLeadingIconColor = universalPrimary,
+            disabledLeadingIconColor = Color.DarkGray,
+            errorLeadingIconColor = universalError,
+            focusedTrailingIconColor = universalAccent,
+            unfocusedTrailingIconColor = universalPrimary,
+            disabledTrailingIconColor = universalAccent,
+            errorTrailingIconColor = Color.Red,
+            focusedLabelColor = universalAccent,
+            unfocusedLabelColor = unfocusedLabelColor,
+            disabledLabelColor = Color.DarkGray,
+            errorLabelColor = universalAccent,
+            focusedPlaceholderColor = universalAccent,
+            unfocusedPlaceholderColor = universalPrimary,
+            disabledPlaceholderColor = universalAccent,
+            errorPlaceholderColor = universalError,
+            focusedSupportingTextColor = universalAccent,
+            unfocusedSupportingTextColor = universalPrimary,
+            disabledSupportingTextColor = Color.DarkGray,
+            errorSupportingTextColor = universalError,
+            focusedPrefixColor = universalAccent,
+            unfocusedPrefixColor = universalBackground,
+            disabledPrefixColor = Color.Black,
+            errorPrefixColor = universalError,
+            focusedSuffixColor = universalAccent,
+            unfocusedSuffixColor = Color.LightGray,
+            disabledSuffixColor = Color.DarkGray,
+            errorSuffixColor = universalError,
         )
         /*colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = unfocusedLabelColor,
@@ -149,10 +190,14 @@ fun CustomTextField(text: String, labelValue: String, onTextChange: (String) -> 
             disabledBorderColor = Color.DarkGray,
             disabledTextColor = Color.DarkGray
         )*/,
-        keyboardOptions = when(type) {
+        keyboardOptions = when (type) {
             "password" -> KeyboardOptions(keyboardType = KeyboardType.Password)
             else -> KeyboardOptions.Default
         },
+        visualTransformation = when(type){
+                                         "password" -> PasswordVisualTransformation()
+            else -> VisualTransformation.None
+                                         },
         isError = !text.matches(pattern.toRegex())
     )
 }
@@ -175,12 +220,17 @@ fun DefaultIconButton(onClick: () -> Unit, imageVector: ImageVector, description
         Icon(imageVector = imageVector, contentDescription = description, tint = universalPrimary)
     }
 }
+
 @Composable
-fun CustomCardViewDark(modifier: Modifier,content: @Composable ()-> Unit, isSelected: Boolean = false){
+fun CustomCardViewDark(
+    modifier: Modifier,
+    content: @Composable () -> Unit,
+    isSelected: Boolean = false
+) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = if(isSelected) boldPrimary else universalAccent,
+            containerColor = if (isSelected) boldPrimary else universalAccent,
             contentColor = offWhite,
             disabledContainerColor = Color.LightGray,
             disabledContentColor = Color.Black
@@ -213,17 +263,48 @@ fun FormSelector(
             )
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedLabelColor = unfocusedLabelColor,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.DarkGray,
+            errorTextColor = universalError,
+            focusedContainerColor = universalPrimary,
+            unfocusedContainerColor = universalPrimary,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = universalPrimary,
+            cursorColor = universalAccent,
+            errorCursorColor = universalError,
             unfocusedBorderColor = unfocusedLabelColor,
             focusedBorderColor = universalAccent,
-            focusedLabelColor = universalAccent,
-            errorLabelColor = universalError,
             errorBorderColor = universalError,
             disabledBorderColor = Color.DarkGray,
-            disabledTextColor = Color.DarkGray,
-            focusedTextColor = Color.Black,
-            focusedContainerColor = universalPrimary,
-            unfocusedContainerColor = universalPrimary
+            focusedLeadingIconColor = universalAccent,
+            unfocusedLeadingIconColor = universalPrimary,
+            disabledLeadingIconColor = Color.DarkGray,
+            errorLeadingIconColor = universalError,
+            focusedTrailingIconColor = universalAccent,
+            unfocusedTrailingIconColor = universalPrimary,
+            disabledTrailingIconColor = universalAccent,
+            errorTrailingIconColor = Color.Red,
+            focusedLabelColor = universalAccent,
+            unfocusedLabelColor = unfocusedLabelColor,
+            disabledLabelColor = Color.DarkGray,
+            errorLabelColor = universalAccent,
+            focusedPlaceholderColor = universalAccent,
+            unfocusedPlaceholderColor = universalPrimary,
+            disabledPlaceholderColor = universalAccent,
+            errorPlaceholderColor = universalError,
+            focusedSupportingTextColor = universalAccent,
+            unfocusedSupportingTextColor = universalPrimary,
+            disabledSupportingTextColor = Color.DarkGray,
+            errorSupportingTextColor = universalError,
+            focusedPrefixColor = universalAccent,
+            unfocusedPrefixColor = universalBackground,
+            disabledPrefixColor = Color.Black,
+            errorPrefixColor = universalError,
+            focusedSuffixColor = universalAccent,
+            unfocusedSuffixColor = Color.LightGray,
+            disabledSuffixColor = Color.DarkGray,
+            errorSuffixColor = universalError,
         )
     )
 
@@ -237,7 +318,7 @@ fun FormSelector(
         options.forEach { option ->
             DropdownMenuItem(
                 text = {
-                       Text(text = option)
+                    Text(text = option)
                 },
                 onClick = {
                     onOptionSelected(option)

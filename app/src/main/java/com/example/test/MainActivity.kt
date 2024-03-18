@@ -31,6 +31,7 @@ import com.example.test.Components.RegisterPageEnter
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.Misc.HelpPage
 import com.example.test.appointment.AppointmentManager
+import com.example.test.messaging.ConvoList
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.Timestamp
@@ -109,18 +110,6 @@ fun Content() {
 
 
 fun HelpPageEnter(context: Context) {
-    //context.startActivity(Intent(context, HelpPage::class.java))
+    context.startActivity(Intent(context, HelpPage::class.java))
 
-    val intent = Intent(context,AppointmentManager::class.java)
-    intent.putExtra("appointment", AppointmentParceled(
-        ref = null,
-        doctorUid = "543543",
-        doctorName = "r4restre",
-        patientName = "dsfds",
-        patientUid = "53436",
-        date = Timestamp.now(),
-        alocatedTime = 580435403
-    ))
-    intent.putExtra("mode","edit")
-    context.startActivity(intent)
 }
