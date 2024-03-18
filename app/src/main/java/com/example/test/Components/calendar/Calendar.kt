@@ -68,7 +68,6 @@ fun CalendarItem(date: CalendarItemUI.Date, onDateClickListener: (CalendarItemUI
                 .width(40.dp)
                 .height(48.dp)
                 .padding(4.dp).clickable { // making the element clickable, by adding 'clickable' modifier
-                    Log.d("what", "WHAT")
                     onDateClickListener(date)
                 }) {
                 Text(

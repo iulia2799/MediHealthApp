@@ -1,6 +1,8 @@
 package com.example.test.Components
 
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Locale
@@ -13,4 +15,8 @@ fun convertTimeToTimestamp(hour: Int, minutes: Int): Long {
     val hourStamp = hour * 60L * 60L
     val minuteStamp = minutes * 60L
     return hourStamp + minuteStamp
+}
+
+fun zonedDateTimeToTimestampFirebase(dateTime: ZonedDateTime): Timestamp {
+    return Timestamp(dateTime.toInstant().epochSecond,dateTime.nano)
 }

@@ -69,7 +69,7 @@ class AppointmentManager : ComponentActivity() {
         db = Firebase.firestore
         val parcel = intent.getParcelableExtra("appointment", AppointmentParceled::class.java)
         mode = intent.getStringExtra("mode").toString()
-        appointment = Appointment(null, "", "", "", "", Timestamp.now(), 0)
+        appointment = Appointment(null, "", "", "", "","", Timestamp.now(), 0)
 
         if (parcel != null) {
             appointment =
@@ -79,6 +79,7 @@ class AppointmentManager : ComponentActivity() {
                     parcel.doctorName,
                     parcel.patientUid,
                     parcel.patientName,
+                    parcel.description,
                     parcel.date,
                     parcel.alocatedTime
                 )

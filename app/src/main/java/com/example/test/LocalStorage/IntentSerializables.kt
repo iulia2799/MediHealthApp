@@ -10,7 +10,10 @@ data class AppointmentParceled(
     var doctorName: String,
     var patientUid: String,
     var patientName: String,
+    val description: String,
     var date: Timestamp,
     var alocatedTime: Long,
-) : Parcelable
+) : Parcelable {
+
+}
 

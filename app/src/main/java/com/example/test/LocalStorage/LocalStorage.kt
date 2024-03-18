@@ -2,6 +2,8 @@ package com.example.test.LocalStorage
 
 import Models.Doctor
 import Models.Patient
+import Models.nullDoc
+import Models.nullPatient
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -73,30 +75,21 @@ class LocalStorage(context: Context) {
         editor.apply()
     }
 
-    fun getData(): Any? {
-        val db = Firebase.firestore
-        var result: Any? = null
-        if (this.getRole()) {
-            val document = this.getRef()
-                ?.let { it ->
-                    db.collection("doctors").document(it).get().addOnSuccessListener {
-                        if(it.exists()) {
-                            result = it.toObject<Doctor>()
+    fun getPatient(): Patient {
+        var result = nullPatient
+        var db = Firebase.firestore
+        val document = this.getRef()
+            ?.let { it ->
+                db.collection("patients").document(it).get().addOnCompleteListener{
+                    if(it.isSuccessful) {
+                        val value = it.result
+                        if(value.exists()) {
+                            result = value.toObject<Patient>()!!
                         }
                     }
                 }
-        } else {
-            val document = this.getRef()
-                ?.let { it ->
-                    db.collection("patients").document(it).get().addOnSuccessListener {
-                        if(it.exists()) {
-                            result = it.toObject<Patient>()
-                        }
-                    }
-                }
-        }
-
-
-        return result
+            }
+        return result;
     }
+
 }

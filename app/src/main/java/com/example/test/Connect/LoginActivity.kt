@@ -2,6 +2,7 @@ package com.example.test.Connect
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,7 @@ import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
 import com.example.test.LocalStorage.CheckEmail
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
@@ -49,6 +51,7 @@ import com.example.test.ui.theme.universalError
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
@@ -145,13 +148,38 @@ class LoginActivity : ComponentActivity() {
                                         }
                                     }
                                     .addOnSuccessListener {
-                                        CheckEmail(context = context, email = email)
-                                        context.startActivity(
-                                            Intent(
-                                                context,
-                                                Home::class.java
-                                            )
-                                        )
+                                        val db = Firebase.firestore
+                                        val queryD = db.collection("doctors").whereEqualTo("email",email)
+                                        val queryP = db.collection("patients").whereEqualTo("email",email)
+                                        val localStorage = LocalStorage(context)
+                                        queryD.get().addOnCompleteListener{
+                                            if (it.isSuccessful && it.result.documents.size > 0) {
+                                                val reference = it.result.documents[0]
+                                                localStorage.putUserDetails(reference.get("uid").toString(),true,reference.id)
+                                                context.startActivity(
+                                                    Intent(
+                                                        context,
+                                                        Home::class.java
+                                                    )
+                                                )
+                                            } else {
+                                                queryP.get().addOnCompleteListener{
+                                                    if(it.isSuccessful && it.result.documents.size > 0){
+                                                        val reference = it.result.documents[0]
+                                                        localStorage.putUserDetails(reference.get("uid").toString(), false, reference.id)
+                                                        context.startActivity(
+                                                            Intent(
+                                                                context,
+                                                                Home::class.java
+                                                            )
+                                                        )
+                                                    } else {
+                                                        Log.e("oops","OOPs")
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                     }
                             }, Alignment.Center,
                             "Login",

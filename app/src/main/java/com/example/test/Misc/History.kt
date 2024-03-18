@@ -24,7 +24,7 @@ class History : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Greeting7("Android")
-                    Listing()
+                    //Listing()
                 }
             }
         }
@@ -45,7 +45,7 @@ fun GreetingPreview6() {
     AppTheme {
         Surface(Modifier.fillMaxSize()) {
             Greeting7("Android")
-            Listing()
+            //Listing()
         }
 
     }
