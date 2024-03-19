@@ -220,7 +220,6 @@ class RegisterActivity : ComponentActivity() {
                                         it.displayName == department
                                     }
                                     val doc = Doctor(
-                                        uid = uuid,
                                         email = email,
                                         password = password,
                                         firstName = firstName,
@@ -231,14 +230,13 @@ class RegisterActivity : ComponentActivity() {
                                     )
                                     db.collection("doctors").add(doc).addOnCompleteListener {
                                         val localStorage = LocalStorage(context)
-                                        localStorage.putUserDetails(uuid, true)
+                                        localStorage.putUserDetails(true,it.result.id)
                                         context.startActivity(Intent(context, Home::class.java))
                                     }.addOnFailureListener {
                                         //oops
                                     }
                                 } else {
                                     val p = Patient(
-                                        uid = uuid,
                                         email = email,
                                         password = password,
                                         firstName = firstName,
@@ -248,12 +246,9 @@ class RegisterActivity : ComponentActivity() {
                                         age = age.toInt()
                                     )
                                     db.collection("patients").add(p).addOnCompleteListener {
-                                        Log.d("SUCCESS", it.isSuccessful.toString())
-                                        if(it.isSuccessful) {
-                                            val localStorage = LocalStorage(context)
-                                            localStorage.putUserDetails(uuid, false)
-                                            context.startActivity(Intent(context, Home::class.java))
-                                        }
+                                        val localStorage = LocalStorage(context)
+                                        localStorage.putUserDetails(false,it.result.id)
+                                        context.startActivity(Intent(context, Home::class.java))
                                     }.addOnFailureListener {
                                         it.message?.let { it1 -> Log.e("OOPS", it1) }
                                     }

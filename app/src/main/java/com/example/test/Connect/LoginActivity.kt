@@ -155,7 +155,7 @@ class LoginActivity : ComponentActivity() {
                                         queryD.get().addOnCompleteListener{
                                             if (it.isSuccessful && it.result.documents.size > 0) {
                                                 val reference = it.result.documents[0]
-                                                localStorage.putUserDetails(reference.get("uid").toString(),true,reference.id)
+                                                localStorage.putUserDetails(true,reference.id)
                                                 context.startActivity(
                                                     Intent(
                                                         context,
@@ -166,7 +166,7 @@ class LoginActivity : ComponentActivity() {
                                                 queryP.get().addOnCompleteListener{
                                                     if(it.isSuccessful && it.result.documents.size > 0){
                                                         val reference = it.result.documents[0]
-                                                        localStorage.putUserDetails(reference.get("uid").toString(), false, reference.id)
+                                                        localStorage.putUserDetails( false, reference.id)
                                                         context.startActivity(
                                                             Intent(
                                                                 context,

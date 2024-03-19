@@ -27,6 +27,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.LocalStorage.AppointmentParceled
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalTertiary
@@ -90,7 +91,6 @@ fun AppointmentDialog(appointment: Appointment, ref: String, onDismiss: () -> Un
                         modifier = Modifier.padding(4.dp),
                         onClick = {
                             val parcel = AppointmentParceled(
-                                ref,
                                 appointment.doctorUid,
                                 appointment.doctorName,
                                 appointment.patientUid,
@@ -100,6 +100,8 @@ fun AppointmentDialog(appointment: Appointment, ref: String, onDismiss: () -> Un
                                 appointment.alocatedTime
                             )
                             val mode = "edit"
+                            LocalStorage(context).loginUser()
+                            intent.putExtra("reference",ref)
                             intent.putExtra("appointment",parcel)
                             intent.putExtra("mode", mode)
                             context.startActivity(intent)

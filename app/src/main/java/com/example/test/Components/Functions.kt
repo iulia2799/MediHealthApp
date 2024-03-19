@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -64,7 +66,7 @@ fun DefaultButton(
     alignment: Alignment,
     text: String,
     modifier: Modifier,
-    backgroundColor:Color = universalPrimary,
+    backgroundColor: Color = universalPrimary,
     contentColor: Color = Color.Black,
     fontFamily: FontFamily = jejugothicFamily,
     fontWeight: FontWeight = FontWeight.Normal
@@ -194,10 +196,10 @@ fun CustomTextField(
             "password" -> KeyboardOptions(keyboardType = KeyboardType.Password)
             else -> KeyboardOptions.Default
         },
-        visualTransformation = when(type){
-                                         "password" -> PasswordVisualTransformation()
+        visualTransformation = when (type) {
+            "password" -> PasswordVisualTransformation()
             else -> VisualTransformation.None
-                                         },
+        },
         isError = !text.matches(pattern.toRegex())
     )
 }

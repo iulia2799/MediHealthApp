@@ -3,7 +3,6 @@ package Models
 import org.json.JSONObject
 
 data class Patient(
-    var uid: String = "",
     var firstName: String = "",
     var lastName: String= "",
     var address: String= "",
@@ -15,4 +14,4 @@ data class Patient(
 ) {
 }
 
-val nullPatient = Patient("","","","","","","",0)
+val nullPatient = Patient("","","","","","",0)

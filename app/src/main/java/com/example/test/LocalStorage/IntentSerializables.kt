@@ -5,7 +5,6 @@ import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 @Parcelize
 data class AppointmentParceled(
-    var ref: String? = null,
     var doctorUid: String,
     var doctorName: String,
     var patientUid: String,

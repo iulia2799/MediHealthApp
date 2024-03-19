@@ -30,4 +30,7 @@
     <string name="title_activity_conversation">Conversation</string>
     <string name="title_activity_convo_list">ConvoList</string>
     <string name="title_activity_appointment_manager">AppointmentManager</string>
+    <string name="title_activity_list_of_doctors">ListOfDoctors</string>
+    <string name="title_activity_prescriptions">Prescriptions</string>
+    <string name="title_activity_list_of_patients">ListOfPatients</string>
 </resources>

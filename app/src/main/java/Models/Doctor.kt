@@ -1,7 +1,6 @@
 package Models
 
 data class Doctor(
-    var uid: String = "",
     var firstName: String = "",
     var lastName: String = "",
     var address: String = "",
@@ -15,4 +14,4 @@ data class Doctor(
 ) {
 }
 
-val nullDoc = Doctor("", "", "", "", "", "", "", Department.NA)
+val nullDoc = Doctor("", "", "", "", "", "", Department.NA)

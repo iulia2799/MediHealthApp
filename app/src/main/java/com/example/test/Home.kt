@@ -5,6 +5,7 @@ import Models.Doctor
 import Models.Patient
 import Models.nullDoc
 import Models.nullPatient
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -22,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -53,7 +53,9 @@ import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
 import com.example.test.Components.zonedDateTimeToTimestampFirebase
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.Misc.ListOfDoctors
 import com.example.test.appointment.AppointmentDialog
+import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.universalBackground
@@ -64,8 +66,6 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
-import kotlinx.coroutines.tasks.await
 import java.time.ZoneId
 import java.util.*
 import kotlin.properties.Delegates
@@ -79,7 +79,7 @@ class Home : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
-        db = Firebase.firestore
+
         super.onCreate(savedInstanceState)
         setContent {
             setContent()
@@ -89,6 +89,7 @@ class Home : ComponentActivity() {
     @Composable
     @Preview
     fun setContent() {
+        db = Firebase.firestore
         val context = LocalContext.current
         val local = LocalStorage(context)
         var datap by remember {
@@ -128,8 +129,10 @@ class Home : ComponentActivity() {
         AppTheme {
             // A surface container using the 'background' color from the theme
             if (type) {
+                local.putName(datad.firstName,datad.lastName)
                 HomeContent(datad.firstName)
             } else {
+                local.putName(datap.firstName,datap.lastName)
                 HomeContent(datap.firstName)
             }
         }
@@ -146,13 +149,14 @@ class Home : ComponentActivity() {
         val context = LocalContext.current
         val source = WeeklyDataSource()
         var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
-        var data by remember { mutableStateOf(emptyList<Appointment>()) }
+        var data by remember { mutableStateOf(emptyMap<String,Appointment>()) }
 
         LaunchedEffect(sourceModel) {
             var field = "patientUid"
             if(type) {
                 field = "doctorUid"
             }
+            Log.d("REF",ref)
             val today = sourceModel.currentDate.date
             val start = today.atStartOfDay(ZoneId.of("UTC"))
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
@@ -162,14 +166,18 @@ class Home : ComponentActivity() {
                     if(it.isSuccessful) {
                         Log.d("fdsfds",it.result.documents.toString())
                         if(it.result.size() == 0) {
-                            Log.d("fdsfds",":null")
-                            data = emptyList()
+                            Log.d("SIZE",":NOT EMPTY")
+                            data = emptyMap()
                         } else {
-                            data = it.result.toObjects(Appointment::class.java)
+                            it.result.forEach {it1 ->
+                                val app = it1.toObject<Appointment>()
+                                data += (it1.reference.id to app)
+                            }
+
                         }
 
-                        Log.d("fdsfds",":fdsfdsfds")
-                        Log.d("TODAT","tODAfdsfdsfdsY $today")
+                        Log.d("SIZE",":EMPTY")
+                        Log.d("TODAT","TODAY $today")
                     }else {
                         Log.w("SNAPSHOT", "Error getting documents:", it.exception)
                     }
@@ -271,23 +279,41 @@ class Home : ComponentActivity() {
                 }
                 Row {
 
-                    if (type) {
                         UpdateList(results = data)
-                    }
 
                 }
                 Row {
+                    if(!type) {
+                        DefaultButton(
+                            onClick = {
+                                intent = Intent(context,ListOfDoctors::class.java)
+                                context.startActivity(intent)
+                            },
+                            Alignment.Center,
+                            "Doctors",
+                            Modifier
+                                .height(100.dp)
+                                .width(200.dp)
+                                .padding(20.dp)
+                        )
+                    } else {
+                        DefaultButton(
+                            onClick = { },
+                            Alignment.Center,
+                            "Patients",
+                            Modifier
+                                .height(100.dp)
+                                .width(200.dp)
+                                .padding(20.dp)
+                        )
+                    }
+
                     DefaultButton(
-                        onClick = { },
-                        Alignment.Center,
-                        "Doctors",
-                        Modifier
-                            .height(100.dp)
-                            .width(200.dp)
-                            .padding(20.dp)
-                    )
-                    DefaultButton(
-                        onClick = { RegisterPageEnter(context) },
+                        onClick = {
+                            val intent = Intent(context,AppointmentManager::class.java)
+                            intent.putExtra("mode","create")
+                            context.startActivity(intent)
+                        },
                         Alignment.Center,
                         "Results",
                         Modifier
@@ -301,13 +327,13 @@ class Home : ComponentActivity() {
     }
 
     @Composable
-    fun UpdateList(results: List<Appointment>) {
+    fun UpdateList(results: Map<String, Appointment>) {
         CenteredBox {
             LazyColumn(
                 modifier = Modifier.heightIn(max = 250.dp)
             ) {
                 // Use items composable to iterate through results and display appointments
-                items(items = results) {
+                items(items = results.keys.toList()) {
                     // Your composable to display appointment data
                     Card(
                         modifier = Modifier.padding(8.dp)
@@ -316,10 +342,10 @@ class Home : ComponentActivity() {
                             mutableStateOf(false)
                         }
                         Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = "Doctor: ${it.doctorName}")
-                            Text(text = "Patient: ${it.patientName}")
-                            Text(text = "Description: ${it.description}")
-                            Text(text = "Date: ${it.date.toDate()}")
+                            Text(text = "Doctor: ${results[it]?.doctorName}")
+                            Text(text = "Patient: ${results[it]?.patientName}")
+                            Text(text = "Description: ${results[it]?.description}")
+                            Text(text = "Date: ${results[it]?.date?.toDate()}")
                             TextButton(onClick = {
                                 isOpen = true
                             }) {
@@ -327,9 +353,10 @@ class Home : ComponentActivity() {
                             }
                         }
                         if(isOpen) {
-                            it.ref?.let { it1 -> AppointmentDialog(appointment = it, ref = it1) {
-                                isOpen = false
-                            }
+                            results[it]?.let { it1 ->
+                                AppointmentDialog(appointment = it1, ref = it) {
+                                    isOpen = false
+                                }
                             }
                         }
                     }

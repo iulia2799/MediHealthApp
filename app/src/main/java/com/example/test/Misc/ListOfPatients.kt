@@ -1,4 +1,4 @@
-package com.example.test.Results
+package com.example.test.Misc
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,9 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.test.ui.theme.AppTheme
 
-//filter results after reference
-
-class Results : ComponentActivity() {
+///SAME IMPLEMENTATION AS LIST OF DOCTORS, JUST DO NOT MAKE PRESCRIPTIONS AND APPLY DIFFERENT PATH
+class ListOfPatients : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,7 +23,7 @@ class Results : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting8("Android")
+                    Greeting10("Android")
                 }
             }
         }
@@ -32,7 +31,7 @@ class Results : ComponentActivity() {
 }
 
 @Composable
-fun Greeting8(name: String, modifier: Modifier = Modifier) {
+fun Greeting10(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -41,8 +40,8 @@ fun Greeting8(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview7() {
+fun GreetingPreview9() {
     AppTheme {
-        Greeting8("Android")
+        Greeting10("Android")
     }
 }

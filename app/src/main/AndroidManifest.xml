@@ -13,6 +13,21 @@
         android:theme="@style/Theme.App"
         tools:targetApi="31">
         <activity
+            android:name=".Misc.ListOfPatients"
+            android:exported="false"
+            android:label="@string/title_activity_list_of_patients"
+            android:theme="@style/Theme.App" />
+        <activity
+            android:name=".Misc.Prescriptions"
+            android:exported="false"
+            android:label="@string/title_activity_prescriptions"
+            android:theme="@style/Theme.App" />
+        <activity
+            android:name=".Misc.ListOfDoctors"
+            android:exported="false"
+            android:label="@string/title_activity_list_of_doctors"
+            android:theme="@style/Theme.App" />
+        <activity
             android:name=".appointment.AppointmentManager"
             android:exported="false"
             android:label="@string/title_activity_appointment_manager"
