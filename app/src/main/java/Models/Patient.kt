@@ -1,5 +1,6 @@
 package Models
 
+import com.google.firebase.firestore.CollectionReference
 import org.json.JSONObject
 
 data class Patient(
@@ -10,7 +11,7 @@ data class Patient(
     var email: String= "",
     var password: String= "",
     var age: Int = 0,
-    var doctorUid: String = "0",
+    var doctorUid: String = "0"
 ) {
 }
 

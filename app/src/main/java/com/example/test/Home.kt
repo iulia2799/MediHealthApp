@@ -353,7 +353,7 @@ class Home : ComponentActivity() {
                         }
                         if(isOpen) {
                             results[it]?.let { it1 ->
-                                AppointmentDialog(appointment = it1, ref = it) {
+                                AppointmentDialog(appointment = it1, ref = it, type = type) {
                                     isOpen = false
                                 }
                             }

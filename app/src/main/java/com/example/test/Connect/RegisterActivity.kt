@@ -93,12 +93,13 @@ class RegisterActivity : ComponentActivity() {
         var lastName by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var confirmPassword by remember { mutableStateOf("") }
         var phone by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
         var age by remember { mutableStateOf("") }
         var checked by remember { mutableStateOf(false) }
         var department by remember { mutableStateOf(departmentList[0]) }
-        var expanded by remember {
+        var passwordSame by remember {
             mutableStateOf(false)
         }
         Column(
@@ -147,6 +148,17 @@ class RegisterActivity : ComponentActivity() {
                         password = newValue
                     }, type = "password", pattern = passwordPattern
                 )
+            }
+            Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                Box(modifier = Modifier.wrapContentSize(Alignment.Center)) {
+                    CustomTextField(
+                        text = confirmPassword, labelValue = "Confirm Password", onTextChange = { newValue ->
+                            confirmPassword = newValue
+                            passwordSame = password.equals(confirmPassword)
+                        }, type = "password", pattern = passwordPattern
+                    )
+                }
+
             }
             Row {
                 CustomTextField(text = phone, labelValue = "Phone", onTextChange = { newValue ->
@@ -205,7 +217,6 @@ class RegisterActivity : ComponentActivity() {
             Row {
                 DefaultButton(
                     onClick = {
-
                         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                                 val uuid = UUID.randomUUID().toString()
                                 if (checked) {
@@ -254,18 +265,8 @@ class RegisterActivity : ComponentActivity() {
                     Modifier
                         .height(100.dp)
                         .padding(20.dp)
-                        .fillMaxWidth()
-                )
-            }
-            Row {
-                DefaultButton(
-                    onClick = { LoginPageEnter(context) },
-                    Alignment.Center,
-                    "Login to existing account",
-                    Modifier
-                        .height(100.dp)
-                        .padding(20.dp)
-                        .fillMaxWidth()
+                        .fillMaxWidth(),
+                    enabled = passwordSame
                 )
             }
         }

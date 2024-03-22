@@ -69,13 +69,15 @@ fun DefaultButton(
     backgroundColor: Color = universalPrimary,
     contentColor: Color = Color.Black,
     fontFamily: FontFamily = jejugothicFamily,
-    fontWeight: FontWeight = FontWeight.Normal
+    fontWeight: FontWeight = FontWeight.Normal,
+    enabled: Boolean = true
 ) {
     Box(
         modifier = modifier,
         contentAlignment = alignment,
     ) {
         Button(
+            enabled =enabled,
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
                 containerColor = backgroundColor,

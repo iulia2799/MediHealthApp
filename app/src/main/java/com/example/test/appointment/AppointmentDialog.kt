@@ -35,7 +35,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun AppointmentDialog(appointment: Appointment, ref: String, onDismiss: () -> Unit) {
+fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = false, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val db = Firebase.firestore
     val intent = Intent(context, AppointmentManager::class.java)
@@ -133,18 +133,40 @@ fun AppointmentDialog(appointment: Appointment, ref: String, onDismiss: () -> Un
                     ) {
                         Text("Delete")
                     }
+                    if(type) {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp),
+                            onClick = {
+                                db.collection("appointments").document(ref).update(mapOf(
+                                    "accepted" to true
+                                )).addOnSuccessListener {
+                                    onDismiss()
+                                }.addOnFailureListener {
 
-                    TextButton(
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
-                            onDismiss()
-                        },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = universalAccent
-                        )
-                    ) {
-                        Text("Close")
+                                }
+
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent
+                            )
+                        ) {
+                            Text("Accept")
+                        }
+                    } else {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp),
+                            onClick = {
+                                onDismiss()
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent
+                            )
+                        ) {
+                            Text("Close")
+                        }
                     }
+
+
                 }
 
             }

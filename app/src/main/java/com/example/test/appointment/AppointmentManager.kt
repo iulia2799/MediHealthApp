@@ -26,6 +26,10 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
@@ -104,7 +108,6 @@ class AppointmentManager : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    @Preview
     fun Content() {
         val context = LocalContext.current
         db = Firebase.firestore
@@ -113,10 +116,10 @@ class AppointmentManager : ComponentActivity() {
         Log.d("TYYYYYPE", localStorage.getName())
         val formDate = convertTimestampToDate(appointment.date).first
         var date by remember { mutableStateOf( if(mode == "edit") formDate else "Change the date") }
-        var doctor by remember { mutableStateOf(if (localStorage.isLoggedIn() && type) localStorage.getName() else appointment.doctorName) }
-        var doctorUid by remember { mutableStateOf(if (localStorage.isLoggedIn() && type) localStorage.getRef() else appointment.doctorUid) }
-        var patientUid by remember { mutableStateOf(if (localStorage.isLoggedIn() && !type) localStorage.getRef() else appointment.patientUid) }
-        var patient by remember { mutableStateOf(if (localStorage.isLoggedIn() && !type) localStorage.getName() else appointment.patientName) }
+        var doctor by remember { mutableStateOf(if (type) localStorage.getName() else appointment.doctorName) }
+        var doctorUid by remember { mutableStateOf(if (type) localStorage.getRef() else appointment.doctorUid) }
+        var patientUid by remember { mutableStateOf(if (!type) localStorage.getRef() else appointment.patientUid) }
+        var patient by remember { mutableStateOf(if (!type) localStorage.getName() else appointment.patientName) }
         var description by remember {
             mutableStateOf(appointment.description)
         }
@@ -134,6 +137,10 @@ class AppointmentManager : ComponentActivity() {
         var datap by remember { mutableStateOf(emptyMap<String,Patient>()) }
         var filter1 by remember { mutableStateOf(emptyMap<String,Doctor>()) }
         var filter2 by remember { mutableStateOf(emptyMap<String,Patient>()) }
+
+        var alocatedTime by remember { mutableStateOf("${appointment.alocatedTime / 60}") }
+        var unit by remember { mutableStateOf("Minutes") }
+
         if (!type) {
             db.collection("doctors").get().addOnCompleteListener {
                 if(it.isSuccessful) {
@@ -191,7 +198,6 @@ class AppointmentManager : ComponentActivity() {
                         onActiveChange = {
                             active = it
                         },
-                        enabled = !type,
                         placeholder = {
                             Text(text = "Search")
                         },
@@ -311,6 +317,30 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
+                OutlinedTextField(
+                    value = alocatedTime,
+                    onValueChange = { newValue ->
+                        alocatedTime = newValue.filter { it.isDigit() }
+                    },
+                    label = { Text("Enter alocatedTime:") },
+                    isError = alocatedTime.isNotEmpty() && alocatedTime.toIntOrNull() == null
+                )
+
+                Row {
+                    RadioButton(
+                        selected = unit == "Minutes",
+                        onClick = { unit = "Minutes" },
+                        colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+                    )
+                    Text("Minutes")
+                    RadioButton(
+                        selected = unit == "Hours",
+                        onClick = { unit = "Hours" },
+                        colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+                    )
+                    Text("Hours")
+                }
+
                 var showSnackbar by remember { mutableStateOf(false) }
                 Row(
                     modifier = Modifier
@@ -328,7 +358,8 @@ class AppointmentManager : ComponentActivity() {
                                     "patientName" to patient,
                                     "doctorName" to doctor,
                                     "description" to description,
-                                    "date" to convertDateToTimeStamp(state.hour,state.minute,date)
+                                    "date" to convertDateToTimeStamp(state.hour,state.minute,date),
+                                    "alocatedTime" to convertAlocatedTime(alocatedTime,unit),
                                 )
 
                                 db.collection("appointments").document(appRef).update(updateData).addOnSuccessListener {
@@ -338,7 +369,7 @@ class AppointmentManager : ComponentActivity() {
                                 }
                             } else if (mode == "create") {
                                 db.collection("appointments").add(Appointment(doctorUid as String, doctor as String, patientUid as String,patient as String,description,
-                                    convertDateToTimeStamp(state.hour,state.minute,date)
+                                    convertDateToTimeStamp(state.hour,state.minute,date),convertAlocatedTime(alocatedTime,unit)
                                 )).addOnSuccessListener {
                                     showSnackbar = true
                                 }
@@ -397,5 +428,45 @@ class AppointmentManager : ComponentActivity() {
 
     }
 
+    @Composable
+    @Preview
+    fun preview() {
+        var alocatedTime by remember { mutableStateOf("") }
+        var unit by remember { mutableStateOf("Minutes") }
+        Column {
+            OutlinedTextField(
+                value = alocatedTime,
+                onValueChange = { newValue ->
+                    alocatedTime = newValue.filter { it.isDigit() }
+                },
+                label = { Text("Enter alocatedTime:") },
+                isError = alocatedTime.isNotEmpty() && alocatedTime.toIntOrNull() == null
+            )
+            Row {
+                RadioButton(
+                    selected = unit == "Minutes",
+                    onClick = { unit = "Minutes" },
+                    colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+                )
+                Text("Minutes")
+                RadioButton(
+                    selected = unit == "Hours",
+                    onClick = { unit = "Hours" },
+                    colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+                )
+                Text("Hours")
+            }
+        }
+
+    }
+
+    fun convertAlocatedTime(time: String, unit: String): Long {
+        val convertedUnits = time.toLong()
+        return if(unit == "Minutes") {
+            convertedUnits * 60L
+        } else {
+            convertedUnits * 3600L
+        }
+    }
 
 }
