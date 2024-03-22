@@ -71,15 +71,12 @@ import java.util.*
 import kotlin.properties.Delegates
 
 class Home : ComponentActivity() {
-    private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private var type by Delegates.notNull<Boolean>()
     private lateinit var ref: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        auth = Firebase.auth
-
         super.onCreate(savedInstanceState)
         setContent {
             setContent()
