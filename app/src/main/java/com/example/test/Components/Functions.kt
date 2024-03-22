@@ -247,7 +247,9 @@ fun CustomCardViewDark(
 fun FormSelector(
     options: List<String>,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
+    text: String = "Select your field of expertise",
+    modifier: Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -256,7 +258,7 @@ fun FormSelector(
         modifier = Modifier.fillMaxWidth(),
         readOnly = true,
         onValueChange = { /* Handle text input if needed */ },
-        label = { Text("Select your field of expertise") },
+        label = { Text(text) },
         trailingIcon = {
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
@@ -311,9 +313,7 @@ fun FormSelector(
     )
 
     DropdownMenu(
-        modifier = Modifier
-            .width(350.dp)
-            .heightIn(max = 200.dp),
+        modifier = modifier,
         expanded = expanded,
         onDismissRequest = { expanded = false }
     ) {

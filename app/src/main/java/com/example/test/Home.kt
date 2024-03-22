@@ -54,6 +54,7 @@ import com.example.test.Components.calendar.WeeklyDataSource
 import com.example.test.Components.zonedDateTimeToTimestampFirebase
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
+import com.example.test.Misc.ListOfPatients
 import com.example.test.appointment.AppointmentDialog
 import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.AppTheme
@@ -295,7 +296,8 @@ class Home : ComponentActivity() {
                         )
                     } else {
                         DefaultButton(
-                            onClick = { },
+                            onClick = {intent = Intent(context,ListOfPatients::class.java)
+                                context.startActivity(intent) },
                             Alignment.Center,
                             "Patients",
                             Modifier
