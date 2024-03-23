@@ -19,9 +19,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,8 +48,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
@@ -60,6 +64,7 @@ import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
@@ -226,11 +231,22 @@ class AppointmentManager : ComponentActivity() {
                                         .fillMaxWidth()
                                         .wrapContentWidth(Alignment.CenterHorizontally)
                                 ){
-                                    Text(text = name, modifier = Modifier.clickable {
-                                        doctor = name
-                                        doctorUid = it.key
-                                        active = false
-                                    })
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth().clickable {
+                                            doctor = name
+                                            doctorUid = it.key
+                                            active = false
+                                        },
+                                        shape = RoundedCornerShape(8.dp)
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                                            Text(text = "Department: ${it.value.department.displayName}")
+                                            Text(text = "Phone: ${it.value.phone}")
+                                            Text(text = "Email: ${it.value.email}")
+                                            Text(text = "Address: ${it.value.address}")
+                                        }
+                                    }
                                 }
 
                             }
@@ -242,11 +258,21 @@ class AppointmentManager : ComponentActivity() {
                                         .fillMaxWidth()
                                         .wrapContentWidth(Alignment.CenterHorizontally)
                                 ){
-                                    Text(text = name, modifier = Modifier.clickable {
-                                        patient = name
-                                        patientUid = it.key
-                                        active = false
-                                    })
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth().clickable {
+                                            patient = name
+                                            patientUid = it.key
+                                            active = false
+                                        },
+                                        shape = RoundedCornerShape(8.dp)
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                                            Text(text = "Phone: ${it.value.phone}")
+                                            Text(text = "Email: ${it.value.email}")
+                                            Text(text = "Address: ${it.value.address}")
+                                        }
+                                    }
                                 }
 
                             }
