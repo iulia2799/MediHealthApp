@@ -315,14 +315,14 @@ class AppointmentManager : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    MediumTextField(modifier = Modifier, value = doctor)
+                    MediumTextField(modifier = Modifier, value = "Doctor: $doctor")
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    MediumTextField(modifier = Modifier, value = patient)
+                    MediumTextField(modifier = Modifier, value = "Patient: $patient")
                 }
 
                 Row(
