@@ -34,4 +34,6 @@
     <string name="title_activity_prescriptions">Prescriptions</string>
     <string name="title_activity_list_of_patients">ListOfPatients</string>
     <string name="title_activity_list_of_departments">ListOfDepartments</string>
+    <string name="title_activity_medication_manager">MedicationManager</string>
+    <string name="title_activity_result_creator">ResultCreator</string>
 </resources>

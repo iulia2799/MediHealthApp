@@ -28,7 +28,6 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -83,12 +82,26 @@ class AppointmentManager : ComponentActivity() {
     private var mode: String = "edit"
     private var type = false
     private var appRef: String = ""
+    private var otherRef: String = ""
+    private var otherName: String = ""
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         val parcel = intent.getParcelableExtra("appointment", AppointmentParceled::class.java)
         mode = intent.getStringExtra("mode").toString()
-        appRef = intent.getStringExtra("reference").toString()
         appointment = Appointment("", "", "", "", "", Timestamp.now(), 0)
+        if (mode == "create") {
+            otherRef = intent.getStringExtra("otherRef").toString()
+            otherName = intent.getStringExtra("otherName").toString()
+            if (type) {
+                appointment.patientUid = otherRef
+                appointment.patientName = otherName
+            } else {
+                appointment.doctorUid = otherRef
+                appointment.doctorName = otherName
+            }
+        }
+        appRef = intent.getStringExtra("reference").toString()
         if (parcel != null) {
             appointment =
                 Appointment(
@@ -120,7 +133,7 @@ class AppointmentManager : ComponentActivity() {
         type = localStorage.getRole()
         Log.d("TYYYYYPE", localStorage.getName())
         val formDate = convertTimestampToDate(appointment.date).first
-        var date by remember { mutableStateOf( if(mode == "edit") formDate else "Change the date") }
+        var date by remember { mutableStateOf(if (mode == "edit") formDate else "Change the date") }
         var doctor by remember { mutableStateOf(if (type) localStorage.getName() else appointment.doctorName) }
         var doctorUid by remember { mutableStateOf(if (type) localStorage.getRef() else appointment.doctorUid) }
         var patientUid by remember { mutableStateOf(if (!type) localStorage.getRef() else appointment.patientUid) }
@@ -132,24 +145,24 @@ class AppointmentManager : ComponentActivity() {
         var state = remember {
             TimePickerState(
                 is24Hour = true,
-                initialHour = if(mode === "edit") convertTimestampToDate(appointment.date).second else datetime.hour,
-                initialMinute = if(mode === "edit") convertTimestampToDate(appointment.date).third else datetime.minute,
+                initialHour = if (mode === "edit") convertTimestampToDate(appointment.date).second else datetime.hour,
+                initialMinute = if (mode === "edit") convertTimestampToDate(appointment.date).third else datetime.minute,
             )
         }
         var text by remember { mutableStateOf("") }
         var active by remember { mutableStateOf(false) }
-        var datad by remember { mutableStateOf(emptyMap<String,Doctor>()) }
-        var datap by remember { mutableStateOf(emptyMap<String,Patient>()) }
-        var filter1 by remember { mutableStateOf(emptyMap<String,Doctor>()) }
-        var filter2 by remember { mutableStateOf(emptyMap<String,Patient>()) }
+        var datad by remember { mutableStateOf(emptyMap<String, Doctor>()) }
+        var datap by remember { mutableStateOf(emptyMap<String, Patient>()) }
+        var filter1 by remember { mutableStateOf(emptyMap<String, Doctor>()) }
+        var filter2 by remember { mutableStateOf(emptyMap<String, Patient>()) }
 
         var alocatedTime by remember { mutableStateOf("${appointment.alocatedTime / 60}") }
         var unit by remember { mutableStateOf("Minutes") }
 
         if (!type) {
             db.collection("doctors").get().addOnCompleteListener {
-                if(it.isSuccessful) {
-                    it.result.forEach {it1 ->
+                if (it.isSuccessful) {
+                    it.result.forEach { it1 ->
                         val app = it1.toObject<Doctor>()
                         datad += (it1.reference.id to app)
                     }
@@ -158,8 +171,8 @@ class AppointmentManager : ComponentActivity() {
             }
         } else {
             db.collection("patients").get().addOnCompleteListener {
-                if(it.isSuccessful) {
-                    it.result.forEach {it1 ->
+                if (it.isSuccessful) {
+                    it.result.forEach { it1 ->
                         val app = it1.toObject<Patient>()
                         datap += (it1.reference.id to app)
                     }
@@ -193,8 +206,8 @@ class AppointmentManager : ComponentActivity() {
                             text = it
                         },
                         onSearch = {
-                            if(!type){
-                               filter1 = filterByField(datad, text)
+                            if (!type) {
+                                filter1 = filterByField(datad, text)
                             } else {
                                 filter2 = filterByFieldP(datap, text)
                             }
@@ -210,10 +223,11 @@ class AppointmentManager : ComponentActivity() {
                             Icon(imageVector = Icons.Default.Search, contentDescription = "search")
                         },
                         trailingIcon = {
-                            if(active) {
-                                Icon(imageVector = Icons.Default.Clear, contentDescription = "close",
+                            if (active) {
+                                Icon(imageVector = Icons.Default.Clear,
+                                    contentDescription = "close",
                                     modifier = Modifier.clickable {
-                                        if(text.isNotEmpty()) {
+                                        if (text.isNotEmpty()) {
                                             text = ""
                                         } else {
                                             active = false
@@ -223,24 +237,32 @@ class AppointmentManager : ComponentActivity() {
 
                         }
                     ) {
-                        if(!type) {
-                            filter1.forEach{
+                        if (!type) {
+                            filter1.forEach {
                                 val name = it.value.firstName + ", " + it.value.lastName
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .wrapContentWidth(Alignment.CenterHorizontally)
-                                ){
+                                ) {
                                     Card(
-                                        modifier = Modifier.fillMaxWidth().clickable {
-                                            doctor = name
-                                            doctorUid = it.key
-                                            active = false
-                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                doctor = name
+                                                doctorUid = it.key
+                                                active = false
+                                            },
                                         shape = RoundedCornerShape(8.dp)
                                     ) {
                                         Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                                            Text(
+                                                text = "${name}",
+                                                style = TextStyle(
+                                                    fontSize = 20.sp,
+                                                    fontFamily = jejugothicFamily
+                                                )
+                                            )
                                             Text(text = "Department: ${it.value.department.displayName}")
                                             Text(text = "Phone: ${it.value.phone}")
                                             Text(text = "Email: ${it.value.email}")
@@ -257,17 +279,25 @@ class AppointmentManager : ComponentActivity() {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .wrapContentWidth(Alignment.CenterHorizontally)
-                                ){
+                                ) {
                                     Card(
-                                        modifier = Modifier.fillMaxWidth().clickable {
-                                            patient = name
-                                            patientUid = it.key
-                                            active = false
-                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                patient = name
+                                                patientUid = it.key
+                                                active = false
+                                            },
                                         shape = RoundedCornerShape(8.dp)
                                     ) {
                                         Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                                            Text(
+                                                text = "${name}",
+                                                style = TextStyle(
+                                                    fontSize = 20.sp,
+                                                    fontFamily = jejugothicFamily
+                                                )
+                                            )
                                             Text(text = "Phone: ${it.value.phone}")
                                             Text(text = "Email: ${it.value.email}")
                                             Text(text = "Address: ${it.value.address}")
@@ -285,14 +315,14 @@ class AppointmentManager : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    MediumTextField(modifier = Modifier,value = doctor)
+                    MediumTextField(modifier = Modifier, value = doctor)
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
-                ){
-                    MediumTextField(modifier = Modifier,value = patient)
+                ) {
+                    MediumTextField(modifier = Modifier, value = patient)
                 }
 
                 Row(
@@ -319,7 +349,7 @@ class AppointmentManager : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
-                ){
+                ) {
                     CustomTextField(text = description, labelValue = "Description", onTextChange = {
                         description = it
                     })
@@ -375,7 +405,7 @@ class AppointmentManager : ComponentActivity() {
                 ) {
                     DefaultButton(
                         onClick = {
-                            Log.d("fdsfds",appRef)
+                            Log.d("fdsfds", appRef)
                             if (mode == "edit") {
                                 LocalStorage(context).LogOut()
                                 val updateData = mapOf(
@@ -384,19 +414,32 @@ class AppointmentManager : ComponentActivity() {
                                     "patientName" to patient,
                                     "doctorName" to doctor,
                                     "description" to description,
-                                    "date" to convertDateToTimeStamp(state.hour,state.minute,date),
-                                    "alocatedTime" to convertAlocatedTime(alocatedTime,unit),
+                                    "date" to convertDateToTimeStamp(
+                                        state.hour,
+                                        state.minute,
+                                        date
+                                    ),
+                                    "alocatedTime" to convertAlocatedTime(alocatedTime, unit),
                                 )
 
-                                db.collection("appointments").document(appRef).update(updateData).addOnSuccessListener {
-                                    showSnackbar = true
-                                }.addOnFailureListener {
+                                db.collection("appointments").document(appRef).update(updateData)
+                                    .addOnSuccessListener {
+                                        showSnackbar = true
+                                    }.addOnFailureListener {
                                     it.message?.let { it1 -> Log.e("fdsfds", it1) }
                                 }
                             } else if (mode == "create") {
-                                db.collection("appointments").add(Appointment(doctorUid as String, doctor as String, patientUid as String,patient as String,description,
-                                    convertDateToTimeStamp(state.hour,state.minute,date),convertAlocatedTime(alocatedTime,unit)
-                                )).addOnSuccessListener {
+                                db.collection("appointments").add(
+                                    Appointment(
+                                        doctorUid as String,
+                                        doctor as String,
+                                        patientUid as String,
+                                        patient as String,
+                                        description,
+                                        convertDateToTimeStamp(state.hour, state.minute, date),
+                                        convertAlocatedTime(alocatedTime, unit)
+                                    )
+                                ).addOnSuccessListener {
                                     showSnackbar = true
                                 }
                             }
@@ -409,7 +452,7 @@ class AppointmentManager : ComponentActivity() {
 
                 }
                 if (showSnackbar) {
-                    Row{
+                    Row {
                         Text(text = "Appointment Confirmed!")
                     }
                 }
@@ -488,7 +531,7 @@ class AppointmentManager : ComponentActivity() {
 
     fun convertAlocatedTime(time: String, unit: String): Long {
         val convertedUnits = time.toLong()
-        return if(unit == "Minutes") {
+        return if (unit == "Minutes") {
             convertedUnits * 60L
         } else {
             convertedUnits * 3600L

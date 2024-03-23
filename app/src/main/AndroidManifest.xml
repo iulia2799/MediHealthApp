@@ -13,6 +13,16 @@
         android:theme="@style/Theme.App"
         tools:targetApi="31">
         <activity
+            android:name=".meds.ResultCreator"
+            android:exported="false"
+            android:label="@string/title_activity_result_creator"
+            android:theme="@style/Theme.App" />
+        <activity
+            android:name=".meds.MedicationManager"
+            android:exported="false"
+            android:label="@string/title_activity_medication_manager"
+            android:theme="@style/Theme.App" />
+        <activity
             android:name=".Misc.ListOfPatients"
             android:exported="false"
             android:label="@string/title_activity_list_of_patients"

@@ -2,6 +2,7 @@ package com.example.test.Misc
 
 import Models.Department
 import Models.Doctor
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.test.Components.FormSelector
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
@@ -86,9 +88,15 @@ class ListOfDoctors : ComponentActivity() {
 
         Column {
             // Dropdown for department filtering
-            FormSelector(options = departmentList, selectedOption = selectedDepartment, onOptionSelected = {
-                selectedDepartment = it
-            }, text = "Select a department", modifier = Modifier.fillMaxWidth())
+            FormSelector(
+                options = departmentList,
+                selectedOption = selectedDepartment,
+                onOptionSelected = {
+                    selectedDepartment = it
+                },
+                text = "Select a department",
+                modifier = Modifier.fillMaxWidth()
+            )
 
             // Search bar (optional)
             OutlinedTextField(
@@ -100,18 +108,27 @@ class ListOfDoctors : ComponentActivity() {
 
             // Display doctor list with filtering
             val filteredDoctors = doctorMap.filter { it ->
-                (selectedDepartment == Department.NA.displayName || it.value.department == Department.values().find {
-                    it.displayName == selectedDepartment
-                }) &&
+                (selectedDepartment == Department.NA.displayName || it.value.department == Department.values()
+                    .find {
+                        it.displayName == selectedDepartment
+                    }) &&
                         (searchText.isEmpty() ||
                                 it.value.firstName.contains(searchText, ignoreCase = true) ||
                                 it.value.lastName.contains(searchText, ignoreCase = true) ||
-                                "${it.value.firstName} ${it.value.lastName}".contains(searchText, ignoreCase = true)
+                                "${it.value.firstName} ${it.value.lastName}".contains(
+                                    searchText,
+                                    ignoreCase = true
+                                )
                                 )
             }
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredDoctors.keys.toList()) {
-                    filteredDoctors[it]?.let { it1 -> DoctorItem(doctor = it1, ref = it) } // Define a composable for each doctor item
+                    filteredDoctors[it]?.let { it1 ->
+                        DoctorItem(
+                            doctor = it1,
+                            ref = it
+                        )
+                    }
                 }
             }
         }
@@ -126,26 +143,36 @@ class ListOfDoctors : ComponentActivity() {
             shape = RoundedCornerShape(8.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                Text(
+                    text = name,
+                    style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily)
+                )
+                Text(text = "${doctor.department}")
                 Text(text = "Phone: ${doctor.phone}")
                 Text(text = "Email: ${doctor.email}")
                 Text(text = "Address: ${doctor.address}")
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .wrapContentSize(Alignment.Center)){
-                        TextButton(modifier = Modifier.padding(4.dp),
-                            onClick = {
-                                val mode = "create"
-                                intent.putExtra("reference",ref)
-                                intent.putExtra("mode", mode)
-                                context.startActivity(intent)
-                            },
-                            colors = ButtonDefaults.textButtonColors(
-                                contentColor = universalAccent,
-                            )) {
-                            Text("Make Appointment")
-                        }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center)
+                ) {
+                    TextButton(
+                        modifier = Modifier.padding(4.dp),
+                        onClick = {
+                            val mode = "create"
+                            val intent = Intent(context, AppointmentManager::class.java)
+                            intent.putExtra("otherRef", ref)
+                            intent.putExtra("otherName", name)
+                            intent.putExtra("mode", mode)
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent,
+                        )
+                    ) {
+                        Text("Make Appointment")
+                    }
                 }
             }
         }
