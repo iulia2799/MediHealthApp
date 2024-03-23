@@ -71,15 +71,15 @@ class ListOfPatients : ComponentActivity() {
                 )
 
                 // Display Patient list
-                val filteredPatients = PatientMap.filterValues { Patient ->
+                val filteredPatients = PatientMap.filter { it ->
                     searchText.isEmpty() ||
-                            Patient.firstName.contains(searchText, ignoreCase = true) ||
-                            Patient.lastName.contains(searchText, ignoreCase = true) ||
-                            "${Patient.firstName} ${Patient.lastName}".contains(searchText, ignoreCase = true)
+                            it.value.firstName.contains(searchText, ignoreCase = true) ||
+                            it.value.lastName.contains(searchText, ignoreCase = true) ||
+                            "${it.value.firstName} ${it.value.lastName}".contains(searchText, ignoreCase = true)
                 }
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredPatients.values.toList()) { Patient ->
-                        PatientItem(Patient = Patient) // Define a composable for each Patient item
+                    items(filteredPatients.keys.toList()) { it ->
+                        filteredPatients[it]?.let { it1 -> PatientItem(Patient = it1, ref = it) } // Define a composable for each Patient item
                     }
                 }
             }
@@ -87,7 +87,7 @@ class ListOfPatients : ComponentActivity() {
     }
 
     @Composable
-    fun PatientItem(Patient: Patient) {
+    fun PatientItem(Patient: Patient, ref: String) {
         // Display Patient details (name, specialization, etc.)
         Text("Name: ${Patient.firstName}")
         // ... add more details or buttons as needed

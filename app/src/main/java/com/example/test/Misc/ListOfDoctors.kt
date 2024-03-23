@@ -5,30 +5,46 @@ import Models.Doctor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.test.Components.FormSelector
+import com.example.test.LocalStorage.AppointmentParceled
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.jejugothicFamily
+import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
@@ -83,29 +99,55 @@ class ListOfDoctors : ComponentActivity() {
             )
 
             // Display doctor list with filtering
-            val filteredDoctors = doctorMap.filterValues { doctor ->
-                (selectedDepartment == Department.NA.displayName || doctor.department == Department.values().find {
+            val filteredDoctors = doctorMap.filter { it ->
+                (selectedDepartment == Department.NA.displayName || it.value.department == Department.values().find {
                     it.displayName == selectedDepartment
                 }) &&
                         (searchText.isEmpty() ||
-                                doctor.firstName.contains(searchText, ignoreCase = true) ||
-                                doctor.lastName.contains(searchText, ignoreCase = true) ||
-                                "${doctor.firstName} ${doctor.lastName}".contains(searchText, ignoreCase = true)
+                                it.value.firstName.contains(searchText, ignoreCase = true) ||
+                                it.value.lastName.contains(searchText, ignoreCase = true) ||
+                                "${it.value.firstName} ${it.value.lastName}".contains(searchText, ignoreCase = true)
                                 )
             }
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(filteredDoctors.values.toList()) { doctor ->
-                    DoctorItem(doctor = doctor) // Define a composable for each doctor item
+                items(filteredDoctors.keys.toList()) {
+                    filteredDoctors[it]?.let { it1 -> DoctorItem(doctor = it1, ref = it) } // Define a composable for each doctor item
                 }
             }
         }
     }
 
     @Composable
-    fun DoctorItem(doctor: Doctor) {
-        // Display doctor details (name, specialization, etc.)
-        Text("Name: ${doctor.firstName}")
-        Text("Specialization: ${doctor.department}")
-        // ... add more details or buttons as needed
+    fun DoctorItem(doctor: Doctor, ref: String) {
+        val context = LocalContext.current
+        val name = doctor.firstName + ", " + doctor.lastName
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "${name}", style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily))
+                Text(text = "Phone: ${doctor.phone}")
+                Text(text = "Email: ${doctor.email}")
+                Text(text = "Address: ${doctor.address}")
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .wrapContentSize(Alignment.Center)){
+                        TextButton(modifier = Modifier.padding(4.dp),
+                            onClick = {
+                                val mode = "create"
+                                intent.putExtra("reference",ref)
+                                intent.putExtra("mode", mode)
+                                context.startActivity(intent)
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent,
+                            )) {
+                            Text("Make Appointment")
+                        }
+                }
+            }
+        }
     }
 }
