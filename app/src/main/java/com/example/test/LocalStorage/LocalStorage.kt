@@ -2,6 +2,8 @@ package com.example.test.LocalStorage
 
 import Models.Doctor
 import Models.Patient
+import Models.nullDoc
+import Models.nullPatient
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -15,15 +17,40 @@ class LocalStorage(context: Context) {
         context.getSharedPreferences(DETAILS, Context.MODE_PRIVATE)
     private val editor = preferences.edit()
 
-    fun putUserDetails(uid: String, specialist: Boolean, ref: String) {
-        editor.putString("UID", uid)
+    fun putUserDetails(specialist: Boolean, ref: String) {
+
         editor.putBoolean("SP", specialist)
         editor.putString("REF", ref)
         editor.apply()
     }
 
-    fun putUserDetails(uid: String, specialist: Boolean) {
-        editor.putString("UID", uid)
+    fun putUserDetails(specialist: Boolean, ref: String, gp: Int) {
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putInt("DEP",gp)
+        editor.apply()
+    }
+    fun putUserDetails(specialist: Boolean, ref: String, gp: Int, firstName: String, lastName: String) {
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putInt("DEP",gp)
+        editor.putString("first",firstName)
+        editor.putString("last",lastName)
+        editor.apply()
+    }
+    fun putUserDetails(specialist: Boolean, ref: String, firstName: String, lastName: String) {
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putString("first",firstName)
+        editor.putString("last",lastName)
+        editor.apply()
+    }
+
+    fun getName(): String{
+        return "${preferences.getString("first","")}, ${preferences.getString("last","")}"
+    }
+
+    fun putUserDetails(specialist: Boolean) {
         editor.putBoolean("SP", specialist)
         editor.apply()
     }
@@ -32,9 +59,8 @@ class LocalStorage(context: Context) {
         editor.putString("REF", ref)
         editor.apply()
     }
-
-    fun getUserUid(): String? {
-        return preferences.getString("UID", "")
+    fun getDep(): Int {
+        return preferences.getInt("DEP", 0)
     }
 
     fun getRole(): Boolean {
@@ -45,35 +71,29 @@ class LocalStorage(context: Context) {
         return preferences.getString("REF", "")
     }
 
+    fun loginUser(){
+        editor.putBoolean("logged",true)
+        editor.apply()
+    }
+
+    fun isLoggedIn(): Boolean{
+        return preferences.getBoolean("logged",false)
+    }
+
+    fun putName(first: String, last:String) {
+        editor.putString("first",first)
+        editor.putString("last",last)
+        editor.apply()
+    }
+
+    fun LogOut(){
+        editor.remove("logged")
+        editor.apply()
+    }
+
     fun clearDetails() {
         editor.clear()
         editor.apply()
     }
 
-    fun getData(): Any? {
-        val db = Firebase.firestore
-        var result: Any? = null
-        if (this.getRole()) {
-            val document = this.getRef()
-                ?.let {
-                    db.collection("doctors").document(it).get().addOnSuccessListener {
-                        if(it.exists()) {
-                            result = it.toObject<Doctor>()
-                        }
-                    }
-                }
-        } else {
-            val document = this.getRef()
-                ?.let {
-                    db.collection("patients").document(it).get().addOnSuccessListener {
-                        if(it.exists()) {
-                            result = it.toObject<Patient>()
-                        }
-                    }
-                }
-        }
-
-
-        return result
-    }
 }

@@ -13,13 +13,13 @@ fun CheckEmail(email: String, context: Context){
     queryD.get().addOnCompleteListener{
         if (it.isSuccessful && it.result.documents.size > 0) {
             val reference = it.result.documents[0]
-            localStorage.putUserDetails(reference.get("uid").toString(),true,reference.id)
+            localStorage.putUserDetails(true,reference.id)
 
         } else {
             queryP.get().addOnCompleteListener{
                 if(it.isSuccessful && it.result.documents.size > 0){
                     val reference = it.result.documents[0]
-                    localStorage.putUserDetails(reference.get("uid").toString(), false, reference.id)
+                    localStorage.putUserDetails( false, reference.id)
                 } else {
                     Log.e("oops","OOPs")
                 }

@@ -9,5 +9,6 @@ data class Medication(
     val frequency: String,
     val medicationName: String,
     val pills: Int,
+    val days: Int,
     val medType: Department
 )

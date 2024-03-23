@@ -15,7 +15,6 @@ class WeeklyDataSource {
 
 
     fun getData(startDate: LocalDate = today, lastSelectedDate: LocalDate): CalendarItemUI {
-        Log.d("what",startDate.toString())
         val firstDayOfWeek = startDate.with(DayOfWeek.MONDAY)
         val endDayOfWeek = firstDayOfWeek.plusDays(7)
         val visibleDates = getDatesBetween(firstDayOfWeek, endDayOfWeek)
