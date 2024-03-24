@@ -55,6 +55,7 @@ import com.example.test.Components.zonedDateTimeToTimestampFirebase
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
+import com.example.test.Profile.Profile
 import com.example.test.appointment.AppointmentDialog
 import com.example.test.meds.ResultCreator
 import com.example.test.ui.theme.AppTheme
@@ -98,37 +99,37 @@ class Home : ComponentActivity() {
         type = local.getRole()
         if (!type) {
             this.ref.let { it ->
-                    db.collection("patients").document(it).get().addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val value = it.result
-                            if (value.exists()) {
-                                val user = value.toObject<Patient>()!!
-                                datap = user
-                            }
+                db.collection("patients").document(it).get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val value = it.result
+                        if (value.exists()) {
+                            val user = value.toObject<Patient>()!!
+                            datap = user
                         }
                     }
                 }
+            }
         } else {
             this.ref.let { it ->
-                    db.collection("doctors").document(it).get().addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val value = it.result
-                            if (value.exists()) {
-                                val user = value.toObject<Doctor>()!!
-                                datad = user
-                            }
+                db.collection("doctors").document(it).get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val value = it.result
+                        if (value.exists()) {
+                            val user = value.toObject<Doctor>()!!
+                            datad = user
                         }
                     }
                 }
+            }
         }
 
         AppTheme {
             // A surface container using the 'background' color from the theme
             if (type) {
-                local.putName(datad.firstName,datad.lastName)
+                local.putName(datad.firstName, datad.lastName)
                 HomeContent(datad.firstName)
             } else {
-                local.putName(datap.firstName,datap.lastName)
+                local.putName(datap.firstName, datap.lastName)
                 HomeContent(datap.firstName)
             }
         }
@@ -145,36 +146,37 @@ class Home : ComponentActivity() {
         val context = LocalContext.current
         val source = WeeklyDataSource()
         var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
-        var data by remember { mutableStateOf(emptyMap<String,Appointment>()) }
+        var data by remember { mutableStateOf(emptyMap<String, Appointment>()) }
 
         LaunchedEffect(sourceModel) {
             var field = "patientUid"
-            if(type) {
+            if (type) {
                 field = "doctorUid"
             }
-            Log.d("REF",ref)
+            Log.d("REF", ref)
             val today = sourceModel.currentDate.date
             val start = today.atStartOfDay(ZoneId.of("UTC"))
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
             db.collection("appointments").whereEqualTo(field, ref)
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
-                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).get().addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        Log.d("fdsfds",it.result.documents.toString())
-                        if(it.result.size() == 0) {
-                            Log.d("SIZE",":NOT EMPTY")
+                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d("fdsfds", it.result.documents.toString())
+                        if (it.result.size() == 0) {
+                            Log.d("SIZE", ":NOT EMPTY")
                             data = emptyMap()
                         } else {
-                            it.result.forEach {it1 ->
+                            it.result.forEach { it1 ->
                                 val app = it1.toObject<Appointment>()
                                 data += (it1.reference.id to app)
                             }
 
                         }
 
-                        Log.d("SIZE",":EMPTY")
-                        Log.d("TODAT","TODAY $today")
-                    }else {
+                        Log.d("SIZE", ":EMPTY")
+                        Log.d("TODAT", "TODAY $today")
+                    } else {
                         Log.w("SNAPSHOT", "Error getting documents:", it.exception)
                     }
                 }
@@ -194,7 +196,10 @@ class Home : ComponentActivity() {
                 },
                 actions = {
                     FloatingActionButton(
-                        onClick = { /*CREATE INTENT*/ },
+                        onClick = {
+                            val intent = Intent(context, Profile::class.java)
+                            context.startActivity(intent)
+                        },
                         modifier = Modifier.padding(5.dp),
                         containerColor = universalBackground,
                         contentColor = universalPrimary
@@ -275,14 +280,14 @@ class Home : ComponentActivity() {
                 }
                 Row {
 
-                        UpdateList(results = data)
+                    UpdateList(results = data)
 
                 }
                 Row {
-                    if(!type) {
+                    if (!type) {
                         DefaultButton(
                             onClick = {
-                                intent = Intent(context,ListOfDoctors::class.java)
+                                intent = Intent(context, ListOfDoctors::class.java)
                                 context.startActivity(intent)
                             },
                             Alignment.Center,
@@ -294,8 +299,10 @@ class Home : ComponentActivity() {
                         )
                     } else {
                         DefaultButton(
-                            onClick = {intent = Intent(context,ListOfPatients::class.java)
-                                context.startActivity(intent) },
+                            onClick = {
+                                intent = Intent(context, ListOfPatients::class.java)
+                                context.startActivity(intent)
+                            },
                             Alignment.Center,
                             "Patients",
                             Modifier
@@ -308,7 +315,7 @@ class Home : ComponentActivity() {
                     DefaultButton(
                         onClick = {
                             val intent = Intent(context, ResultCreator::class.java)
-                            intent.putExtra("mode","create")
+                            intent.putExtra("mode", "create")
                             context.startActivity(intent)
                         },
                         Alignment.Center,
@@ -349,7 +356,7 @@ class Home : ComponentActivity() {
                                 Text("View")
                             }
                         }
-                        if(isOpen) {
+                        if (isOpen) {
                             results[it]?.let { it1 ->
                                 AppointmentDialog(appointment = it1, ref = it, type = type) {
                                     isOpen = false

@@ -225,7 +225,6 @@ class RegisterActivity : ComponentActivity() {
                                     }
                                     val doc = Doctor(
                                         email = email,
-                                        password = password,
                                         firstName = firstName,
                                         lastName = lastName,
                                         phone = phone,
@@ -242,7 +241,6 @@ class RegisterActivity : ComponentActivity() {
                                 } else {
                                     val p = Patient(
                                         email = email,
-                                        password = password,
                                         firstName = firstName,
                                         lastName = lastName,
                                         phone = phone,
