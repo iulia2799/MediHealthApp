@@ -1,8 +1,5 @@
 package Models
 
-import com.google.firebase.firestore.CollectionReference
-import org.json.JSONObject
-
 data class Patient(
     var firstName: String = "",
     var lastName: String= "",

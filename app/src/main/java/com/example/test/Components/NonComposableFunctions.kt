@@ -25,13 +25,13 @@ fun zonedDateTimeToTimestampFirebase(dateTime: ZonedDateTime): Timestamp {
 
 fun <K> filterByField(map: Map<K, Doctor>, query: String): Map<K, Doctor> {
     return map.filterValues { data ->
-        data.firstName.contains(query) || data.lastName.contains(query)
+        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(query, ignoreCase = true) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
     }
 }
 
 fun <K> filterByFieldP(map: Map<K, Patient>, query: String): Map<K, Patient> {
     return map.filterValues { data ->
-        data.firstName.contains(query) || data.lastName.contains(query)
+        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(query, ignoreCase = true) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
     }
 }
 

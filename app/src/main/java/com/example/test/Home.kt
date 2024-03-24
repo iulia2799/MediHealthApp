@@ -56,14 +56,12 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
 import com.example.test.appointment.AppointmentDialog
-import com.example.test.appointment.AppointmentManager
+import com.example.test.meds.ResultCreator
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
@@ -309,7 +307,7 @@ class Home : ComponentActivity() {
 
                     DefaultButton(
                         onClick = {
-                            val intent = Intent(context,AppointmentManager::class.java)
+                            val intent = Intent(context, ResultCreator::class.java)
                             intent.putExtra("mode","create")
                             context.startActivity(intent)
                         },
