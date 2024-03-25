@@ -1,12 +1,12 @@
 package com.example.test.meds
 
-import Models.Doctor
 import Models.Patient
 import Models.ResultRecord
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -58,7 +58,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -67,6 +66,7 @@ class ResultCreator : ComponentActivity() {
 
     private lateinit var storage: FirebaseStorage
     private lateinit var db: FirebaseFirestore
+    private val timeMillis: Long = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +109,7 @@ class ResultCreator : ComponentActivity() {
 
         var filteredData by remember { mutableStateOf(emptyMap<String, Patient>()) }
 
-        /*db.collection("patients").get().addOnCompleteListener {
+        db.collection("patients").get().addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result.forEach { it1 ->
                     val app = it1.toObject<Patient>()
@@ -117,7 +117,7 @@ class ResultCreator : ComponentActivity() {
                 }
                 filteredData = data
             }
-        }*/
+        }
         var text by remember { mutableStateOf("") }
         var active by remember {
             mutableStateOf(false)
@@ -132,7 +132,7 @@ class ResultCreator : ComponentActivity() {
             if (result.data != null) {
                 isLoading = true
                 val storageRef =
-                    storage.reference.child("uploads/${result.data!!.data?.lastPathSegment}")
+                    storage.reference.child("${patientRef}_${doctorRef}/${result.data!!.data?.lastPathSegment}_${timeMillis}")
                 result.data!!.data?.let {
                     CoroutineScope(IO).launch {
                         try {
@@ -296,7 +296,7 @@ class ResultCreator : ComponentActivity() {
 
     private fun uploadToFirestore(result: ResultRecord, context: Context) {
         db.collection("resultrecords").add(result).addOnSuccessListener {
-
+            Toast.makeText(context,"Result sent",Toast.LENGTH_LONG).show()
         }.addOnFailureListener {
 
         }

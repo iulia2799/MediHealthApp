@@ -119,6 +119,20 @@ fun CustomSwitch(modifier: Modifier, checked: Boolean, onStateChange: (Boolean) 
         })
 }
 
+@Composable
+fun LongTextField(
+    text: String,
+    labelValue: String,
+    onTextChange: (String) -> Unit = {},
+    type: String = "text",
+    pattern: String = textPattern,
+    mods: Modifier = Modifier
+        .fillMaxWidth()
+        .padding(10.dp)
+) {
+    CustomTextField(text = text, labelValue = labelValue,onTextChange,type,pattern,mods)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTextField(
@@ -126,12 +140,13 @@ fun CustomTextField(
     labelValue: String,
     onTextChange: (String) -> Unit = {},
     type: String = "text",
-    pattern: String = textPattern
+    pattern: String = textPattern,
+    mods: Modifier = Modifier
+        .width(185.dp)
+        .padding(10.dp)
 ) {
     OutlinedTextField(
-        modifier = Modifier
-            .width(185.dp)
-            .padding(10.dp),
+        modifier = mods,
         shape = RoundedCornerShape(24.dp),
         value = text,
         onValueChange = onTextChange,
