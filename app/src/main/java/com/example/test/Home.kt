@@ -56,6 +56,7 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
+import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
 import com.example.test.meds.ResultCreator
 import com.example.test.ui.theme.AppTheme
@@ -314,9 +315,15 @@ class Home : ComponentActivity() {
 
                     DefaultButton(
                         onClick = {
-                            val intent = Intent(context, ResultCreator::class.java)
-                            intent.putExtra("mode", "create")
-                            context.startActivity(intent)
+                            if(type){
+                                val intent = Intent(context, ResultCreator::class.java)
+                                intent.putExtra("mode", "create")
+                                context.startActivity(intent)
+                            } else {
+                                val intent = Intent(context, Results::class.java)
+                                context.startActivity(intent)
+                            }
+
                         },
                         Alignment.Center,
                         "Results",

@@ -7,5 +7,6 @@ data class ResultRecord(
     var doctorName: String = "",
     var fileRefStorageUrl: String = "",
     var description: String = "",
+    var unix: Long = System.currentTimeMillis()
 ) {
 }

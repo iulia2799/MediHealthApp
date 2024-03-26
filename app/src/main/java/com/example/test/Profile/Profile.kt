@@ -43,6 +43,7 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
+import com.example.test.ui.theme.universalTertiary
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
@@ -135,7 +136,7 @@ class Profile : ComponentActivity() {
                         snackbarData = data,
                         actionColor = universalAccent,
                         containerColor = universalBackground,
-                        contentColor = universalError
+                        contentColor = universalTertiary,
                     )
                 }
             }) {
