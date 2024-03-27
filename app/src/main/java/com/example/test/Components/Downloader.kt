@@ -17,8 +17,7 @@ class Downloader(private val context: Context) {
         val request = DownloadManager.Request(uri)
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setDestinationInExternalFilesDir(
-            context,
+        request.setDestinationInExternalPublicDir(
             Environment.DIRECTORY_DOWNLOADS,
             filename
         )
