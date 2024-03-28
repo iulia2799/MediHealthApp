@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -88,7 +90,8 @@ class Results : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                LargeTextField(value = "Your results", modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally).padding(8.dp))
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
@@ -116,25 +119,25 @@ class Results : ComponentActivity() {
             mutableStateOf(false)
         }
         Card(modifier = Modifier
-            .height(250.dp)
+            .height(300.dp)
             .padding(16.dp)) {
             Column {
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = result.description
+                        .padding(10.dp), value = "Description: " + result.description
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = result.patientName
+                        .padding(10.dp), value = "Patient: " + result.patientName
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = result.doctorName
+                        .padding(10.dp), value = "Doctor: " + result.doctorName
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 DefaultButton(

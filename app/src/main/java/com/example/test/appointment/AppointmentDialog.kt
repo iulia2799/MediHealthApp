@@ -4,6 +4,7 @@ import Models.Appointment
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +33,7 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.Profile.DoctorDialog
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalTertiary
@@ -35,9 +41,17 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = false, onDismiss: () -> Unit) {
+fun AppointmentDialog(
+    appointment: Appointment,
+    ref: String,
+    type: Boolean = false,
+    onDismiss: () -> Unit
+) {
     val context = LocalContext.current
     val db = Firebase.firestore
+    var isOpen by remember {
+        mutableStateOf(false)
+    }
     val intent = Intent(context, AppointmentManager::class.java)
     Dialog(
         onDismissRequest = { onDismiss() }, properties = DialogProperties(
@@ -68,7 +82,9 @@ fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = fals
                 LargeTextField(value = "Appointment Details", modifier = Modifier.padding(4.dp))
                 Spacer(modifier = Modifier.weight(1f))
 
-                MediumTextField(modifier = Modifier, value = "Doctor: ${appointment.doctorName}")
+                MediumTextField(modifier = Modifier.clickable {
+                    isOpen = true
+                }, value = "Doctor: ${appointment.doctorName}")
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(modifier = Modifier, value = "Patient: ${appointment.patientName}")
                 Spacer(modifier = Modifier.weight(1f))
@@ -101,8 +117,8 @@ fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = fals
                             )
                             val mode = "edit"
                             LocalStorage(context).loginUser()
-                            intent.putExtra("reference",ref)
-                            intent.putExtra("appointment",parcel)
+                            intent.putExtra("reference", ref)
+                            intent.putExtra("appointment", parcel)
                             intent.putExtra("mode", mode)
                             context.startActivity(intent)
                         },
@@ -123,9 +139,9 @@ fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = fals
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }.addOnFailureListener {
-                                Toast.makeText(context, "Failed to delete", Toast.LENGTH_LONG)
-                                    .show()
-                            }
+                                    Toast.makeText(context, "Failed to delete", Toast.LENGTH_LONG)
+                                        .show()
+                                }
                         },
                         colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent
@@ -133,13 +149,15 @@ fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = fals
                     ) {
                         Text("Delete")
                     }
-                    if(type) {
+                    if (type) {
                         TextButton(
                             modifier = Modifier.padding(4.dp),
                             onClick = {
-                                db.collection("appointments").document(ref).update(mapOf(
-                                    "accepted" to true
-                                )).addOnSuccessListener {
+                                db.collection("appointments").document(ref).update(
+                                    mapOf(
+                                        "accepted" to true
+                                    )
+                                ).addOnSuccessListener {
                                     onDismiss()
                                 }.addOnFailureListener {
 
@@ -171,5 +189,8 @@ fun AppointmentDialog(appointment: Appointment, ref: String, type:Boolean = fals
 
             }
         }
+    }
+    if (isOpen) {
+        DoctorDialog(docRef = appointment.doctorUid) { isOpen = false }
     }
 }

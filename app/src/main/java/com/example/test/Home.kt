@@ -357,6 +357,7 @@ class Home : ComponentActivity() {
                             Text(text = "Patient: ${results[it]?.patientName}")
                             Text(text = "Description: ${results[it]?.description}")
                             Text(text = "Date: ${results[it]?.date?.toDate()}")
+                            Text(text = "Accepted: ${results[it]?.accepted}")
                             TextButton(onClick = {
                                 isOpen = true
                             }) {
