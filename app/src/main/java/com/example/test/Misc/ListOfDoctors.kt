@@ -151,6 +151,7 @@ class ListOfDoctors : ComponentActivity() {
                 Text(text = "Phone: ${doctor.phone}")
                 Text(text = "Email: ${doctor.email}")
                 Text(text = "Address: ${doctor.address}")
+                Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

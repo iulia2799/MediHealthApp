@@ -18,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -63,10 +65,10 @@ fun DoctorDialog(docRef: String, onDismiss: () -> Unit) {
             ),
             elevation = CardDefaults.cardElevation(5.dp),
             colors = CardDefaults.cardColors(
-                containerColor = universalBackground
+                containerColor = Color.White
             )
         ){
-            Column {
+            Column(modifier = Modifier.padding(10.dp).wrapContentSize(Alignment.Center)) {
                 LargeTextField(
                     value = "${doctor.firstName} ${doctor.lastName} - ${doctor.department.displayName}",
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -74,6 +76,7 @@ fun DoctorDialog(docRef: String, onDismiss: () -> Unit) {
                 MediumTextField(value = "Address: ${doctor.address}", modifier = Modifier)
                 MediumTextField(value = "Email: ${doctor.email}", modifier = Modifier)
                 MediumTextField(value = "Phone: ${doctor.phone}", modifier = Modifier)
+                Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
 
                 TextButton(
                     onClick = {

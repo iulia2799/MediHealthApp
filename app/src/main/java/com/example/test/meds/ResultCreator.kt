@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -156,12 +158,13 @@ class ResultCreator : ComponentActivity() {
             modifier = Modifier.fillMaxSize(),
             color = universalBackground
         ) {
-            Column(modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.CenterHorizontally)
-                ){
-                Row{
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
+                Row {
                     LargeTextField(
                         value = "Send Results", modifier = Modifier
                             .padding(10.dp)
@@ -170,7 +173,7 @@ class ResultCreator : ComponentActivity() {
                             )
                     )
                 }
-                Row{
+                Row {
                     DefaultButton(
                         onClick = {
                             launcher.launch(
@@ -197,10 +200,10 @@ class ResultCreator : ComponentActivity() {
                 Row {
                     SearchBar(
                         query = text,
-                        onQueryChange = {text=it},
-                        onSearch = {filteredData = filterByFieldP(data,text) },
+                        onQueryChange = { text = it },
+                        onSearch = { filteredData = filterByFieldP(data, text) },
                         active = active,
-                        onActiveChange = {active = it},
+                        onActiveChange = { active = it },
                         placeholder = {
                             Text(text = "Search for a patient")
                         },
@@ -221,34 +224,42 @@ class ResultCreator : ComponentActivity() {
                             }
                         }
                     ) {
-                        filteredData.forEach {
-                            val name = it.value.firstName + ", " + it.value.lastName
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            ) {
-                                Card(
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
+                        ) {
+                            filteredData.forEach {
+                                val name = it.value.firstName + ", " + it.value.lastName
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable {
-                                            patientName = name
-                                            patientRef = it.key
-                                            active = false
-                                        },
-                                    shape = RoundedCornerShape(8.dp)
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
                                 ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Text(
-                                            text = name,
-                                            style = TextStyle(
-                                                fontSize = 20.sp,
-                                                fontFamily = jejugothicFamily
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                patientName = name
+                                                patientRef = it.key
+                                                active = false
+                                            },
+                                        shape = RoundedCornerShape(8.dp)
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text(
+                                                text = name,
+                                                style = TextStyle(
+                                                    fontSize = 20.sp,
+                                                    fontFamily = jejugothicFamily
+                                                )
                                             )
-                                        )
-                                        Text(text = "Phone: ${it.value.phone}")
-                                        Text(text = "Email: ${it.value.email}")
-                                        Text(text = "Address: ${it.value.address}")
+                                            Text(text = "Phone: ${it.value.phone}")
+                                            Text(text = "Email: ${it.value.email}")
+                                            Text(text = "Address: ${it.value.address}")
+                                        }
                                     }
                                 }
                             }
@@ -277,17 +288,24 @@ class ResultCreator : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    DefaultButton(onClick = {
-                        val res = doctorRef?.let {
-                            uploadedFileUrl?.let { it1 ->
-                                ResultRecord(patientRef,patientName,
-                                    it,doctorName, fileRefStorageUrl = it1,description)
+                    DefaultButton(
+                        onClick = {
+                            val res = doctorRef?.let {
+                                uploadedFileUrl?.let { it1 ->
+                                    ResultRecord(
+                                        patientRef, patientName,
+                                        it, doctorName, fileRefStorageUrl = it1, description
+                                    )
+                                }
                             }
-                        }
-                        if (res != null) {
-                            uploadToFirestore(res, context)
-                        }
-                    }, alignment = Alignment.Center, text = "Send", modifier = Modifier.padding(4.dp))
+                            if (res != null) {
+                                uploadToFirestore(res, context)
+                            }
+                        },
+                        alignment = Alignment.Center,
+                        text = "Send",
+                        modifier = Modifier.padding(4.dp)
+                    )
                 }
 
             }
@@ -296,7 +314,7 @@ class ResultCreator : ComponentActivity() {
 
     private fun uploadToFirestore(result: ResultRecord, context: Context) {
         db.collection("resultrecords").add(result).addOnSuccessListener {
-            Toast.makeText(context,"Result sent",Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Result sent", Toast.LENGTH_LONG).show()
         }.addOnFailureListener {
 
         }

@@ -233,7 +233,7 @@ class RegisterActivity : ComponentActivity() {
                                     )
                                     db.collection("doctors").add(doc).addOnCompleteListener {
                                         val localStorage = LocalStorage(context)
-                                        localStorage.putUserDetails(true,it.result.id)
+                                        localStorage.putUserDetails(true,it.result.id,departmentValue.ordinal)
                                         context.startActivity(Intent(context, Home::class.java))
                                     }.addOnFailureListener {
                                         //oops

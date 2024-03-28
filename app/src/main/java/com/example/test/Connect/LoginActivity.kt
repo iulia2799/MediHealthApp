@@ -1,5 +1,6 @@
 package com.example.test.Connect
 
+import Models.Doctor
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +53,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
@@ -155,7 +157,10 @@ class LoginActivity : ComponentActivity() {
                                         queryD.get().addOnCompleteListener{
                                             if (it.isSuccessful && it.result.documents.size > 0) {
                                                 val reference = it.result.documents[0]
-                                                localStorage.putUserDetails(true,reference.id)
+                                                val d = reference.toObject<Doctor>()
+                                                if (d != null) {
+                                                    localStorage.putUserDetails(true,reference.id,d.department.ordinal)
+                                                }
                                                 context.startActivity(
                                                     Intent(
                                                         context,

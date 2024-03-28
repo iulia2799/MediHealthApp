@@ -8,7 +8,8 @@ data class Patient(
     var email: String= "",
     var password: String= "",
     var age: Int = 0,
-    var doctorUid: String = "0"
+    var doctorUid: String = "0",
+    var doctorName: String = ""
 ) {
 }
 

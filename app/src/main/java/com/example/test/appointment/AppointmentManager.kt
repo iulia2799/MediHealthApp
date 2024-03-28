@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -237,74 +239,83 @@ class AppointmentManager : ComponentActivity() {
 
                         }
                     ) {
-                        if (!type) {
-                            filter1.forEach {
-                                val name = it.value.firstName + ", " + it.value.lastName
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
-                                ) {
-                                    Card(
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
+                        ) {
+                            if (!type) {
+                                filter1.forEach {
+                                    val name = it.value.firstName + ", " + it.value.lastName
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clickable {
-                                                doctor = name
-                                                doctorUid = it.key
-                                                active = false
-                                            },
-                                        shape = RoundedCornerShape(8.dp)
+                                            .wrapContentWidth(Alignment.CenterHorizontally)
                                     ) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(
-                                                text = "${name}",
-                                                style = TextStyle(
-                                                    fontSize = 20.sp,
-                                                    fontFamily = jejugothicFamily
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    doctor = name
+                                                    doctorUid = it.key
+                                                    active = false
+                                                },
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Column(modifier = Modifier.padding(16.dp)) {
+                                                Text(
+                                                    text = name,
+                                                    style = TextStyle(
+                                                        fontSize = 20.sp,
+                                                        fontFamily = jejugothicFamily
+                                                    )
                                                 )
-                                            )
-                                            Text(text = "Department: ${it.value.department.displayName}")
-                                            Text(text = "Phone: ${it.value.phone}")
-                                            Text(text = "Email: ${it.value.email}")
-                                            Text(text = "Address: ${it.value.address}")
+                                                Text(text = "Department: ${it.value.department.displayName}")
+                                                Text(text = "Phone: ${it.value.phone}")
+                                                Text(text = "Email: ${it.value.email}")
+                                                Text(text = "Address: ${it.value.address}")
+                                                Text(text = "Schedule: ${it.value.officeHours.start} - ${it.value.officeHours.end}; ${it.value.officeHours.weekStart} to ${it.value.officeHours.weekend}")
+                                            }
                                         }
                                     }
-                                }
 
-                            }
-                        } else {
-                            filter2.forEach {
-                                val name = it.value.firstName + ", " + it.value.lastName
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
-                                ) {
-                                    Card(
+                                }
+                            } else {
+                                filter2.forEach {
+                                    val name = it.value.firstName + ", " + it.value.lastName
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clickable {
-                                                patient = name
-                                                patientUid = it.key
-                                                active = false
-                                            },
-                                        shape = RoundedCornerShape(8.dp)
+                                            .wrapContentWidth(Alignment.CenterHorizontally)
                                     ) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(
-                                                text = "${name}",
-                                                style = TextStyle(
-                                                    fontSize = 20.sp,
-                                                    fontFamily = jejugothicFamily
+                                        Card(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    patient = name
+                                                    patientUid = it.key
+                                                    active = false
+                                                },
+                                            shape = RoundedCornerShape(8.dp)
+                                        ) {
+                                            Column(modifier = Modifier.padding(16.dp)) {
+                                                Text(
+                                                    text = name,
+                                                    style = TextStyle(
+                                                        fontSize = 20.sp,
+                                                        fontFamily = jejugothicFamily
+                                                    )
                                                 )
-                                            )
-                                            Text(text = "Phone: ${it.value.phone}")
-                                            Text(text = "Email: ${it.value.email}")
-                                            Text(text = "Address: ${it.value.address}")
+                                                Text(text = "Phone: ${it.value.phone}")
+                                                Text(text = "Email: ${it.value.email}")
+                                                Text(text = "Address: ${it.value.address}")
+                                            }
                                         }
                                     }
-                                }
 
+                                }
                             }
                         }
                     }
@@ -426,15 +437,15 @@ class AppointmentManager : ComponentActivity() {
                                     .addOnSuccessListener {
                                         showSnackbar = true
                                     }.addOnFailureListener {
-                                    it.message?.let { it1 -> Log.e("fdsfds", it1) }
-                                }
+                                        it.message?.let { it1 -> Log.e("fdsfds", it1) }
+                                    }
                             } else if (mode == "create") {
                                 db.collection("appointments").add(
                                     Appointment(
                                         doctorUid as String,
-                                        doctor as String,
+                                        doctor,
                                         patientUid as String,
-                                        patient as String,
+                                        patient,
                                         description,
                                         convertDateToTimeStamp(state.hour, state.minute, date),
                                         convertAlocatedTime(alocatedTime, unit)

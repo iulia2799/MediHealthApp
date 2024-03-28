@@ -1,8 +1,10 @@
 package com.example.test.Misc
 
+import Models.Department
 import Models.Patient
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
@@ -61,9 +64,16 @@ class ListOfPatients : ComponentActivity() {
             val db = Firebase.firestore
             var PatientMap by remember { mutableStateOf(emptyMap<String, Patient>()) }
             var searchText by remember { mutableStateOf("") }
+            val local = LocalStorage(LocalContext.current)
+            val dep = local.getDep()
+            val ref = local.getRef()
 
             LaunchedEffect(Unit) {
                 val query = db.collection("patients")
+                if(dep == Department.GP.ordinal) {
+                    Log.d("DEEEEEP", dep.toString())
+                    db.collection("patients").whereEqualTo("doctorUid",ref)
+                }
                 query.get().addOnCompleteListener {
                     if (it.isSuccessful) {
                         val documents = it.result!!.documents
@@ -78,7 +88,6 @@ class ListOfPatients : ComponentActivity() {
             }
 
             Column {
-                // Search bar (optional)
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { searchText = it },
