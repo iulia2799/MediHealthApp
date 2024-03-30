@@ -1,14 +1,18 @@
 package Models
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+
 data class Medication(
-    val uid: Long,
-    val doctorUid: Long,
-    val userUid: Long,
-    val patientName: String,
-    val doctorName: String,
-    val frequency: String,
-    val medicationName: String,
-    val pills: Int,
-    val days: Int,
-    val medType: Department
+    val doctorUid: String = "0",
+    val patientUid: String = "0",
+    val patientName: String = "",
+    val doctorName: String = "",
+    val frequency: String = "",
+    val medicationName: String = "",
+    val description: String = "",
+    val pills: Int = 0,
+    val days: Int = 0,
+    val medType: Department = Department.NA,
+    val alarms: List<Long> = emptyList()
 )

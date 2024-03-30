@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.appointment.AppointmentManager
+import com.example.test.meds.MedicationManager
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
@@ -127,7 +128,7 @@ class ListOfPatients : ComponentActivity() {
                 Text(text = "Phone: ${patient.phone}")
                 Text(text = "Email: ${patient.email}")
                 Text(text = "Address: ${patient.address}")
-                Text(text = "Age: ${patient.age}")
+                Text(text = "Age: ${patient.age} years")
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -149,7 +150,22 @@ class ListOfPatients : ComponentActivity() {
                         )
                     ) {
                         Text("Make Appointment")
-                        //to-do: medications
+                    }
+                    TextButton(
+                        modifier = Modifier.padding(4.dp),
+                        onClick = {
+                            val mode = "create"
+                            val intent = Intent(context, MedicationManager::class.java)
+                            intent.putExtra("otherRef", ref)
+                            intent.putExtra("otherName", name)
+                            intent.putExtra("mode", mode)
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent,
+                        )
+                    ) {
+                        Text("Make Prescription")
                     }
                 }
             }

@@ -211,6 +211,7 @@ fun CustomTextField(
         )*/,
         keyboardOptions = when (type) {
             "password" -> KeyboardOptions(keyboardType = KeyboardType.Password)
+            "number" -> KeyboardOptions(keyboardType = KeyboardType.Number)
             else -> KeyboardOptions.Default
         },
         visualTransformation = when (type) {
@@ -259,7 +260,6 @@ fun CustomCardViewDark(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormSelector(
     options: List<String>,

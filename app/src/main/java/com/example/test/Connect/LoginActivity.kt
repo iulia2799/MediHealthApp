@@ -43,7 +43,6 @@ import com.example.test.Components.RegisterPageEnter
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
-import com.example.test.LocalStorage.CheckEmail
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
@@ -68,7 +67,6 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Preview
     @Composable
     fun Screen() {
@@ -81,10 +79,16 @@ class LoginActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize()
         ) {
             Scaffold(
-                snackbarHost = { SnackbarHost(hostState = snackbarHostState){data ->
-                    Snackbar(snackbarData = data, actionColor = universalAccent, containerColor = universalBackground, contentColor = universalError)
-                } },
-                containerColor = universalBackground
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarHostState) { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            actionColor = universalAccent,
+                            containerColor = universalBackground,
+                            contentColor = universalError
+                        )
+                    }
+                }, containerColor = universalBackground
             ) { innerPadding ->
                 Column(
                     modifier = Modifier
@@ -118,7 +122,7 @@ class LoginActivity : ComponentActivity() {
                             labelValue = "Email",
                             pattern = emailPattern,
                             onTextChange = { newValue -> email = newValue },
-                            )
+                        )
 
                     }
                     Row(
@@ -148,45 +152,49 @@ class LoginActivity : ComponentActivity() {
                                                 SnackbarDuration.Short
                                             )
                                         }
-                                    }
-                                    .addOnSuccessListener {
+                                    }.addOnSuccessListener {
                                         val db = Firebase.firestore
-                                        val queryD = db.collection("doctors").whereEqualTo("email",email)
-                                        val queryP = db.collection("patients").whereEqualTo("email",email)
+                                        val queryD =
+                                            db.collection("doctors").whereEqualTo("email", email)
+                                        val queryP =
+                                            db.collection("patients").whereEqualTo("email", email)
                                         val localStorage = LocalStorage(context)
-                                        queryD.get().addOnCompleteListener{
+                                        queryD.get().addOnCompleteListener {
                                             if (it.isSuccessful && it.result.documents.size > 0) {
                                                 val reference = it.result.documents[0]
                                                 val d = reference.toObject<Doctor>()
                                                 if (d != null) {
-                                                    localStorage.putUserDetails(true,reference.id,d.department.ordinal)
+                                                    localStorage.putUserDetails(
+                                                        true, reference.id, d.department.ordinal
+                                                    )
                                                 }
                                                 context.startActivity(
                                                     Intent(
-                                                        context,
-                                                        Home::class.java
+                                                        context, Home::class.java
                                                     )
                                                 )
                                             } else {
-                                                queryP.get().addOnCompleteListener{
-                                                    if(it.isSuccessful && it.result.documents.size > 0){
+                                                queryP.get().addOnCompleteListener {
+                                                    if (it.isSuccessful && it.result.documents.size > 0) {
                                                         val reference = it.result.documents[0]
-                                                        localStorage.putUserDetails( false, reference.id)
+                                                        localStorage.putUserDetails(
+                                                            false, reference.id
+                                                        )
                                                         context.startActivity(
                                                             Intent(
-                                                                context,
-                                                                Home::class.java
+                                                                context, Home::class.java
                                                             )
                                                         )
                                                     } else {
-                                                        Log.e("oops","OOPs")
+                                                        Log.e("oops", "OOPs")
                                                     }
                                                 }
                                             }
                                         }
 
                                     }
-                            }, Alignment.Center,
+                            },
+                            Alignment.Center,
                             "Login",
                             Modifier
                                 .height(100.dp)
@@ -197,7 +205,8 @@ class LoginActivity : ComponentActivity() {
 
                     Row {
                         DefaultButton(
-                            onClick = { RegisterPageEnter(context) }, Alignment.Center,
+                            onClick = { RegisterPageEnter(context) },
+                            Alignment.Center,
                             "Create a new account",
                             Modifier
                                 .height(100.dp)
@@ -208,7 +217,8 @@ class LoginActivity : ComponentActivity() {
 
                     Row {
                         DefaultButton(
-                            onClick = { Back(context) }, Alignment.Center,
+                            onClick = { Back(context) },
+                            Alignment.Center,
                             "Back",
                             Modifier
                                 .height(100.dp)

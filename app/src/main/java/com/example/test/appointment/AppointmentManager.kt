@@ -105,16 +105,15 @@ class AppointmentManager : ComponentActivity() {
         }
         appRef = intent.getStringExtra("reference").toString()
         if (parcel != null) {
-            appointment =
-                Appointment(
-                    parcel.doctorUid,
-                    parcel.doctorName,
-                    parcel.patientUid,
-                    parcel.patientName,
-                    parcel.description,
-                    parcel.date,
-                    parcel.alocatedTime
-                )
+            appointment = Appointment(
+                parcel.doctorUid,
+                parcel.doctorName,
+                parcel.patientUid,
+                parcel.patientName,
+                parcel.description,
+                parcel.date,
+                parcel.alocatedTime
+            )
 
         }
 
@@ -184,8 +183,7 @@ class AppointmentManager : ComponentActivity() {
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             Column(
                 modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally),
@@ -193,7 +191,8 @@ class AppointmentManager : ComponentActivity() {
             ) {
                 Row {
                     LargeTextField(
-                        value = "Edit Appointment", modifier = Modifier
+                        value = "Edit Appointment",
+                        modifier = Modifier
                             .padding(16.dp)
                             .wrapContentSize(
                                 Alignment.Center
@@ -201,44 +200,34 @@ class AppointmentManager : ComponentActivity() {
                     )
                 }
                 Row {
-                    SearchBar(
-                        modifier = Modifier.fillMaxWidth(),
-                        query = text,
-                        onQueryChange = {
-                            text = it
-                        },
-                        onSearch = {
-                            if (!type) {
-                                filter1 = filterByField(datad, text)
-                            } else {
-                                filter2 = filterByFieldP(datap, text)
-                            }
-                        },
-                        active = active,
-                        onActiveChange = {
-                            active = it
-                        },
-                        placeholder = {
-                            Text(text = "Search")
-                        },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-                        },
-                        trailingIcon = {
-                            if (active) {
-                                Icon(imageVector = Icons.Default.Clear,
-                                    contentDescription = "close",
-                                    modifier = Modifier.clickable {
-                                        if (text.isNotEmpty()) {
-                                            text = ""
-                                        } else {
-                                            active = false
-                                        }
-                                    })
-                            }
-
+                    SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
+                        text = it
+                    }, onSearch = {
+                        if (!type) {
+                            filter1 = filterByField(datad, text)
+                        } else {
+                            filter2 = filterByFieldP(datap, text)
                         }
-                    ) {
+                    }, active = active, onActiveChange = {
+                        active = it
+                    }, placeholder = {
+                        Text(text = "Search")
+                    }, leadingIcon = {
+                        Icon(imageVector = Icons.Default.Search, contentDescription = "search")
+                    }, trailingIcon = {
+                        if (active) {
+                            Icon(imageVector = Icons.Default.Clear,
+                                contentDescription = "close",
+                                modifier = Modifier.clickable {
+                                    if (text.isNotEmpty()) {
+                                        text = ""
+                                    } else {
+                                        active = false
+                                    }
+                                })
+                        }
+
+                    }) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -261,13 +250,11 @@ class AppointmentManager : ComponentActivity() {
                                                     doctor = name
                                                     doctorUid = it.key
                                                     active = false
-                                                },
-                                            shape = RoundedCornerShape(8.dp)
+                                                }, shape = RoundedCornerShape(8.dp)
                                         ) {
                                             Column(modifier = Modifier.padding(16.dp)) {
                                                 Text(
-                                                    text = name,
-                                                    style = TextStyle(
+                                                    text = name, style = TextStyle(
                                                         fontSize = 20.sp,
                                                         fontFamily = jejugothicFamily
                                                     )
@@ -297,13 +284,11 @@ class AppointmentManager : ComponentActivity() {
                                                     patient = name
                                                     patientUid = it.key
                                                     active = false
-                                                },
-                                            shape = RoundedCornerShape(8.dp)
+                                                }, shape = RoundedCornerShape(8.dp)
                                         ) {
                                             Column(modifier = Modifier.padding(16.dp)) {
                                                 Text(
-                                                    text = name,
-                                                    style = TextStyle(
+                                                    text = name, style = TextStyle(
                                                         fontSize = 20.sp,
                                                         fontFamily = jejugothicFamily
                                                     )
@@ -384,8 +369,7 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
-                OutlinedTextField(
-                    value = alocatedTime,
+                OutlinedTextField(value = alocatedTime,
                     onValueChange = { newValue ->
                         alocatedTime = newValue.filter { it.isDigit() }
                     },
@@ -426,9 +410,7 @@ class AppointmentManager : ComponentActivity() {
                                     "doctorName" to doctor,
                                     "description" to description,
                                     "date" to convertDateToTimeStamp(
-                                        state.hour,
-                                        state.minute,
-                                        date
+                                        state.hour, state.minute, date
                                     ),
                                     "alocatedTime" to convertAlocatedTime(alocatedTime, unit),
                                 )
@@ -494,15 +476,14 @@ class AppointmentManager : ComponentActivity() {
                 text = "Confirm",
                 modifier = Modifier.padding(4.dp)
             )
-        },
-            dismissButton = {
-                DefaultButton(
-                    onClick = { onDismiss() },
-                    alignment = Alignment.Center,
-                    text = "Cancel",
-                    modifier = Modifier.padding(4.dp)
-                )
-            }) {
+        }, dismissButton = {
+            DefaultButton(
+                onClick = { onDismiss() },
+                alignment = Alignment.Center,
+                text = "Cancel",
+                modifier = Modifier.padding(4.dp)
+            )
+        }) {
             DatePicker(state = state)
         }
 
@@ -514,8 +495,7 @@ class AppointmentManager : ComponentActivity() {
         var alocatedTime by remember { mutableStateOf("") }
         var unit by remember { mutableStateOf("Minutes") }
         Column {
-            OutlinedTextField(
-                value = alocatedTime,
+            OutlinedTextField(value = alocatedTime,
                 onValueChange = { newValue ->
                     alocatedTime = newValue.filter { it.isDigit() }
                 },

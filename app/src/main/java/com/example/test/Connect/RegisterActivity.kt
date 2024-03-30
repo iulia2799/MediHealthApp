@@ -40,7 +40,6 @@ import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.FormSelector
 import com.example.test.Components.LargeTextField
-import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
@@ -124,13 +123,15 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomTextField(text = firstName,
+                CustomTextField(
+                    text = firstName,
                     labelValue = "First Name",
                     onTextChange = { newValue ->
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(text = lastName,
+                CustomTextField(
+                    text = lastName,
                     labelValue = "Last Name",
                     onTextChange = { newValue ->
                         lastName = newValue
@@ -149,13 +150,21 @@ class RegisterActivity : ComponentActivity() {
                     }, type = "password", pattern = passwordPattern
                 )
             }
-            Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
                 Box(modifier = Modifier.wrapContentSize(Alignment.Center)) {
                     CustomTextField(
-                        text = confirmPassword, labelValue = "Confirm Password", onTextChange = { newValue ->
+                        text = confirmPassword,
+                        labelValue = "Confirm Password",
+                        onTextChange = { newValue ->
                             confirmPassword = newValue
                             passwordSame = password.equals(confirmPassword)
-                        }, type = "password", pattern = passwordPattern
+                        },
+                        type = "password",
+                        pattern = passwordPattern
                     )
                 }
 
@@ -170,10 +179,12 @@ class RegisterActivity : ComponentActivity() {
                 })
                 Spacer(modifier = Modifier.weight(1f))
             }
-            if(!checked) {
-                Row (modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.Center)){
+            if (!checked) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(Alignment.Center)
+                ) {
                     Box(modifier = Modifier.wrapContentSize(Alignment.Center)) {
                         CustomTextField(text = age, labelValue = "Age", onTextChange = { newValue ->
                             age = newValue
@@ -181,13 +192,18 @@ class RegisterActivity : ComponentActivity() {
                     }
                 }
             } else {
-                Row{
+                Row {
                     CenteredBox {
-                        FormSelector(options = departmentList, selectedOption = department, onOptionSelected = {
-                            department = it
-                        }, modifier = Modifier
-                            .width(350.dp)
-                            .heightIn(max = 200.dp))
+                        FormSelector(
+                            options = departmentList,
+                            selectedOption = department,
+                            onOptionSelected = {
+                                department = it
+                            },
+                            modifier = Modifier
+                                .width(350.dp)
+                                .heightIn(max = 200.dp)
+                        )
                     }
 
                 }
@@ -218,45 +234,47 @@ class RegisterActivity : ComponentActivity() {
                 DefaultButton(
                     onClick = {
                         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                                val uuid = UUID.randomUUID().toString()
-                                if (checked) {
-                                    val departmentValue = Department.values().find {
-                                        it.displayName == department
-                                    }
-                                    val doc = Doctor(
-                                        email = email,
-                                        firstName = firstName,
-                                        lastName = lastName,
-                                        phone = phone,
-                                        address = address,
-                                        department = departmentValue!!
-                                    )
-                                    db.collection("doctors").add(doc).addOnCompleteListener {
-                                        val localStorage = LocalStorage(context)
-                                        localStorage.putUserDetails(true,it.result.id,departmentValue.ordinal)
-                                        context.startActivity(Intent(context, Home::class.java))
-                                    }.addOnFailureListener {
-                                        //oops
-                                    }
-                                } else {
-                                    val p = Patient(
-                                        email = email,
-                                        firstName = firstName,
-                                        lastName = lastName,
-                                        phone = phone,
-                                        address = address,
-                                        age = age.toInt()
-                                    )
-                                    db.collection("patients").add(p).addOnCompleteListener {
-                                        val localStorage = LocalStorage(context)
-                                        localStorage.putUserDetails(false,it.result.id)
-                                        context.startActivity(Intent(context, Home::class.java))
-                                    }.addOnFailureListener {
-                                        it.message?.let { it1 -> Log.e("OOPS", it1) }
-                                    }
+                            val uuid = UUID.randomUUID().toString()
+                            if (checked) {
+                                val departmentValue = Department.values().find {
+                                    it.displayName == department
                                 }
+                                val doc = Doctor(
+                                    email = email,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    phone = phone,
+                                    address = address,
+                                    department = departmentValue!!
+                                )
+                                db.collection("doctors").add(doc).addOnCompleteListener {
+                                    val localStorage = LocalStorage(context)
+                                    localStorage.putUserDetails(
+                                        true, it.result.id, departmentValue.ordinal
+                                    )
+                                    context.startActivity(Intent(context, Home::class.java))
+                                }.addOnFailureListener {
+                                    //oops
+                                }
+                            } else {
+                                val p = Patient(
+                                    email = email,
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    phone = phone,
+                                    address = address,
+                                    age = age.toInt()
+                                )
+                                db.collection("patients").add(p).addOnCompleteListener {
+                                    val localStorage = LocalStorage(context)
+                                    localStorage.putUserDetails(false, it.result.id)
+                                    context.startActivity(Intent(context, Home::class.java))
+                                }.addOnFailureListener {
+                                    it.message?.let { it1 -> Log.e("OOPS", it1) }
+                                }
+                            }
 
-                            }.addOnFailureListener { print("exception") }
+                        }.addOnFailureListener { print("exception") }
                     },
                     Alignment.Center,
                     "Register",
