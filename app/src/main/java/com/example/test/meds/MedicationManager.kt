@@ -17,9 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -32,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +48,10 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.FormSelector
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
+import com.example.test.Components.MediumTextField
+import com.example.test.Components.TimeUnitToString
+import com.example.test.Components.convertDayStampToHourAndMinute
+import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.PatientCard
 import com.example.test.ui.theme.AppTheme
@@ -52,6 +62,8 @@ import com.example.test.ui.theme.universalPrimary
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class MedicationManager : ComponentActivity() {
     private var patientRef: String = ""
@@ -75,10 +87,13 @@ class MedicationManager : ComponentActivity() {
         var pills by remember { mutableStateOf(0) }
         var days by remember { mutableStateOf(0) }
         var department by remember { mutableStateOf(Department.NA.displayName) }
-        var alarms = remember { mutableListOf<Long>() }
+        var alarms by remember {
+            mutableStateOf<Set<Long>>(emptySet())
+        }
         val db = Firebase.firestore
         val context = LocalContext.current
         val snackbarState = SnackbarHostState()
+        val coroutineScope = rememberCoroutineScope()
 
         var patient by remember {
             mutableStateOf(nullPatient)
@@ -181,16 +196,8 @@ class MedicationManager : ComponentActivity() {
                         )
                     }
                     val currentTime by remember {
-                        mutableStateOf(java.time.LocalTime.now())
+                        mutableStateOf(LocalTime.now())
                     }
-                    DefaultButton(onClick = {
-                        alarms.add(
-                            currentTime.toSecondOfDay().toLong()
-                        )
-                    }, alignment = Alignment.CenterStart, text = "Add Alarm", modifier = Modifier)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text("Set Alarm Time:")
-                    Spacer(modifier = Modifier.weight(1f))
                     val state = remember {
                         TimePickerState(
                             is24Hour = true,
@@ -198,6 +205,17 @@ class MedicationManager : ComponentActivity() {
                             initialMinute = currentTime.minute,
                         )
                     }
+                    DefaultButton(onClick = {
+
+                        alarms +=
+                            convertTimeToTimestamp(state.hour,state.minute)
+
+                        Log.d("alarms", alarms.size.toString())
+                    }, alignment = Alignment.CenterStart, text = "Add Alarm", modifier = Modifier)
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text("Set Alarm Time:")
+                    Spacer(modifier = Modifier.weight(1f))
+
 
                     Row {
                         TimePicker(
@@ -212,6 +230,24 @@ class MedicationManager : ComponentActivity() {
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
+                    Row {
+                        if (alarms.isNotEmpty()) {
+                            MediumTextField(Modifier, "Added Alarms:")
+                            alarms.toList().forEach { alarmTime ->
+                                val pair = convertDayStampToHourAndMinute(alarmTime)
+                                Row (modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)){
+                                    MediumTextField(
+                                        value = "${TimeUnitToString(pair.first)}:${TimeUnitToString(pair.second)}",
+                                        modifier = Modifier.padding(4.dp)
+                                    )
+                                    IconButton(onClick = { alarms.minus(alarmTime) }) {
+                                        Icon(Icons.Default.Close, contentDescription = "Remove Alarm")
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     DefaultButton(
                         onClick = {
                             val med = localStorage.getRef()?.let { it1 ->
@@ -227,11 +263,35 @@ class MedicationManager : ComponentActivity() {
                                             pills = pills,
                                             days = days,
                                             medType = it2,
+                                            description = description,
                                             alarms = alarms.toList()
                                         )
                                     }
                             }
-                            //create
+                            if (med != null) {
+                                db.collection("medication").add(med).addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        coroutineScope.launch {
+                                            snackbarState.showSnackbar(
+                                                "Creation was a success.",
+                                                actionLabel = null,
+                                                true,
+                                                SnackbarDuration.Short
+                                            )
+                                        }
+
+                                    } else {
+                                        coroutineScope.launch {
+                                            snackbarState.showSnackbar(
+                                                "Creation was a failure.",
+                                                actionLabel = null,
+                                                true,
+                                                SnackbarDuration.Short
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         },
                         alignment = Alignment.Center,
                         text = "Submit",

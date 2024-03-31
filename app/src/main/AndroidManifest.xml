@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
     <application
@@ -14,6 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
         tools:targetApi="31">
+        <activity
+            android:name=".meds.ListOfPrescriptions"
+            android:exported="false"
+            android:label="@string/title_activity_list_of_prescriptions"
+            android:theme="@style/Theme.App" />
+        <activity
+            android:name=".meds.ChangeAlerts"
+            android:exported="false"
+            android:label="@string/title_activity_change_alerts"
+            android:theme="@style/Theme.App" />
         <activity
             android:name=".meds.ResultCreator"
             android:exported="false"

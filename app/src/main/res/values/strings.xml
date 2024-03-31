@@ -36,4 +36,6 @@
     <string name="title_activity_list_of_departments">ListOfDepartments</string>
     <string name="title_activity_medication_manager">MedicationManager</string>
     <string name="title_activity_result_creator">ResultCreator</string>
+    <string name="title_activity_change_alerts">ChangeAlerts</string>
+    <string name="title_activity_list_of_prescriptions">ListOfPrescriptions</string>
 </resources>

@@ -67,3 +67,23 @@ fun convertDateToTimeStamp(hour: Int,minute:Int, dateString: String): Timestamp 
     }
     return timestamp
 }
+
+fun convertDayStampToHourAndMinute(seconds: Long): Pair<Int, Int> {
+    val hours = (seconds / (60 * 60)).toInt()
+    val minutes = ((seconds % (60 * 60)) / 60).toInt()
+    return Pair(hours, minutes)
+}
+
+fun convertDayMillisToHourAndMinute(millis: Long): Pair<Int, Int> {
+    val hours = (millis / (1000 * 60 * 60)).toInt()
+    val minutes = ((millis % (1000 * 60 * 60)) / (1000 * 60)).toInt()
+    return Pair(hours, minutes)
+}
+
+fun TimeUnitToString(value: Int): String {
+    return if(value < 10) {
+        "0$value"
+    } else {
+        value.toString()
+    }
+}
