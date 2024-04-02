@@ -207,8 +207,7 @@ class MedicationManager : ComponentActivity() {
                     }
                     DefaultButton(onClick = {
 
-                        alarms +=
-                            convertTimeToTimestamp(state.hour,state.minute)
+                        alarms += convertTimeToTimestamp(state.hour, state.minute)
 
                         Log.d("alarms", alarms.size.toString())
                     }, alignment = Alignment.CenterStart, text = "Add Alarm", modifier = Modifier)
@@ -231,21 +230,37 @@ class MedicationManager : ComponentActivity() {
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Row {
-                        if (alarms.isNotEmpty()) {
-                            MediumTextField(Modifier, "Added Alarms:")
-                            alarms.toList().forEach { alarmTime ->
-                                val pair = convertDayStampToHourAndMinute(alarmTime)
-                                Row (modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)){
-                                    MediumTextField(
-                                        value = "${TimeUnitToString(pair.first)}:${TimeUnitToString(pair.second)}",
-                                        modifier = Modifier.padding(4.dp)
-                                    )
-                                    IconButton(onClick = { alarms.minus(alarmTime) }) {
-                                        Icon(Icons.Default.Close, contentDescription = "Remove Alarm")
+                        Column {
+                            if (alarms.isNotEmpty()) {
+                                LargeTextField(modifier = Modifier, value = "Added Alarms:")
+                                alarms.forEach { alarmTime ->
+                                    val pair = convertDayStampToHourAndMinute(alarmTime)
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        LargeTextField(
+                                            value = "${TimeUnitToString(pair.first)}:${
+                                                TimeUnitToString(
+                                                    pair.second
+                                                )
+                                            }", modifier = Modifier.padding(4.dp)
+                                        )
+                                        Log.d("aaaaalalala", alarmTime.toString())
+                                        IconButton(
+                                            onClick = { alarms -= alarmTime },
+                                            modifier = Modifier.padding(4.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Close,
+                                                contentDescription = "remove",
+                                                modifier = Modifier
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
+
                     }
 
                     DefaultButton(
@@ -269,26 +284,27 @@ class MedicationManager : ComponentActivity() {
                                     }
                             }
                             if (med != null) {
-                                db.collection("medication").add(med).addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        coroutineScope.launch {
-                                            snackbarState.showSnackbar(
-                                                "Creation was a success.",
-                                                actionLabel = null,
-                                                true,
-                                                SnackbarDuration.Short
-                                            )
-                                        }
+                                db.collection("medication").add(med).addOnSuccessListener {
 
-                                    } else {
-                                        coroutineScope.launch {
-                                            snackbarState.showSnackbar(
-                                                "Creation was a failure.",
-                                                actionLabel = null,
-                                                true,
-                                                SnackbarDuration.Short
-                                            )
-                                        }
+                                    coroutineScope.launch {
+                                        snackbarState.showSnackbar(
+                                            "Creation was a success.",
+                                            actionLabel = null,
+                                            true,
+                                            SnackbarDuration.Short
+                                        )
+                                    }
+
+
+                                }.addOnFailureListener {
+                                    coroutineScope.launch {
+                                        snackbarState.showSnackbar(
+                                            "Creation was a failure.",
+                                            actionLabel = null,
+                                            true,
+                                            SnackbarDuration.Short
+                                        )
+
                                     }
                                 }
                             }
