@@ -37,7 +37,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun DoctorDialog(docRef: String, onDismiss: () -> Unit) {
+fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val db = Firebase.firestore
     val intent = Intent(context, AppointmentManager::class.java)
@@ -83,17 +83,19 @@ fun DoctorDialog(docRef: String, onDismiss: () -> Unit) {
                 MediumTextField(value = "Email: ${doctor.email}", modifier = Modifier)
                 MediumTextField(value = "Phone: ${doctor.phone}", modifier = Modifier)
                 Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
-
-                TextButton(
-                    onClick = {
-                        intent.putExtra("otherName", "${doctor.firstName}, ${doctor.lastName}")
-                        intent.putExtra("otherRef", docRef)
-                        intent.putExtra("mode", "create")
-                        context.startActivity(intent)
-                    }, modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Schedule Appointment")
+                if (!type) {
+                    TextButton(
+                        onClick = {
+                            intent.putExtra("otherName", "${doctor.firstName}, ${doctor.lastName}")
+                            intent.putExtra("otherRef", docRef)
+                            intent.putExtra("mode", "create")
+                            context.startActivity(intent)
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Schedule Appointment")
+                    }
                 }
+
             }
         }
     }

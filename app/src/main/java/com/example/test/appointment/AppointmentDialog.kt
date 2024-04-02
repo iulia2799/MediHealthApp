@@ -34,6 +34,7 @@ import com.example.test.Components.MediumTextField
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.DoctorDialog
+import com.example.test.Profile.PatientDialog
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalTertiary
@@ -50,6 +51,9 @@ fun AppointmentDialog(
     val context = LocalContext.current
     val db = Firebase.firestore
     var isOpen by remember {
+        mutableStateOf(false)
+    }
+    var isOpen2 by remember {
         mutableStateOf(false)
     }
     val intent = Intent(context, AppointmentManager::class.java)
@@ -86,7 +90,9 @@ fun AppointmentDialog(
                     isOpen = true
                 }, value = "Doctor: ${appointment.doctorName}")
                 Spacer(modifier = Modifier.weight(1f))
-                MediumTextField(modifier = Modifier, value = "Patient: ${appointment.patientName}")
+                MediumTextField(modifier = Modifier.clickable {
+                    isOpen2 = true
+                }, value = "Patient: ${appointment.patientName}")
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(modifier = Modifier, value = "Patient: ${appointment.description}")
                 Spacer(modifier = Modifier.weight(1f))
@@ -191,6 +197,9 @@ fun AppointmentDialog(
         }
     }
     if (isOpen) {
-        DoctorDialog(docRef = appointment.doctorUid) { isOpen = false }
+        DoctorDialog(docRef = appointment.doctorUid, type = type) { isOpen = false }
+    }
+    if (isOpen) {
+        PatientDialog(patientRef = appointment.patientUid, type = type) { isOpen2 = false }
     }
 }

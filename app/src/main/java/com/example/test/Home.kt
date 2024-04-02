@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
-import com.example.test.Components.RegisterPageEnter
+import com.example.test.Components.Logout
 import com.example.test.Components.Welcome
 import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
@@ -58,6 +58,7 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
+import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
@@ -228,26 +229,6 @@ class Home : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Row {
-                    DefaultButton(
-                        onClick = { RegisterPageEnter(context) },
-                        Alignment.Center,
-                        "Prescriptions",
-                        Modifier
-                            .height(100.dp)
-                            .width(200.dp)
-                            .padding(20.dp)
-                    )
-                    DefaultButton(
-                        onClick = { RegisterPageEnter(context) },
-                        Alignment.Center,
-                        "History",
-                        Modifier
-                            .height(100.dp)
-                            .width(200.dp)
-                            .padding(20.dp)
-                    )
-                }
-                Row {
                     CenteredBox {
 
                         CustomCalendar(sourceModel, onPrevClickListener = { startDate ->
@@ -315,7 +296,7 @@ class Home : ComponentActivity() {
 
                     DefaultButton(
                         onClick = {
-                            if(type){
+                            if (type) {
                                 val intent = Intent(context, ResultCreator::class.java)
                                 intent.putExtra("mode", "create")
                                 context.startActivity(intent)
@@ -327,6 +308,37 @@ class Home : ComponentActivity() {
                         },
                         Alignment.Center,
                         "Results",
+                        Modifier
+                            .height(100.dp)
+                            .width(200.dp)
+                            .padding(20.dp)
+                    )
+                }
+                Row {
+                    if (!type) {
+                        DefaultButton(
+                            onClick = {
+                                context.startActivity(
+                                    Intent(
+                                        context, ListOfPrescriptions::class.java
+                                    )
+                                )
+                            },
+                            Alignment.Center,
+                            "Prescriptions",
+                            Modifier
+                                .height(100.dp)
+                                .width(200.dp)
+                                .padding(20.dp)
+                        )
+                    }
+
+                    DefaultButton(
+                        onClick = {
+                            Logout(context)
+                        },
+                        Alignment.Center,
+                        "Log out",
                         Modifier
                             .height(100.dp)
                             .width(200.dp)

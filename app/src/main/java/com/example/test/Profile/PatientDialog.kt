@@ -39,7 +39,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun PatientDialog(patientRef: String, onDismiss: () -> Unit) {
+fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val db = Firebase.firestore
     val intent1 = Intent(context, AppointmentManager::class.java)
@@ -86,27 +86,29 @@ fun PatientDialog(patientRef: String, onDismiss: () -> Unit) {
                 MediumTextField(value = "Email: ${patient.email}", modifier = Modifier)
                 MediumTextField(value = "Phone: ${patient.phone}", modifier = Modifier)
                 Text(text = "Age: ${patient.age}")
+                if (type) {
+                    TextButton(
+                        onClick = {
+                            intent1.putExtra(
+                                "otherName", "${patient.firstName}, ${patient.lastName}"
+                            )
+                            intent1.putExtra("otherRef", patientRef)
+                            intent1.putExtra("mode", "create")
+                            context.startActivity(intent1)
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Schedule Appointment")
+                    }
+                    TextButton(
+                        onClick = {
+                            intent2.putExtra("otherRef", patientRef)
+                            context.startActivity(intent2)
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Create Prescription")
+                    }
+                }
 
-                TextButton(
-                    onClick = {
-                        intent1.putExtra("otherName", "${patient.firstName}, ${patient.lastName}")
-                        intent1.putExtra("otherRef", patientRef)
-                        intent1.putExtra("mode", "create")
-                        context.startActivity(intent1)
-                    }, modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Schedule Appointment")
-                }
-                TextButton(
-                    onClick = {
-                        intent2.putExtra("otherName", "${patient.firstName}, ${patient.lastName}")
-                        intent2.putExtra("otherRef", patientRef)
-                        intent2.putExtra("mode", "create")
-                        context.startActivity(intent2)
-                    }, modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Create Prescription")
-                }
             }
         }
     }
