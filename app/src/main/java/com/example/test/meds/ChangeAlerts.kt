@@ -2,6 +2,7 @@ package com.example.test.meds
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -36,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
+import com.example.test.Components.LargeTextField
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.PrescriptionParceled
@@ -76,14 +79,14 @@ class ChangeAlerts : ComponentActivity() {
             myList = parcelable.alarms
         }
         var list by remember {
-            mutableStateOf<List<Long>>(myList)
+            mutableStateOf(myList)
         }
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier
+                .fillMaxSize(), color = universalBackground
         ) {
             Scaffold(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier,
                 snackbarHost = {
                     SnackbarHost(hostState = snackbarState) { data ->
                         Snackbar(
@@ -97,41 +100,21 @@ class ChangeAlerts : ComponentActivity() {
             ) {
                 Column {
                     Row {
-                        LazyColumn(modifier = Modifier.padding(it)) {
-                            items(list.size) { index ->
-                                val pair = convertDayStampToHourAndMinute(list[index])
-                                val state = remember {
-                                    TimePickerState(
-                                        is24Hour = true,
-                                        initialHour = pair.first,
-                                        initialMinute = pair.second,
-                                    )
-                                }
-                                LaunchedEffect(key1 = state) {
-                                    val newList = list.toMutableList()
-                                    newList[index] =
-                                        convertTimeToTimestamp(state.hour, state.minute)
-                                    list = newList
-                                }
-                                Row {
-                                    TimePicker(
-                                        state = state,
-                                        modifier = Modifier.padding(16.dp),
-                                        colors = TimePickerDefaults.colors(
-                                            timeSelectorSelectedContainerColor = universalAccent,
-                                            timeSelectorUnselectedContainerColor = universalAccent,
-                                            timeSelectorSelectedContentColor = universalPrimary,
-                                            timeSelectorUnselectedContentColor = universalPrimary
-                                        )
-                                    )
-                                }
-                            }
-                        }
+                        LargeTextField(
+                            value = "Change alerts",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                     Row {
                         DefaultButton(
                             onClick = {
+                                Log.d("LIST", list[0].toString())
+                                if (reference != null) {
+                                    Log.d("REFFFFF",reference)
+                                }
                                 if (reference != null) {
                                     db.collection("medication").document(reference).update(
                                         mapOf(
@@ -146,19 +129,69 @@ class ChangeAlerts : ComponentActivity() {
                                                 SnackbarDuration.Short
                                             )
                                         }
+                                    }.addOnFailureListener {
+                                        coroutineScope.launch {
+                                            snackbarState.showSnackbar(
+                                                "Change was unsuccessful : ${it.message}",
+                                                "ok",
+                                                true,
+                                                SnackbarDuration.Short
+                                            )
+                                        }
                                     }
                                 }
                             },
                             alignment = Alignment.Center,
                             text = "Change",
-                            modifier = Modifier.padding(10.dp).fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
                         )
                     }
+                    Row {
+                        CenteredBox {
+                            LazyColumn(modifier = Modifier.padding(it)) {
+                                items(list.size) { index ->
+                                    val pair = convertDayStampToHourAndMinute(list[index])
+                                    var state = remember {
+                                        TimePickerState(
+                                            is24Hour = true,
+                                            initialHour = pair.first,
+                                            initialMinute = pair.second,
+                                        )
+                                    }
+
+
+                                    LaunchedEffect(key1 = state.hour, key2 = state.minute) {
+                                        Log.d("STERTATERWTRESTGRESTRESTREST",state.hour.toString())
+                                        list = list.mapIndexed { i1, time ->
+                                            if (i1 == index) convertTimeToTimestamp(state.hour, state.minute) else time
+                                        }
+                                    }
+                                    Row {
+                                        TimePicker(
+                                            state = state,
+                                            modifier = Modifier.padding(16.dp),
+                                            colors = TimePickerDefaults.colors(
+                                                timeSelectorSelectedContainerColor = universalAccent,
+                                                timeSelectorUnselectedContainerColor = universalAccent,
+                                                timeSelectorSelectedContentColor = universalPrimary,
+                                                timeSelectorUnselectedContentColor = universalPrimary
+                                            )
+                                        )
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+
                 }
 
 
             }
         }
     }
-
 }

@@ -33,6 +33,7 @@ import com.example.test.Components.CenteredBox
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
 import com.google.firebase.firestore.ktx.firestore
@@ -123,7 +124,24 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                             Text(text = "${pair.first}:${pair.second}")
                         }
                         TextButton(onClick = {
-                            /*todo*/
+                            var parcel = list[index]?.let {
+                                PrescriptionParceled(
+                                    it.doctorUid,
+                                    it.patientUid,
+                                    it.patientName,
+                                    it.doctorName,
+                                    it.frequency,
+                                    it.medicationName,
+                                    it.description,
+                                    it.pills,
+                                    it.days,
+                                    it.medType,
+                                    it.alarms
+                                )
+                            }
+                            intent.putExtra("item",parcel)
+                            intent.putExtra("ref",index)
+                            context.startActivity(intent)
                         }) {
                             Text("Change")
                         }
