@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.appointment.AppointmentManager
+import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.MedicationManager
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
@@ -59,8 +60,7 @@ class ListOfPatients : ComponentActivity() {
     @Composable
     fun Content() {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             val db = Firebase.firestore
             var PatientMap by remember { mutableStateOf(emptyMap<String, Patient>()) }
@@ -71,9 +71,9 @@ class ListOfPatients : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 val query = db.collection("patients")
-                if(dep == Department.GP.ordinal) {
+                if (dep == Department.GP.ordinal) {
                     Log.d("DEEEEEP", dep.toString())
-                    db.collection("patients").whereEqualTo("doctorUid",ref)
+                    db.collection("patients").whereEqualTo("doctorUid", ref)
                 }
                 query.get().addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -89,8 +89,7 @@ class ListOfPatients : ComponentActivity() {
             }
 
             Column {
-                OutlinedTextField(
-                    value = searchText,
+                OutlinedTextField(value = searchText,
                     onValueChange = { searchText = it },
                     label = { Text("Search for Patients") },
                     modifier = Modifier.fillMaxWidth()
@@ -98,14 +97,23 @@ class ListOfPatients : ComponentActivity() {
 
                 // Display Patient list
                 val filteredPatients = PatientMap.filter { it ->
-                    searchText.isEmpty() ||
-                            it.value.firstName.contains(searchText, ignoreCase = true) ||
-                            it.value.lastName.contains(searchText, ignoreCase = true) ||
-                            "${it.value.firstName} ${it.value.lastName}".contains(searchText, ignoreCase = true)
+                    searchText.isEmpty() || it.value.firstName.contains(
+                        searchText,
+                        ignoreCase = true
+                    ) || it.value.lastName.contains(
+                        searchText,
+                        ignoreCase = true
+                    ) || "${it.value.firstName} ${it.value.lastName}".contains(
+                        searchText, ignoreCase = true
+                    )
                 }
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(filteredPatients.keys.toList()) { it ->
-                        filteredPatients[it]?.let { it1 -> PatientItem(patient = it1, ref = it) } // Define a composable for each Patient item
+                        filteredPatients[it]?.let { it1 ->
+                            PatientItem(
+                                patient = it1, ref = it
+                            )
+                        } // Define a composable for each Patient item
                     }
                 }
             }
@@ -117,13 +125,11 @@ class ListOfPatients : ComponentActivity() {
         val context = LocalContext.current
         val name = patient.firstName + ", " + patient.lastName
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp)
+            modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = name,
-                    style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily)
+                    text = name, style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily)
                 )
                 Text(text = "Phone: ${patient.phone}")
                 Text(text = "Email: ${patient.email}")
@@ -136,36 +142,43 @@ class ListOfPatients : ComponentActivity() {
                         .wrapContentSize(Alignment.Center)
                 ) {
                     TextButton(
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
+                        modifier = Modifier.padding(4.dp), onClick = {
                             val mode = "create"
                             val intent = Intent(context, AppointmentManager::class.java)
                             intent.putExtra("otherRef", ref)
                             intent.putExtra("otherName", name)
                             intent.putExtra("mode", mode)
                             context.startActivity(intent)
-                        },
-                        colors = ButtonDefaults.textButtonColors(
+                        }, colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent,
                         )
                     ) {
                         Text("Make Appointment")
                     }
                     TextButton(
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
+                        modifier = Modifier.padding(4.dp), onClick = {
                             val mode = "create"
                             val intent = Intent(context, MedicationManager::class.java)
                             intent.putExtra("otherRef", ref)
                             intent.putExtra("otherName", name)
                             intent.putExtra("mode", mode)
                             context.startActivity(intent)
-                        },
-                        colors = ButtonDefaults.textButtonColors(
+                        }, colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent,
                         )
                     ) {
                         Text("Make Prescription")
+                    }
+                    TextButton(
+                        modifier = Modifier.padding(4.dp), onClick = {
+                            val intent = Intent(context, ListOfPrescriptions::class.java)
+                            intent.putExtra("ref", ref)
+                            context.startActivity(intent)
+                        }, colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent,
+                        )
+                    ) {
+                        Text("View Prescriptions")
                     }
                 }
             }

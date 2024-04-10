@@ -164,7 +164,7 @@ class ChangeAlerts : ComponentActivity() {
 
 
                                     LaunchedEffect(key1 = state.hour, key2 = state.minute) {
-                                        Log.d("STERTATERWTRESTGRESTRESTREST",state.hour.toString())
+                                        Log.d("STERTATERWTRESTGRESTRE",state.hour.toString())
                                         list = list.mapIndexed { i1, time ->
                                             if (i1 == index) convertTimeToTimestamp(state.hour, state.minute) else time
                                         }

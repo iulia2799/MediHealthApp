@@ -57,7 +57,11 @@ class ListOfPrescriptions : ComponentActivity() {
         val db = Firebase.firestore
         val context = LocalContext.current
         val localStorage = LocalStorage(context)
-        val ref = localStorage.getRef()
+        var ref = localStorage.getRef()
+        if(localStorage.getRole()) {
+            val p = intent.getStringExtra("ref")
+            ref = p
+        }
         var prescriptions by remember { mutableStateOf(emptyMap<String, Medication>()) }
         LaunchedEffect(key1 = ref) {
             db.collection("medication").whereEqualTo("patientUid", ref).get()
@@ -104,6 +108,7 @@ class ListOfPrescriptions : ComponentActivity() {
 @Composable
 fun ListOfMedicationsCards(list: Map<String, Medication>) {
     val context = LocalContext.current
+    val localStorage = LocalStorage(context)
     val intent = Intent(context,ChangeAlerts::class.java)
     CenteredBox {
         LazyColumn{
@@ -123,28 +128,31 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                             val pair = convertDayStampToHourAndMinute(alarm)
                             Text(text = "${pair.first}:${pair.second}")
                         }
-                        TextButton(onClick = {
-                            var parcel = list[index]?.let {
-                                PrescriptionParceled(
-                                    it.doctorUid,
-                                    it.patientUid,
-                                    it.patientName,
-                                    it.doctorName,
-                                    it.frequency,
-                                    it.medicationName,
-                                    it.description,
-                                    it.pills,
-                                    it.days,
-                                    it.medType,
-                                    it.alarms
-                                )
+                        if(localStorage.getRole()) {
+                            TextButton(onClick = {
+                                val parcel = list[index]?.let {
+                                    PrescriptionParceled(
+                                        it.doctorUid,
+                                        it.patientUid,
+                                        it.patientName,
+                                        it.doctorName,
+                                        it.frequency,
+                                        it.medicationName,
+                                        it.description,
+                                        it.pills,
+                                        it.days,
+                                        it.medType,
+                                        it.alarms
+                                    )
+                                }
+                                intent.putExtra("item",parcel)
+                                intent.putExtra("ref",index)
+                                context.startActivity(intent)
+                            }) {
+                                Text("Change")
                             }
-                            intent.putExtra("item",parcel)
-                            intent.putExtra("ref",index)
-                            context.startActivity(intent)
-                        }) {
-                            Text("Change")
                         }
+
                     }
                 }
             }

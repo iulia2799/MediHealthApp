@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -62,6 +63,7 @@ import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.google.firebase.Firebase
@@ -126,7 +128,6 @@ class Home : ComponentActivity() {
         }
 
         AppTheme {
-            // A surface container using the 'background' color from the theme
             if (type) {
                 local.putName(datad.firstName, datad.lastName)
                 HomeContent(datad.firstName)
@@ -232,24 +233,20 @@ class Home : ComponentActivity() {
                     CenteredBox {
 
                         CustomCalendar(sourceModel, onPrevClickListener = { startDate ->
-                            // refresh the CalendarUiModel with new data
-                            // by get data with new Start Date (which is the startDate-1 from the visibleDates)
+                            // refresh the ui model with new data
                             val finalStartDate = startDate.minusDays(1)
                             sourceModel = source.getData(
                                 startDate = finalStartDate,
                                 lastSelectedDate = sourceModel.currentDate.date
                             )
                         }, onNextClickListener = { endDate ->
-                            // refresh the CalendarUiModel with new data
-                            // by get data with new Start Date (which is the endDate+2 from the visibleDates)
+
                             val finalStartDate = endDate.plusDays(2)
                             sourceModel = source.getData(
                                 startDate = finalStartDate,
                                 lastSelectedDate = sourceModel.currentDate.date
                             )
                         }, onDateClickListener = { date ->
-                            // refresh the CalendarUiModel with new data
-                            // by changing only the `selectedDate` with the date selected by User
                             sourceModel =
                                 sourceModel.copy(currentDate = date, week = sourceModel.week.map {
                                     it.copy(
@@ -355,11 +352,23 @@ class Home : ComponentActivity() {
             LazyColumn(
                 modifier = Modifier.heightIn(max = 250.dp)
             ) {
-                // Use items composable to iterate through results and display appointments
+
                 items(items = results.keys.toList()) {
-                    // Your composable to display appointment data
+
+                    val color = when (results[it]?.accepted) {
+                        true -> {
+                            boldPrimary
+                        }
+
+                        else -> {
+                            universalPrimary
+                        }
+                    }
                     Card(
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(8.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = color
+                        )
                     ) {
                         var isOpen by remember {
                             mutableStateOf(false)
