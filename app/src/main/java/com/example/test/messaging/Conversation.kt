@@ -70,34 +70,20 @@ class Conversation : ComponentActivity() {
 
     @Composable
     @Preview
-    fun NewScaffold() {
-        Surface(
-            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
-        ) {
-            Scaffold() {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it)
-                ) {
-
-                }
-            }
-        }
-    }
-
-    @Composable
     fun Content() {
         val initial = emptyList<Message>()
         val context = LocalContext.current
-        val localStorage = LocalStorage(context)
-        val reference = intent.getStringExtra("convo")
-        val db = Firebase.firestore
+        //val localStorage = LocalStorage(context)
+        //val reference = intent.getStringExtra("convo")
+        //val db = Firebase.firestore
         var messageList by remember {
             mutableStateOf(initial)
         }
-        if (reference != null) {
-            val docRef = db.collection("medications").document(reference)
+        var username by remember {
+            mutableStateOf("first")
+        }
+        /*if (reference != null) {
+            val docRef = db.collection("convos").document(reference)
             docRef.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w("ERROR", "Listen failed.", e)
@@ -105,36 +91,44 @@ class Conversation : ComponentActivity() {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
+                    val currentUser = localStorage.getRef()
                     Log.d("SUCCESS", "Current data: ${snapshot.data}")
+                    username = if (currentUser !== snapshot.data?.get("user1Uid")) {
+                        (snapshot.data?.get("user1Name") ?: "").toString()
+                    } else {
+                        (snapshot.data?.get("user2Name") ?: "").toString()
+                    }
+
                 } else {
                     Log.d("NO_CONTENT", "Current data: null")
                 }
             }
 
-        }
-        val username = localStorage.getName()
-        Column(modifier = Modifier.fillMaxSize()) {
-            Row {
-                LargeTextField(
-                    value = "Conversation with $username",
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.Start)
-                        .weight(1f)
-                )
+        }*/
+        Scaffold(topBar = { Header(username = username) }, bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                LongTextField(text = "some text", labelValue = "Send a message")
             }
-            Row {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    ReceivedMessage()
-                    SentMessage()
+        }) { padValue ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padValue)
+            ) {
+                Row {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        ReceivedMessage()
+                        SentMessage()
 
-                }/*LazyColumn {
+                    }/*LazyColumn {
                 items(messageList) {
                     if (it.receiver === username) {
                         ReceivedMessage(message = it)
@@ -143,15 +137,11 @@ class Conversation : ComponentActivity() {
                     }
                 }
             }*/
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                LongTextField(text = "some text", labelValue = "Send a message")
+                }
+
             }
         }
+
     }
 
     @Composable
@@ -225,8 +215,16 @@ class Conversation : ComponentActivity() {
     }
 
     @Composable
-    @Preview
-    fun Header() {
-
+    fun Header(username: String) {
+        Row {
+            LargeTextField(
+                value = "Conversation with first",
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.Start)
+                    .weight(1f)
+            )
+        }
     }
 }
