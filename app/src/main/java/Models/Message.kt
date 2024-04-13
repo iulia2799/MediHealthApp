@@ -1,10 +1,10 @@
 package Models
 
-class Message(
-    id: String,
-    text: String,
-    sender: String,
-    receiver: String,
+data class Message(
+    var text: String = "",
+    var sender: String = "",
+    var receiver: String = "",
+    var time: Long = System.currentTimeMillis()
 ) {
 
 }

@@ -8,14 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -40,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
+import com.example.test.Components.MediumTextField
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.PrescriptionParceled
@@ -82,8 +80,7 @@ class ChangeAlerts : ComponentActivity() {
             mutableStateOf(myList)
         }
         Surface(
-            modifier = Modifier
-                .fillMaxSize(), color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             Scaffold(
                 modifier = Modifier,
@@ -113,7 +110,7 @@ class ChangeAlerts : ComponentActivity() {
                             onClick = {
                                 Log.d("LIST", list[0].toString())
                                 if (reference != null) {
-                                    Log.d("REFFFFF",reference)
+                                    Log.d("REFFFFF", reference)
                                 }
                                 if (reference != null) {
                                     db.collection("medication").document(reference).update(
@@ -150,6 +147,34 @@ class ChangeAlerts : ComponentActivity() {
                         )
                     }
                     Row {
+                        if (parcelable != null) {
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Name: ${parcelable.medicationName}"
+                            )
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Description: ${parcelable.description}"
+                            )
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Frequency: ${parcelable.frequency}"
+                            )
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Doctor: ${parcelable.doctorName}"
+                            )
+                        }
+                    }
+                    Row {
                         CenteredBox {
                             LazyColumn(modifier = Modifier.padding(it)) {
                                 items(list.size) { index ->
@@ -164,9 +189,11 @@ class ChangeAlerts : ComponentActivity() {
 
 
                                     LaunchedEffect(key1 = state.hour, key2 = state.minute) {
-                                        Log.d("STERTATERWTRESTGRESTRE",state.hour.toString())
+                                        Log.d("STERTATERWTRESTGRESTRE", state.hour.toString())
                                         list = list.mapIndexed { i1, time ->
-                                            if (i1 == index) convertTimeToTimestamp(state.hour, state.minute) else time
+                                            if (i1 == index) convertTimeToTimestamp(
+                                                state.hour, state.minute
+                                            ) else time
                                         }
                                     }
                                     Row {

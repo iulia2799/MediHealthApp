@@ -61,6 +61,7 @@ import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
+import com.example.test.messaging.ConvoList
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.boldPrimary
@@ -218,9 +219,9 @@ class Home : ComponentActivity() {
                 )
         }, floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TO DO CREATE INTENT*/ },
-                contentColor = universalPrimary,
-                containerColor = universalBackground
+                onClick = {
+                    context.startActivity(Intent(context, ConvoList::class.java))
+                }, contentColor = universalPrimary, containerColor = universalBackground
             ) {
                 Icon(Icons.Default.MailOutline, contentDescription = "Message")
             }
@@ -365,8 +366,7 @@ class Home : ComponentActivity() {
                         }
                     }
                     Card(
-                        modifier = Modifier.padding(8.dp),
-                        colors = CardDefaults.cardColors(
+                        modifier = Modifier.padding(8.dp), colors = CardDefaults.cardColors(
                             containerColor = color
                         )
                     ) {

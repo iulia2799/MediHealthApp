@@ -22,3 +22,5 @@ val darkAccent = Color(0xFF2400C5)
 val darkTertiary = Color(0xFF008A11)
 val appBarContainerColor = Color(0xFF668D82)
 val offWhite = Color(0xFFDDECE5)
+
+val convoColor = Color(0xD2BBE2D7)
