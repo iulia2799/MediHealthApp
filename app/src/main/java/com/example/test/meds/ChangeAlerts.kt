@@ -107,6 +107,40 @@ class ChangeAlerts : ComponentActivity() {
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                         )
                     }
+                    if(parcelable != null) {
+                        Row{
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Name: ${parcelable.medicationName}"
+                            )
+                        }
+                        Row{
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Description: ${parcelable.description}"
+                            )
+                        }
+                        Row{
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Frequency: ${parcelable.frequency}"
+                            )
+                        }
+                        Row{
+                            MediumTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.Start),
+                                value = "Doctor: ${parcelable.doctorName}"
+                            )
+                        }
+                    }
                     Row {
                         DefaultButton(
                             onClick = {
