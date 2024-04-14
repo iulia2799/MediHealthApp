@@ -89,7 +89,8 @@ class ListOfPatients : ComponentActivity() {
             }
 
             Column {
-                OutlinedTextField(value = searchText,
+                OutlinedTextField(
+                    value = searchText,
                     onValueChange = { searchText = it },
                     label = { Text("Search for Patients") },
                     modifier = Modifier.fillMaxWidth()
@@ -169,6 +170,14 @@ class ListOfPatients : ComponentActivity() {
                     ) {
                         Text("Make Prescription")
                     }
+
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center)
+                ) {
                     TextButton(
                         modifier = Modifier.padding(4.dp), onClick = {
                             val intent = Intent(context, ListOfPrescriptions::class.java)

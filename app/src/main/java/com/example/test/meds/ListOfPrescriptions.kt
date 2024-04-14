@@ -117,8 +117,9 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Doctor: ${list[index]?.medicationName}")
-                        Text(text = "Patient: ${list[index]?.doctorName}")
+                        Text(text = "Name: ${list[index]?.medicationName}")
+                        Text(text = "Doctor: ${list[index]?.doctorName}")
+                        Text(text = "Patient: ${list[index]?.patientName}")
                         Text(text = "Description: ${list[index]?.description}")
                         Text(text = "Frequency: ${list[index]?.frequency}")
                         Text(text = "Pills: ${list[index]?.pills} pills")
@@ -128,7 +129,7 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                             val pair = convertDayStampToHourAndMinute(alarm)
                             Text(text = "${pair.first}:${pair.second}")
                         }
-                        if(localStorage.getRole()) {
+                        if(!localStorage.getRole()) {
                             TextButton(onClick = {
                                 val parcel = list[index]?.let {
                                     PrescriptionParceled(

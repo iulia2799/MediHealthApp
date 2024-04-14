@@ -1,15 +1,7 @@
 package com.example.test.LocalStorage
 
-import Models.Doctor
-import Models.Patient
-import Models.nullDoc
-import Models.nullPatient
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 
 class LocalStorage(context: Context) {
     private val DETAILS = "userDetails"
@@ -89,6 +81,15 @@ class LocalStorage(context: Context) {
     fun LogOut(){
         editor.remove("logged")
         editor.apply()
+    }
+
+    fun putToken(token: String) {
+        editor.putString("deviceToken", token)
+        editor.apply()
+    }
+
+    fun getToken(): String {
+        return preferences.getString("deviceToken", "") ?: ""
     }
 
     fun clearDetails() {

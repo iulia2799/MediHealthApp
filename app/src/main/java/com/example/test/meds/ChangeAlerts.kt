@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -146,71 +148,42 @@ class ChangeAlerts : ComponentActivity() {
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                         )
                     }
-                    Row {
-                        if (parcelable != null) {
-                            MediumTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.Start),
-                                value = "Name: ${parcelable.medicationName}"
-                            )
-                            MediumTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.Start),
-                                value = "Description: ${parcelable.description}"
-                            )
-                            MediumTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.Start),
-                                value = "Frequency: ${parcelable.frequency}"
-                            )
-                            MediumTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.Start),
-                                value = "Doctor: ${parcelable.doctorName}"
-                            )
-                        }
-                    }
-                    Row {
-                        CenteredBox {
-                            LazyColumn(modifier = Modifier.padding(it)) {
-                                items(list.size) { index ->
-                                    val pair = convertDayStampToHourAndMinute(list[index])
-                                    var state = remember {
-                                        TimePickerState(
-                                            is24Hour = true,
-                                            initialHour = pair.first,
-                                            initialMinute = pair.second,
-                                        )
-                                    }
 
-
-                                    LaunchedEffect(key1 = state.hour, key2 = state.minute) {
-                                        Log.d("STERTATERWTRESTGRESTRE", state.hour.toString())
-                                        list = list.mapIndexed { i1, time ->
-                                            if (i1 == index) convertTimeToTimestamp(
-                                                state.hour, state.minute
-                                            ) else time
-                                        }
-                                    }
-                                    Row {
-                                        TimePicker(
-                                            state = state,
-                                            modifier = Modifier.padding(16.dp),
-                                            colors = TimePickerDefaults.colors(
-                                                timeSelectorSelectedContainerColor = universalAccent,
-                                                timeSelectorUnselectedContainerColor = universalAccent,
-                                                timeSelectorSelectedContentColor = universalPrimary,
-                                                timeSelectorUnselectedContentColor = universalPrimary
-                                            )
-                                        )
-                                    }
+                    Row {
+                        LazyColumn(modifier = Modifier.padding(it)) {
+                            items(list.size) { index ->
+                                val pair = convertDayStampToHourAndMinute(list[index])
+                                var state = remember {
+                                    TimePickerState(
+                                        is24Hour = true,
+                                        initialHour = pair.first,
+                                        initialMinute = pair.second,
+                                    )
                                 }
 
+
+                                LaunchedEffect(key1 = state.hour, key2 = state.minute) {
+                                    Log.d("STERTATERWTRESTGRESTRE", state.hour.toString())
+                                    list = list.mapIndexed { i1, time ->
+                                        if (i1 == index) convertTimeToTimestamp(
+                                            state.hour, state.minute
+                                        ) else time
+                                    }
+                                }
+                                Row {
+                                    TimePicker(
+                                        state = state,
+                                        modifier = Modifier.padding(16.dp),
+                                        colors = TimePickerDefaults.colors(
+                                            timeSelectorSelectedContainerColor = universalAccent,
+                                            timeSelectorUnselectedContainerColor = universalAccent,
+                                            timeSelectorSelectedContentColor = universalPrimary,
+                                            timeSelectorUnselectedContentColor = universalPrimary
+                                        )
+                                    )
+                                }
                             }
+
                         }
 
                     }

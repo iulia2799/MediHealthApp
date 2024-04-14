@@ -6,10 +6,13 @@ import Models.Patient
 import Models.nullDoc
 import Models.nullPatient
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.Logout
@@ -67,10 +71,13 @@ import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
+import com.example.test.ui.theme.universalTertiary
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.messaging.FirebaseMessaging
 import java.time.ZoneId
 import java.util.*
 import kotlin.properties.Delegates
@@ -79,7 +86,29 @@ class Home : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
     private var type by Delegates.notNull<Boolean>()
     private lateinit var ref: String
+    // Declare the launcher at the top of your Activity/Fragment:
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
 
+                // Get new FCM registration token
+                val token = task.result
+
+                // Log and toast
+                //val msg = getString(R.string.msg_token_fmt, token)
+                Log.d("TAaaaaaaG", token)
+                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            })
+        } else {
+            // TODO: Inform user that that your app will not show notifications.
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +120,7 @@ class Home : ComponentActivity() {
     @Composable
     @Preview
     fun setContent() {
+        askNotificationPermission()
         db = Firebase.firestore
         val context = LocalContext.current
         val local = LocalStorage(context)
@@ -358,11 +388,11 @@ class Home : ComponentActivity() {
 
                     val color = when (results[it]?.accepted) {
                         true -> {
-                            boldPrimary
+                            universalBackground
                         }
 
                         else -> {
-                            universalPrimary
+                            universalTertiary
                         }
                     }
                     Card(
@@ -396,6 +426,57 @@ class Home : ComponentActivity() {
                 }
             }
 
+        }
+    }
+
+
+    private fun askNotificationPermission() {
+        Log.d("TAaaaaaaG", "token")
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("HELLO","TOJE3")
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
+                        return@OnCompleteListener
+                    }
+
+                    // Get new FCM registration token
+                    val token = task.result
+
+                    // Log and toast
+                    //val msg = getString(R.string.msg_token_fmt, token)
+                    Log.d("TAaaaaaaG", token)
+                    //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                })
+            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                // TODO: display an educational UI explaining to the user the features that will be enabled
+                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
+                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
+                //       If the user selects "No thanks," allow the user to continue without notifications.
+            } else {
+                // Directly ask for the permission
+                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        } else {
+            Log.d("HELLO","TOJE")
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+
+                // Log and toast
+                //val msg = getString(R.string.msg_token_fmt, token)
+                Log.d("TAaaaaaaG", token)
+                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            })
         }
     }
 }

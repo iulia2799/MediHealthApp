@@ -113,7 +113,7 @@ class MedicationManager : ComponentActivity() {
             }
         }
         Surface(
-            modifier = Modifier.fillMaxWidth().height(500.dp), color = universalBackground
+            modifier = Modifier.fillMaxWidth(), color = universalBackground
         ) {
             Scaffold(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
