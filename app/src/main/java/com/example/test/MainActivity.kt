@@ -27,6 +27,7 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.Greeting
 import com.example.test.Components.LoginPageEnter
 import com.example.test.Components.RegisterPageEnter
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
@@ -62,6 +63,14 @@ fun MainSurface() {
 @Composable
 fun Content() {
     val context = LocalContext.current
+    val localStorage = LocalStorage(context)
+    if(localStorage.getRef() != null && localStorage.getRef() != "") {
+        context.startActivity(
+            Intent(
+                context, Home::class.java
+            )
+        )
+    }
     Column(
         modifier = Modifier
             .height(500.dp)

@@ -13,7 +13,7 @@ class TokenService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        Log.d("MESSAE",message.data.toString())
+        message.notification?.body?.let { Log.d("MESSAE", it) }
     }
 
 }
