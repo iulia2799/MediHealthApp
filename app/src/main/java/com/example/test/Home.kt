@@ -5,6 +5,7 @@ import Models.Doctor
 import Models.Patient
 import Models.nullDoc
 import Models.nullPatient
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -63,6 +64,7 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
+import com.example.test.functions.sendTokenToServer
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
@@ -86,7 +88,6 @@ class Home : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
     private var type by Delegates.notNull<Boolean>()
     private lateinit var ref: String
-    // Declare the launcher at the top of your Activity/Fragment:
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
@@ -102,7 +103,7 @@ class Home : ComponentActivity() {
 
                 // Log and toast
                 //val msg = getString(R.string.msg_token_fmt, token)
-                Log.d("TAaaaaaaG", token)
+                Log.d("TAaaaaaaG1", token)
                 //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         } else {
@@ -120,9 +121,10 @@ class Home : ComponentActivity() {
     @Composable
     @Preview
     fun setContent() {
-        askNotificationPermission()
+
         db = Firebase.firestore
         val context = LocalContext.current
+        askNotificationPermission(context)
         val local = LocalStorage(context)
         var datap by remember {
             mutableStateOf(nullPatient)
@@ -430,7 +432,7 @@ class Home : ComponentActivity() {
     }
 
 
-    private fun askNotificationPermission() {
+    private fun askNotificationPermission(context: Context) {
         Log.d("TAaaaaaaG", "token")
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -449,7 +451,8 @@ class Home : ComponentActivity() {
 
                     // Log and toast
                     //val msg = getString(R.string.msg_token_fmt, token)
-                    Log.d("TAaaaaaaG", token)
+                    Log.d("TAaaaaaaG2", token)
+                    sendTokenToServer(context,db,token)
                     //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                 })
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
@@ -474,7 +477,8 @@ class Home : ComponentActivity() {
 
                 // Log and toast
                 //val msg = getString(R.string.msg_token_fmt, token)
-                Log.d("TAaaaaaaG", token)
+                Log.d("TAaaaaaaG3", token)
+                sendTokenToServer(context,db,token)
                 //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         }
