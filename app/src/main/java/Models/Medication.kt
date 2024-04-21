@@ -13,6 +13,7 @@ data class Medication(
     val description: String = "",
     val pills: Int = 0,
     val days: Int = 0,
+    val pillsPerPortion: Int = 0,
     val medType: Department = Department.NA,
     val alarms: List<Long> = emptyList()
 )

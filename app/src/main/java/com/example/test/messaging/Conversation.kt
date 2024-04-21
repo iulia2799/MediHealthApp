@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,10 +23,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
+import com.example.test.Components.convertMillisToDate
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.boldPrimary
@@ -46,6 +46,7 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalPrimary
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class Conversation : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,16 +74,17 @@ class Conversation : ComponentActivity() {
     fun Content() {
         val initial = emptyList<Message>()
         val context = LocalContext.current
-        //val localStorage = LocalStorage(context)
-        //val reference = intent.getStringExtra("convo")
-        //val db = Firebase.firestore
+        val localStorage = LocalStorage(context)
+        val reference = intent.getStringExtra("convo")
+        val db = Firebase.firestore
         var messageList by remember {
             mutableStateOf(initial)
         }
         var username by remember {
             mutableStateOf("first")
         }
-        /*if (reference != null) {
+        var scrollState = rememberScrollState()
+        if (reference != null) {
             val docRef = db.collection("convos").document(reference)
             docRef.addSnapshotListener { snapshot, e ->
                 if (e != null) {
@@ -104,11 +106,10 @@ class Conversation : ComponentActivity() {
                 }
             }
 
-        }*/
+        }
         Scaffold(topBar = { Header(username = username) }, bottomBar = {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 LongTextField(text = "some text", labelValue = "Send a message")
             }
@@ -125,18 +126,23 @@ class Conversation : ComponentActivity() {
                             .weight(1f)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        ReceivedMessage()
-                        SentMessage()
-
-                    }/*LazyColumn {
-                items(messageList) {
-                    if (it.receiver === username) {
-                        ReceivedMessage(message = it)
-                    } else {
-                        SentMessage(message = it)
+                        val lastIndex = messageList.lastIndex
+                        if(lastIndex >= 0) {
+                            val coroutineScope = rememberCoroutineScope()
+                            coroutineScope.launch {
+                                scrollState.scrollTo(lastIndex)
+                            }
+                        }
+                        LazyColumn {
+                            items(messageList) {
+                                if (it.receiver === username) {
+                                    ReceivedMessage(message = it)
+                                } else {
+                                    SentMessage(message = it)
+                                }
+                            }
+                        }
                     }
-                }
-            }*/
                 }
 
             }
@@ -145,8 +151,7 @@ class Conversation : ComponentActivity() {
     }
 
     @Composable
-    @Preview
-    fun ReceivedMessage() {
+    fun ReceivedMessage(message: Message) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -160,14 +165,14 @@ class Conversation : ComponentActivity() {
             ) {
                 Column {
                     Text(
-                        text = "Current time in millis",
+                        text = convertMillisToDate(message.time),
                         modifier = Modifier.padding(10.dp),
                         fontSize = 12.sp,
                         fontFamily = jejugothicFamily,
                         color = universalAccent
                     )
                     Text(
-                        text = "hello",
+                        text = message.text,
                         modifier = Modifier.padding(10.dp),
                         fontFamily = jejugothicFamily,
                         fontSize = 16.sp
@@ -180,8 +185,7 @@ class Conversation : ComponentActivity() {
     }
 
     @Composable
-    @Preview
-    fun SentMessage() {
+    fun SentMessage(message: Message) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -195,14 +199,14 @@ class Conversation : ComponentActivity() {
             ) {
                 Column {
                     Text(
-                        text = "Current time in millis",
+                        text = convertMillisToDate(message.time),
                         modifier = Modifier.padding(10.dp),
                         fontSize = 12.sp,
                         fontFamily = jejugothicFamily,
                         color = universalAccent
                     )
                     Text(
-                        text = "some message",
+                        text = message.text,
                         modifier = Modifier.padding(10.dp),
                         fontFamily = jejugothicFamily,
                         fontSize = 16.sp
@@ -218,7 +222,7 @@ class Conversation : ComponentActivity() {
     fun Header(username: String) {
         Row {
             LargeTextField(
-                value = "Conversation with first",
+                value = "Conversation with $username",
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth()

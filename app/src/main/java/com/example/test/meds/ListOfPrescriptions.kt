@@ -81,7 +81,11 @@ class ListOfPrescriptions : ComponentActivity() {
         ) {
             Column {
                 Row {
-                    LargeTextField(value = "Your prescriptions",
+                    var text = "Your prescriptions"
+                    if(localStorage.getRole()) {
+                        text = "Patient prescriptions"
+                    }
+                    LargeTextField(value = text,
                         modifier = Modifier
                             .padding(10.dp)
                             .fillMaxWidth()
@@ -123,6 +127,7 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                         Text(text = "Description: ${list[index]?.description}")
                         Text(text = "Frequency: ${list[index]?.frequency}")
                         Text(text = "Pills: ${list[index]?.pills} pills")
+                        Text(text = "Pills/portion: ${list[index]?.pillsPerPortion} pills")
                         Text(text = "Days: ${list[index]?.days} days")
                         Text(text = "Alarms:")
                         list[index]?.alarms?.forEach { alarm ->

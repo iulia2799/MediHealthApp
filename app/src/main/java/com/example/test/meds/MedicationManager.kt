@@ -86,6 +86,7 @@ class MedicationManager : ComponentActivity() {
         var description by remember { mutableStateOf("") }
         var frequency by remember { mutableStateOf("") }
         var pills by remember { mutableStateOf(0) }
+        var pillsPerPortion by remember { mutableStateOf(0) }
         var days by remember { mutableStateOf(0) }
         var department by remember { mutableStateOf(Department.NA.displayName) }
         var alarms by remember {
@@ -185,6 +186,15 @@ class MedicationManager : ComponentActivity() {
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Row {
+                        LongTextField(labelValue = "Number of pills/portion",
+                            text = pillsPerPortion.toString(),
+                            type = "number",
+                            onTextChange = { newValue ->
+                                pillsPerPortion = newValue.toInt()
+                            })
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Row {
                         FormSelector(
                             options = Department.values().map { it.displayName },
                             selectedOption = department,
@@ -280,7 +290,8 @@ class MedicationManager : ComponentActivity() {
                                             days = days,
                                             medType = it2,
                                             description = description,
-                                            alarms = alarms.toList()
+                                            alarms = alarms.toList(),
+                                            pillsPerPortion = pillsPerPortion
                                         )
                                     }
                             }
