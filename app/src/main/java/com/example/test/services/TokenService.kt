@@ -1,8 +1,11 @@
 package com.example.test.services
 
 import android.Manifest
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -10,12 +13,12 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.test.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import java.util.UUID
 
 class TokenService : FirebaseMessagingService() {
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
         Log.d("NEW_TOKEN",newToken)
-
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -25,34 +28,29 @@ class TokenService : FirebaseMessagingService() {
             if(message.notification?.title?.isNotEmpty() == true) {
                 val title = message.notification!!.title
                 val body = message.notification!!.body
-                val channelId: String = NotificationManager.IMPORTANCE_DEFAULT.toString()
+                var notificationId = System.nanoTime().toInt()
+                val channelId = "my_channel_id"
+                val channelName = "My Channel Name"
+                val importance = NotificationManager.IMPORTANCE_DEFAULT
                 val notificationBuilder = NotificationCompat.Builder(this, channelId)
                     .setContentTitle(title)
                     .setContentText(body)
-                    .setSmallIcon(R.drawable.background)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                val notificationId = 1
-                val notificationManager = NotificationManagerCompat.from(this)
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
-                }
-                if (title != null) {
-                    Log.d("MESSAESUCCES",title)
-                }
-                notificationManager.notify(notificationId,notificationBuilder.build())
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+
+                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                val channel = NotificationChannel(channelId, channelName, importance)
+                channel.description = "This is the description of my notification channel"
+
+                notificationManager.createNotificationChannel(channel)
+                notificationManager.notify(notificationId, notificationBuilder.build())
+                notificationId+= 1
             }
         }
+
+    }
+
+    public fun showForegroundNotification(title: String, body: String) {
 
     }
 

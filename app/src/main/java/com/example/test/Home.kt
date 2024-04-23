@@ -64,7 +64,7 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
-import com.example.test.functions.sendTokenToServer
+import com.example.test.utils.sendTokenToServer
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
@@ -74,6 +74,9 @@ import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.APPOINTMENTS_DATA
+import com.example.test.utils.DOCTORS
+import com.example.test.utils.PATIENTS
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -136,7 +139,7 @@ class Home : ComponentActivity() {
         type = local.getRole()
         if (!type) {
             this.ref.let { it ->
-                db.collection("patients").document(it).get().addOnCompleteListener {
+                db.collection(PATIENTS).document(it).get().addOnCompleteListener {
                     if (it.isSuccessful) {
                         val value = it.result
                         if (value.exists()) {
@@ -148,7 +151,7 @@ class Home : ComponentActivity() {
             }
         } else {
             this.ref.let { it ->
-                db.collection("doctors").document(it).get().addOnCompleteListener {
+                db.collection(DOCTORS).document(it).get().addOnCompleteListener {
                     if (it.isSuccessful) {
                         val value = it.result
                         if (value.exists()) {
@@ -193,7 +196,7 @@ class Home : ComponentActivity() {
             val today = sourceModel.currentDate.date
             val start = today.atStartOfDay(ZoneId.of("UTC"))
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
-            db.collection("appointments").whereEqualTo(field, ref)
+            db.collection(APPOINTMENTS_DATA).whereEqualTo(field, ref)
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
                 .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).get()
                 .addOnCompleteListener {

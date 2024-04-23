@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -44,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.Profile
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
@@ -54,6 +56,8 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class ConvoList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +74,13 @@ class ConvoList : ComponentActivity() {
     @Composable
     @Preview
     fun Content() {
+        val context = LocalContext.current
+        var db = Firebase.firestore
+        var localStorage = LocalStorage(context)
+        val ref = localStorage.getRef()
+        LaunchedEffect(key1 = ref) {
+            db.collection("convolist")
+        }
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
