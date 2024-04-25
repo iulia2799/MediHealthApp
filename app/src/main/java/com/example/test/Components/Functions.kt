@@ -133,7 +133,6 @@ fun LongTextField(
     CustomTextField(text = text, labelValue = labelValue,onTextChange,type,pattern,mods)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTextField(
     text: String,

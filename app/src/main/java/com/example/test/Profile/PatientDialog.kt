@@ -34,6 +34,7 @@ import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.MedicationManager
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.PATIENTS
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -48,7 +49,7 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
         mutableStateOf(nullPatient)
     }
     LaunchedEffect(key1 = patientRef) {
-        db.collection("doctors").document(patientRef).get().addOnSuccessListener {
+        db.collection(PATIENTS).document(patientRef).get().addOnSuccessListener {
             patient = it.toObject<Patient>()!!;
         }.addOnFailureListener {
             Toast.makeText(context, "Oops there was an error.", Toast.LENGTH_SHORT).show()

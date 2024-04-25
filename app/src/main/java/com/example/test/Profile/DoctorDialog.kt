@@ -32,6 +32,7 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.DOCTORS
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -45,7 +46,7 @@ fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
         mutableStateOf(nullDoc)
     }
     LaunchedEffect(key1 = docRef) {
-        db.collection("doctors").document(docRef).get().addOnSuccessListener {
+        db.collection(DOCTORS).document(docRef).get().addOnSuccessListener {
             doctor = it.toObject<Doctor>()!!;
         }.addOnFailureListener {
             Toast.makeText(context, "Oops there was an error.", Toast.LENGTH_SHORT).show()

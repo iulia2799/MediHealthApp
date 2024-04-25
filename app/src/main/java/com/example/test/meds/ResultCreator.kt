@@ -53,6 +53,8 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.RECORDS_STORAGE
+import com.example.test.utils.RESULTS_RECORDS
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
@@ -313,7 +315,7 @@ class ResultCreator : ComponentActivity() {
     }
 
     private fun uploadToFirestore(result: ResultRecord, context: Context) {
-        db.collection("resultrecords").add(result).addOnSuccessListener {
+        db.collection(RESULTS_RECORDS).add(result).addOnSuccessListener {
             Toast.makeText(context, "Result sent", Toast.LENGTH_LONG).show()
         }.addOnFailureListener {
 
@@ -321,7 +323,7 @@ class ResultCreator : ComponentActivity() {
     }
 
     private fun addUrlToFirestore(fileUrl: String) {
-        db.collection("yourCollectionName")
+        db.collection(RECORDS_STORAGE)
             .add(hashMapOf("fileUrl" to fileUrl)) // Add document with "fileUrl" field
             .addOnSuccessListener { documentReference ->
                 println("Document written with ID: ${documentReference.id}")

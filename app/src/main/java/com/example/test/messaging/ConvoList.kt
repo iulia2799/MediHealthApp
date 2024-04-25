@@ -4,6 +4,7 @@ import Models.Conversation
 import Models.Message
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -37,6 +38,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -56,8 +61,11 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.CONVO_LIST
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import java.util.logging.Filter
 
 class ConvoList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +86,50 @@ class ConvoList : ComponentActivity() {
         var db = Firebase.firestore
         var localStorage = LocalStorage(context)
         val ref = localStorage.getRef()
+        var initialList = emptyList<Conversation>()
+        var list by remember {
+            mutableStateOf(initialList)
+        }
         LaunchedEffect(key1 = ref) {
-            db.collection("convolist")
+            if (ref != null) {
+                db.collection(CONVO_LIST).whereArrayContains("userUids",ref).addSnapshotListener { value, error ->
+                    if (value != null) {
+                        if(!value.isEmpty){
+                            var results = value.documents
+                            results.iterator().forEach {
+                                var element = it.toObject<Conversation>()
+
+                                if (element != null) {
+                                    Log.d("element",element.userNames[0])
+                                }
+                            }
+                        } else {
+                            var emptyUids = emptyList<String>()
+                            var emptyNames = emptyList<String>()
+                            emptyUids += "bBNuDUQaHhOmNpepVImY"
+                            emptyUids += "Sp8kV6tgbwRKUQPuSiN3"
+                            emptyNames += "Iulia, Constantin"
+                            emptyNames += "fdsfds, fdsfdsfds"
+                            val firstConvo = Conversation(userUids = emptyUids, userNames = emptyNames)
+                            val conversationRef = db.collection(CONVO_LIST).add(firstConvo) // Create the conversation document
+
+                            conversationRef.addOnSuccessListener { document ->
+                                // Get a reference to the newly created conversation document
+                                val docRef = document
+                                // Create the messages subcollection
+                                docRef.collection("messages").add(Message()).addOnSuccessListener {
+
+                                }
+                            }
+                        }
+
+                    } else {
+                        if (error != null) {
+                            error.message?.let { Log.d("errorcriiii", it) }
+                        }
+                    }
+                }
+            }
         }
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background

@@ -13,6 +13,7 @@ fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     return formatter.format(Date(millis))
 }
+
 fun convertTimeToTimestamp(hour: Int, minutes: Int): Long {
     val hourStamp = hour * 60L * 60L
     val minuteStamp = minutes * 60L
@@ -20,18 +21,22 @@ fun convertTimeToTimestamp(hour: Int, minutes: Int): Long {
 }
 
 fun zonedDateTimeToTimestampFirebase(dateTime: ZonedDateTime): Timestamp {
-    return Timestamp(dateTime.toInstant().epochSecond,dateTime.nano)
+    return Timestamp(dateTime.toInstant().epochSecond, dateTime.nano)
 }
 
 fun <K> filterByField(map: Map<K, Doctor>, query: String): Map<K, Doctor> {
     return map.filterValues { data ->
-        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(query, ignoreCase = true) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
+        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(
+            query, ignoreCase = true
+        ) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
     }
 }
 
 fun <K> filterByFieldP(map: Map<K, Patient>, query: String): Map<K, Patient> {
     return map.filterValues { data ->
-        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(query, ignoreCase = true) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
+        data.firstName.contains(query, ignoreCase = true) || data.lastName.contains(
+            query, ignoreCase = true
+        ) || "${data.firstName} ${data.lastName}".contains(query, ignoreCase = true)
     }
 }
 
@@ -47,7 +52,7 @@ fun convertTimestampToDate(timestamp: Timestamp): Triple<String, Int, Int> {
     return Triple(dateString, hour, minute)
 }
 
-fun convertDateToTimeStamp(hour: Int,minute:Int, dateString: String): Timestamp {
+fun convertDateToTimeStamp(hour: Int, minute: Int, dateString: String): Timestamp {
     val format = SimpleDateFormat("dd/MM/yyyy")
     var timestamp = Timestamp.now()
     try {
@@ -58,12 +63,9 @@ fun convertDateToTimeStamp(hour: Int,minute:Int, dateString: String): Timestamp 
         calendar.set(Calendar.MINUTE, minute)
 
         timestamp = Timestamp(Date(calendar.timeInMillis))
-        // Use the timestamp for Firebase operations
         println("Firebase Timestamp: $timestamp")
     } catch (e: Exception) {
-        // Handle potential parsing errors or invalid dates
         println("Error converting to timestamp: $e")
-        // Show an error message or use a default timestamp
     }
     return timestamp
 }
@@ -81,7 +83,7 @@ fun convertDayMillisToHourAndMinute(millis: Long): Pair<Int, Int> {
 }
 
 fun TimeUnitToString(value: Int): String {
-    return if(value < 10) {
+    return if (value < 10) {
         "0$value"
     } else {
         value.toString()

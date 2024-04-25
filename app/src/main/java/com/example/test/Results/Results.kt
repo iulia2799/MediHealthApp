@@ -35,6 +35,7 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
+import com.example.test.utils.RESULTS_RECORDS
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -75,7 +76,7 @@ class Results : ComponentActivity() {
 
         LaunchedEffect(key1 = ref) {
             isLoading = true
-            db.collection("resultrecords").whereEqualTo("patientRef", ref)
+            db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
                 .orderBy("unix", Query.Direction.DESCENDING)
                 .get().addOnSuccessListener {
                     results = it.toObjects();
@@ -104,7 +105,7 @@ class Results : ComponentActivity() {
                         )
                     }
                     results.forEach { result ->
-                        ResultCard(result, storage)
+                        ResultCard(result)
                     }
                 }
 
@@ -113,7 +114,7 @@ class Results : ComponentActivity() {
     }
 
     @Composable
-    private fun ResultCard(result: ResultRecord, storage: FirebaseStorage) {
+    private fun ResultCard(result: ResultRecord) {
         val context = LocalContext.current
         var isDowloading by remember {
             mutableStateOf(false)

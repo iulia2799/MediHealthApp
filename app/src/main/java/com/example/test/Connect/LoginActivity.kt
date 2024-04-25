@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -44,18 +43,17 @@ import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
 import com.example.test.LocalStorage.LocalStorage
-import com.example.test.R
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
-import com.google.android.gms.tasks.OnCompleteListener
+import com.example.test.utils.DOCTORS
+import com.example.test.utils.PATIENTS
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
@@ -158,9 +156,9 @@ class LoginActivity : ComponentActivity() {
                                     }.addOnSuccessListener {
                                         val db = Firebase.firestore
                                         val queryD =
-                                            db.collection("doctors").whereEqualTo("email", email)
+                                            db.collection(DOCTORS).whereEqualTo("email", email)
                                         val queryP =
-                                            db.collection("patients").whereEqualTo("email", email)
+                                            db.collection(PATIENTS).whereEqualTo("email", email)
                                         val localStorage = LocalStorage(context)
                                         queryD.get().addOnCompleteListener {
                                             if (it.isSuccessful && it.result.documents.size > 0) {

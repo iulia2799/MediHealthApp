@@ -13,9 +13,7 @@ data class AppointmentParceled(
     val description: String,
     var date: Timestamp,
     var alocatedTime: Long,
-) : Parcelable {
-
-}
+) : Parcelable
 
 @Parcelize
 data class PrescriptionParceled(
@@ -30,7 +28,5 @@ data class PrescriptionParceled(
     val days: Int = 0,
     val medType: Department = Department.NA,
     val alarms: List<Long> = emptyList()
-) : Parcelable {
-
-}
+) : Parcelable
 

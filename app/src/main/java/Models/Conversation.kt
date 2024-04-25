@@ -1,11 +1,19 @@
 package Models
 
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.toObjects
+
 data class Conversation(
-    var user1Uid: String = "",
-    var user2Uid: String = "",
-    var user1Name: String = "first",
-    var user2Name: String = "second",
-    var messages: List<Message> = emptyList(),
-    var lastUpdated: Long = System.currentTimeMillis()
+    val userUids: List<String> = emptyList(),
+    val userNames: List<String> = emptyList(),
+    val lastUpdated: Long = System.currentTimeMillis(),
+    val messagesRef: DocumentReference? = null
 ) {
+    // Optional function to retrieve messages
+    fun getMessages(callback: (List<Message>) -> Unit) {
+        messagesRef?.collection("messages")?.get()?.addOnSuccessListener { snapshot ->
+            val messages = snapshot.toObjects<Message>()
+            callback(messages)
+        }
+    }
 }

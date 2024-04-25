@@ -47,12 +47,12 @@ import com.example.test.Home
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.PATIENTS
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import java.util.UUID
 
 class RegisterActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
@@ -234,7 +234,6 @@ class RegisterActivity : ComponentActivity() {
                 DefaultButton(
                     onClick = {
                         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                            val uuid = UUID.randomUUID().toString()
                             if (checked) {
                                 val departmentValue = Department.values().find {
                                     it.displayName == department
@@ -247,7 +246,7 @@ class RegisterActivity : ComponentActivity() {
                                     address = address,
                                     department = departmentValue!!
                                 )
-                                db.collection("doctors").add(doc).addOnCompleteListener {
+                                db.collection(PATIENTS).add(doc).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
                                     localStorage.putUserDetails(
                                         true, it.result.id, departmentValue.ordinal
@@ -265,7 +264,7 @@ class RegisterActivity : ComponentActivity() {
                                     address = address,
                                     age = age.toInt()
                                 )
-                                db.collection("patients").add(p).addOnCompleteListener {
+                                db.collection(PATIENTS).add(p).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
                                     localStorage.putUserDetails(false, it.result.id)
                                     context.startActivity(Intent(context, Home::class.java))

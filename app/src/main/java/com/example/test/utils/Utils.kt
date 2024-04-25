@@ -9,11 +9,11 @@ fun sendTokenToServer(context: Context, firestore: FirebaseFirestore, token: Str
     val ref = LocalStorage(context).getRef()
     val deviceToken = ref?.let { DeviceToken(it, token) }
     if (deviceToken != null) {
-        firestore.collection("deviceTokens").whereEqualTo("token", token).whereEqualTo("userUid",ref).get()
+        firestore.collection(TOKEN_DATA).whereEqualTo("token", token).whereEqualTo("userUid",ref).get()
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     if (it.result.size() == 0) {
-                        firestore.collection("deviceTokens").add(deviceToken)
+                        firestore.collection(TOKEN_DATA).add(deviceToken)
                             .addOnCompleteListener {
 
                             }

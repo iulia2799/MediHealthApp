@@ -8,5 +8,4 @@ data class ResultRecord(
     var fileRefStorageUrl: String = "",
     var description: String = "",
     var unix: Long = System.currentTimeMillis()
-) {
-}
+)

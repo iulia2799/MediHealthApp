@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.ListOfPrescriptions
@@ -42,6 +43,9 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.PATIENTS
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -63,27 +67,27 @@ class ListOfPatients : ComponentActivity() {
             modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             val db = Firebase.firestore
-            var PatientMap by remember { mutableStateOf(emptyMap<String, Patient>()) }
+            var patientMap by remember { mutableStateOf(emptyMap<String, Patient>()) }
             var searchText by remember { mutableStateOf("") }
             val local = LocalStorage(LocalContext.current)
             val dep = local.getDep()
             val ref = local.getRef()
 
             LaunchedEffect(Unit) {
-                val query = db.collection("patients")
+                var query = db.collection(PATIENTS).get()
                 if (dep == Department.GP.ordinal) {
-                    Log.d("DEEEEEP", dep.toString())
-                    db.collection("patients").whereEqualTo("doctorUid", ref)
+                    Log.d("gP", dep.toString())
+                    query = db.collection(PATIENTS).whereEqualTo("doctorUid", ref).get()
                 }
-                query.get().addOnCompleteListener {
+                query.addOnCompleteListener {
                     if (it.isSuccessful) {
                         val documents = it.result!!.documents
-                        val PatientMapTemp = mutableMapOf<String, Patient>()
+                        val patientMapTemp = mutableMapOf<String, Patient>()
                         documents.forEach { document ->
-                            val Patient = document.toObject<Patient>()!!
-                            PatientMapTemp[document.id] = Patient
+                            val patient = document.toObject<Patient>()!!
+                            patientMapTemp[document.id] = patient
                         }
-                        PatientMap = PatientMapTemp
+                        patientMap = patientMapTemp
                     }
                 }
             }
@@ -96,25 +100,14 @@ class ListOfPatients : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Display Patient list
-                val filteredPatients = PatientMap.filter { it ->
-                    searchText.isEmpty() || it.value.firstName.contains(
-                        searchText,
-                        ignoreCase = true
-                    ) || it.value.lastName.contains(
-                        searchText,
-                        ignoreCase = true
-                    ) || "${it.value.firstName} ${it.value.lastName}".contains(
-                        searchText, ignoreCase = true
-                    )
-                }
+                val filteredPatients = filterByFieldP(patientMap,searchText)
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredPatients.keys.toList()) { it ->
+                    items(filteredPatients.keys.toList()) {
                         filteredPatients[it]?.let { it1 ->
                             PatientItem(
                                 patient = it1, ref = it
                             )
-                        } // Define a composable for each Patient item
+                        }
                     }
                 }
             }

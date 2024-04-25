@@ -21,7 +21,7 @@ class Downloader(private val context: Context) {
             Environment.DIRECTORY_DOWNLOADS,
             filename
         )
-        Log.d("DOWNLOAD DIRECORY",Environment.DIRECTORY_DOWNLOADS)
+        Log.d("DOWNLOAD DIRECTORY",Environment.DIRECTORY_DOWNLOADS)
 
         downloadmanager.enqueue(request)
     }

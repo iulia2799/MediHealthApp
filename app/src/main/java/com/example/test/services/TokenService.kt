@@ -1,19 +1,13 @@
 package com.example.test.services
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.example.test.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.util.UUID
 
 class TokenService : FirebaseMessagingService() {
     override fun onNewToken(newToken: String) {
@@ -47,10 +41,6 @@ class TokenService : FirebaseMessagingService() {
                 notificationId+= 1
             }
         }
-
-    }
-
-    public fun showForegroundNotification(title: String, body: String) {
 
     }
 

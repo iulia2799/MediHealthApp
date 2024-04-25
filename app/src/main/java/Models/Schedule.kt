@@ -5,5 +5,4 @@ data class Schedule (
     var end: String = "12",
     var weekStart: String = "Monday",
     var weekend: String = "Friday"
-){
-}
+)

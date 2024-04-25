@@ -36,6 +36,7 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -64,7 +65,7 @@ class ListOfPrescriptions : ComponentActivity() {
         }
         var prescriptions by remember { mutableStateOf(emptyMap<String, Medication>()) }
         LaunchedEffect(key1 = ref) {
-            db.collection("medication").whereEqualTo("patientUid", ref).get()
+            db.collection(MEDICATION_DATA).whereEqualTo("patientUid", ref).get()
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (it.result.size() > 0) {

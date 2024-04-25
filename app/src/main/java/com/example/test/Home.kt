@@ -64,19 +64,18 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
-import com.example.test.utils.sendTokenToServer
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
-import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.APPOINTMENTS_DATA
 import com.example.test.utils.DOCTORS
 import com.example.test.utils.PATIENTS
+import com.example.test.utils.sendTokenToServer
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -101,13 +100,9 @@ class Home : ComponentActivity() {
                     return@OnCompleteListener
                 }
 
-                // Get new FCM registration token
                 val token = task.result
 
-                // Log and toast
-                //val msg = getString(R.string.msg_token_fmt, token)
                 Log.d("TAaaaaaaG1", token)
-                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         } else {
             // TODO: Inform user that that your app will not show notifications.

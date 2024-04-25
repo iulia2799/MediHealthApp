@@ -69,6 +69,7 @@ import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
+import com.example.test.utils.APPOINTMENTS_DATA
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -415,14 +416,14 @@ class AppointmentManager : ComponentActivity() {
                                     "alocatedTime" to convertAlocatedTime(alocatedTime, unit),
                                 )
 
-                                db.collection("appointments").document(appRef).update(updateData)
+                                db.collection(APPOINTMENTS_DATA).document(appRef).update(updateData)
                                     .addOnSuccessListener {
                                         showSnackbar = true
                                     }.addOnFailureListener {
                                         it.message?.let { it1 -> Log.e("fdsfds", it1) }
                                     }
                             } else if (mode == "create") {
-                                db.collection("appointments").add(
+                                db.collection(APPOINTMENTS_DATA).add(
                                     Appointment(
                                         doctorUid as String,
                                         doctor,

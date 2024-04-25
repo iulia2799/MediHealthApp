@@ -48,6 +48,7 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -149,7 +150,7 @@ class ChangeAlerts : ComponentActivity() {
                                     Log.d("REFFFFF", reference)
                                 }
                                 if (reference != null) {
-                                    db.collection("medication").document(reference).update(
+                                    db.collection(MEDICATION_DATA).document(reference).update(
                                         mapOf(
                                             "alarms" to list,
                                         )

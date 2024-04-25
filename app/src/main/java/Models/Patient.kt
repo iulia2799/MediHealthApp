@@ -10,7 +10,6 @@ data class Patient(
     var age: Int = 0,
     var doctorUid: String = "0",
     var doctorName: String = ""
-) {
-}
+)
 
 val nullPatient = Patient("","","","","","",0)

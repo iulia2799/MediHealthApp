@@ -60,6 +60,7 @@ import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
+import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -296,7 +297,7 @@ class MedicationManager : ComponentActivity() {
                                     }
                             }
                             if (med != null) {
-                                db.collection("medication").add(med).addOnSuccessListener {
+                                db.collection(MEDICATION_DATA).add(med).addOnSuccessListener {
 
                                     coroutineScope.launch {
                                         snackbarState.showSnackbar(

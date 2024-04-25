@@ -5,6 +5,4 @@ data class Message(
     var sender: String = "",
     var receiver: String = "",
     var time: Long = System.currentTimeMillis()
-) {
-
-}
+)
