@@ -1,5 +1,6 @@
 package com.example.test.messaging
 
+import Models.Conversation
 import Models.Message
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +46,11 @@ import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalPrimary
+import com.example.test.utils.getMessages
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ConversationSpace : ComponentActivity() {
@@ -85,7 +90,13 @@ class ConversationSpace : ComponentActivity() {
         }
         var scrollState = rememberScrollState()
         if (reference != null) {
-            val docRef = db.collection("convos").document(reference)
+            val flow = getMessages(Conversation())
+            LaunchedEffect(key1 = flow){
+                flow.collectLatest {
+                    messageList += it
+                }
+            }
+            /*val docRef = db.collection("convos").document(reference)
             docRef.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w("ERROR", "Listen failed.", e)
@@ -104,7 +115,7 @@ class ConversationSpace : ComponentActivity() {
                 } else {
                     Log.d("NO_CONTENT", "Current data: null")
                 }
-            }
+            }*/
 
         }
         Scaffold(topBar = { Header(username = username) }, bottomBar = {

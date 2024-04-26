@@ -1,7 +1,10 @@
 package com.example.test.Components
 
+import Models.Conversation
 import Models.Doctor
 import Models.Patient
+import android.content.Context
+import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
@@ -88,4 +91,11 @@ fun TimeUnitToString(value: Int): String {
     } else {
         value.toString()
     }
+}
+
+fun getFromUserUids(convo: Conversation, context: Context): Pair<String,String> {
+    var localStorage = LocalStorage(context)
+    val ref = localStorage.getRef()
+    val index = convo.userUids.indexOf(ref)
+    return Pair(convo.userUids[index],convo.userNames[index])
 }

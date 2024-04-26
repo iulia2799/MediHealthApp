@@ -3,6 +3,7 @@ package com.example.test.LocalStorage
 import Models.Department
 import android.os.Parcelable
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.parcelize.Parcelize
 @Parcelize
 data class AppointmentParceled(
@@ -28,5 +29,13 @@ data class PrescriptionParceled(
     val days: Int = 0,
     val medType: Department = Department.NA,
     val alarms: List<Long> = emptyList()
+) : Parcelable
+
+@Parcelize
+data class ParcelableConvo(
+    val userUids: List<String> = emptyList(),
+    val userNames: List<String> = emptyList(),
+    val lastUpdated: Long = System.currentTimeMillis(),
+    val messagesRef: String = ""
 ) : Parcelable
 

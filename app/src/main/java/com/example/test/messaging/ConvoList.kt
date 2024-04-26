@@ -2,6 +2,7 @@ package com.example.test.messaging
 
 import Models.Conversation
 import Models.Message
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,20 +12,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -42,37 +37,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.example.test.Components.convertMillisToDate
+import com.example.test.Components.getFromUserUids
 import com.example.test.LocalStorage.LocalStorage
-import com.example.test.Profile.Profile
+import com.example.test.LocalStorage.ParcelableConvo
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.convoColor
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.unfocusedLabelColor
-import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
-import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.CONVO_LIST
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
-import java.util.logging.Filter
 
 class ConvoList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Content()
             }
         }
@@ -83,52 +74,52 @@ class ConvoList : ComponentActivity() {
     @Preview
     fun Content() {
         val context = LocalContext.current
-        var db = Firebase.firestore
-        var localStorage = LocalStorage(context)
+        val db = Firebase.firestore
+        val localStorage = LocalStorage(context)
         val ref = localStorage.getRef()
-        var initialList = emptyList<Conversation>()
+        val initialList = emptyList<Conversation>()
         var list by remember {
             mutableStateOf(initialList)
         }
         LaunchedEffect(key1 = ref) {
             if (ref != null) {
-                db.collection(CONVO_LIST).whereArrayContains("userUids",ref).addSnapshotListener { value, error ->
-                    if (value != null) {
-                        if(!value.isEmpty){
-                            var results = value.documents
-                            results.iterator().forEach {
-                                var element = it.toObject<Conversation>()
+                db.collection(CONVO_LIST).whereArrayContains("userUids", ref)
+                    .addSnapshotListener { value, error ->
+                        if (value != null) {
+                            if (!value.isEmpty) {
+                                val results = value.documents
+                                results.iterator().forEach {
+                                    val element = it.toObject<Conversation>()
+                                    if (element != null) {
+                                        Log.d("element", element.userNames[0])
+                                        list += element
+                                    }
+                                }
+                            } else {
+                                var emptyUids = emptyList<String>()
+                                var emptyNames = emptyList<String>()
+                                emptyUids += "bBNuDUQaHhOmNpepVImY"
+                                emptyUids += "Sp8kV6tgbwRKUQPuSiN3"
+                                emptyNames += "Iulia, Constantin"
+                                emptyNames += "fdsfds, fdsfdsfds"
+                                val firstConvo =
+                                    Conversation(userUids = emptyUids, userNames = emptyNames)
+                                val conversationRef = db.collection(CONVO_LIST).add(firstConvo)
 
-                                if (element != null) {
-                                    Log.d("element",element.userNames[0])
+                                conversationRef.addOnSuccessListener { document ->
+                                    document.collection("messages").add(Message())
+                                        .addOnSuccessListener {
+
+                                        }
                                 }
                             }
+
                         } else {
-                            var emptyUids = emptyList<String>()
-                            var emptyNames = emptyList<String>()
-                            emptyUids += "bBNuDUQaHhOmNpepVImY"
-                            emptyUids += "Sp8kV6tgbwRKUQPuSiN3"
-                            emptyNames += "Iulia, Constantin"
-                            emptyNames += "fdsfds, fdsfdsfds"
-                            val firstConvo = Conversation(userUids = emptyUids, userNames = emptyNames)
-                            val conversationRef = db.collection(CONVO_LIST).add(firstConvo) // Create the conversation document
-
-                            conversationRef.addOnSuccessListener { document ->
-                                // Get a reference to the newly created conversation document
-                                val docRef = document
-                                // Create the messages subcollection
-                                docRef.collection("messages").add(Message()).addOnSuccessListener {
-
-                                }
+                            if (error != null) {
+                                error.message?.let { Log.d("errorcriiii", it) }
                             }
-                        }
-
-                    } else {
-                        if (error != null) {
-                            error.message?.let { Log.d("errorcriiii", it) }
                         }
                     }
-                }
             }
         }
         Surface(
@@ -165,7 +156,7 @@ class ConvoList : ComponentActivity() {
             }) {
                 LazyColumn(modifier = Modifier.padding(it)) {
                     items(6) {
-                        ConvoItem()
+                        //ConvoItem()
                     }
                 }
             }
@@ -173,28 +164,29 @@ class ConvoList : ComponentActivity() {
     }
 
     @Composable
-    @Preview
-    fun ConvoItem() {
+    fun ConvoItem(convo: Conversation) {
         val context = LocalContext.current
-        //val initialConversation = Conversation()
+        val pair = getFromUserUids(convo, context)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)
-                .background(convoColor), horizontalArrangement = Arrangement.SpaceBetween
+                .background(convoColor),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier.padding(5.dp)) {
                 Row {
-                    Text(text = "current", fontFamily = jejugothicFamily)
+                    Text(text = pair.second, fontFamily = jejugothicFamily)
                 }
                 Row {
-                    Text(text = "current", fontFamily = jejugothicFamily)
+                    Text(
+                        text = "Last updated: ${convertMillisToDate(convo.lastUpdated)}", fontFamily = jejugothicFamily
+                    )
                 }
             }
             Column {
                 IconButton(
-                    onClick = { /* todo */ },
-                    modifier = Modifier.size(50.dp)
+                    onClick = { getToConversation(convo, context) }, modifier = Modifier.size(50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -204,6 +196,17 @@ class ConvoList : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun getToConversation(conversation: Conversation, context: Context) {
+        val parcel = conversation.messagesRef?.let {
+            ParcelableConvo(
+                conversation.userUids, conversation.userNames, conversation.lastUpdated, it.id
+            )
+        }
+        val intent = Intent(context, ConversationSpace::class.java)
+        intent.putExtra("data", parcel)
+        context.startActivity(intent)
     }
 
 }
