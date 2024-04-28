@@ -40,4 +40,5 @@
     <string name="title_activity_list_of_prescriptions">ListOfPrescriptions</string>
     <string name="notification_channel_id">APP_CHANNEL</string>
     <string name="notification_channel_name">App Channel</string>
+    <string name="title_activity_conversation_space">ConversationSpace</string>
 </resources>

@@ -1,14 +1,19 @@
 package com.example.test.Components
 
+import Models.Message
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -38,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
@@ -47,6 +53,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.offWhite
@@ -117,6 +124,20 @@ fun CustomSwitch(modifier: Modifier, checked: Boolean, onStateChange: (Boolean) 
                 )
             }
         })
+}
+
+@Composable
+fun MessageTextField(
+    text: String,
+    labelValue: String,
+    onTextChange: (String) -> Unit = {},
+    type: String = "text",
+    pattern: String = textPattern,
+    mods: Modifier = Modifier
+        .padding(10.dp),
+
+) {
+    CustomTextField(text = text, labelValue = labelValue,onTextChange,type,pattern,mods)
 }
 
 @Composable
@@ -344,5 +365,87 @@ fun FormSelector(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun ReceivedMessage(message: Message) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.Start)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(boldPrimary), contentAlignment = Alignment.CenterStart
+        ) {
+            Column {
+                Text(
+                    text = convertMillisToDate(message.time),
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 12.sp,
+                    fontFamily = jejugothicFamily,
+                    color = universalAccent
+                )
+                Text(
+                    text = message.text,
+                    modifier = Modifier.padding(10.dp),
+                    fontFamily = jejugothicFamily,
+                    fontSize = 16.sp
+                )
+            }
+
+        }
+
+    }
+}
+
+@Composable
+fun SentMessage(message: Message) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.End)
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(universalPrimary), contentAlignment = Alignment.CenterEnd
+        ) {
+            Column {
+                Text(
+                    text = convertMillisToDate(message.time),
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 12.sp,
+                    fontFamily = jejugothicFamily,
+                    color = universalAccent
+                )
+                Text(
+                    text = message.text,
+                    modifier = Modifier.padding(10.dp),
+                    fontFamily = jejugothicFamily,
+                    fontSize = 16.sp
+                )
+            }
+
+        }
+
+    }
+}
+
+@Composable
+fun Header(username: String) {
+    Row {
+        LargeTextField(
+            value = "Conversation with $username",
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.Start)
+                .weight(1f)
+        )
     }
 }

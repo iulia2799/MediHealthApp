@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -81,7 +82,6 @@ class ConvoList : ComponentActivity() {
         var list by remember {
             mutableStateOf(initialList)
         }
-        LaunchedEffect(key1 = ref) {
             if (ref != null) {
                 db.collection(CONVO_LIST).whereArrayContains("userUids", ref)
                     .addSnapshotListener { value, error ->
@@ -96,22 +96,7 @@ class ConvoList : ComponentActivity() {
                                     }
                                 }
                             } else {
-                                var emptyUids = emptyList<String>()
-                                var emptyNames = emptyList<String>()
-                                emptyUids += "bBNuDUQaHhOmNpepVImY"
-                                emptyUids += "Sp8kV6tgbwRKUQPuSiN3"
-                                emptyNames += "Iulia, Constantin"
-                                emptyNames += "fdsfds, fdsfdsfds"
-                                val firstConvo =
-                                    Conversation(userUids = emptyUids, userNames = emptyNames)
-                                val conversationRef = db.collection(CONVO_LIST).add(firstConvo)
 
-                                conversationRef.addOnSuccessListener { document ->
-                                    document.collection("messages").add(Message())
-                                        .addOnSuccessListener {
-
-                                        }
-                                }
                             }
 
                         } else {
@@ -119,9 +104,11 @@ class ConvoList : ComponentActivity() {
                                 error.message?.let { Log.d("errorcriiii", it) }
                             }
                         }
+                        if (error != null) {
+                            error.message?.let { Log.d("errorcriiii", it) }
+                        }
                     }
             }
-        }
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
@@ -155,8 +142,8 @@ class ConvoList : ComponentActivity() {
                 )
             }) {
                 LazyColumn(modifier = Modifier.padding(it)) {
-                    items(6) {
-                        //ConvoItem()
+                    items(list) {convo ->
+                        ConvoItem(convo)
                     }
                 }
             }
@@ -201,7 +188,7 @@ class ConvoList : ComponentActivity() {
     private fun getToConversation(conversation: Conversation, context: Context) {
         val parcel = conversation.messagesRef?.let {
             ParcelableConvo(
-                conversation.userUids, conversation.userNames, conversation.lastUpdated, it.id
+                conversation.userUids, conversation.userNames, conversation.lastUpdated, it.path
             )
         }
         val intent = Intent(context, ConversationSpace::class.java)
