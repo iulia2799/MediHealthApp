@@ -17,6 +17,11 @@ fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
+fun convertMillisToExactDate(millis: Long): String {
+    val formatter = SimpleDateFormat("hh:mm dd/MM/yyyy", Locale.ROOT)
+    return formatter.format(Date(millis))
+}
+
 fun convertTimeToTimestamp(hour: Int, minutes: Int): Long {
     val hourStamp = hour * 60L * 60L
     val minuteStamp = minutes * 60L
@@ -79,13 +84,8 @@ fun convertDayStampToHourAndMinute(seconds: Long): Pair<Int, Int> {
     return Pair(hours, minutes)
 }
 
-fun convertDayMillisToHourAndMinute(millis: Long): Pair<Int, Int> {
-    val hours = (millis / (1000 * 60 * 60)).toInt()
-    val minutes = ((millis % (1000 * 60 * 60)) / (1000 * 60)).toInt()
-    return Pair(hours, minutes)
-}
 
-fun TimeUnitToString(value: Int): String {
+fun timeUnitToString(value: Int): String {
     return if (value < 10) {
         "0$value"
     } else {
@@ -93,9 +93,9 @@ fun TimeUnitToString(value: Int): String {
     }
 }
 
-fun getFromUserUids(convo: Conversation, context: Context): Pair<String,String> {
+fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String> {
     var localStorage = LocalStorage(context)
     val ref = localStorage.getRef()
     val index = convo.userUids.indexOf(ref)
-    return Pair(convo.userUids[index],convo.userNames[index])
+    return Pair(convo.userUids[index], convo.userNames[index])
 }

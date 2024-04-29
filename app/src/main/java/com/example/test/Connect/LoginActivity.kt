@@ -1,6 +1,7 @@
 package com.example.test.Connect
 
 import Models.Doctor
+import Models.Patient
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -34,11 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.Back
+import com.example.test.Components.back
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
-import com.example.test.Components.RegisterPageEnter
+import com.example.test.Components.registerPageEnter
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
 import com.example.test.Home
@@ -160,13 +161,13 @@ class LoginActivity : ComponentActivity() {
                                         val queryP =
                                             db.collection(PATIENTS).whereEqualTo("email", email)
                                         val localStorage = LocalStorage(context)
-                                        queryD.get().addOnCompleteListener {
-                                            if (it.isSuccessful && it.result.documents.size > 0) {
-                                                val reference = it.result.documents[0]
+                                        queryD.get().addOnCompleteListener { docSnapshot ->
+                                            if (docSnapshot.isSuccessful && docSnapshot.result.documents.size > 0) {
+                                                val reference = docSnapshot.result.documents[0]
                                                 val d = reference.toObject<Doctor>()
                                                 if (d != null) {
                                                     localStorage.putUserDetails(
-                                                        true, reference.id, d.department.ordinal
+                                                        true, reference.id, d.department.ordinal, d.firstName,d.lastName
                                                     )
                                                 }
                                                 context.startActivity(
@@ -178,8 +179,9 @@ class LoginActivity : ComponentActivity() {
                                                 queryP.get().addOnCompleteListener {
                                                     if (it.isSuccessful && it.result.documents.size > 0) {
                                                         val reference = it.result.documents[0]
+                                                        val patient = reference.toObject<Patient>()
                                                         localStorage.putUserDetails(
-                                                            false, reference.id
+                                                            false, reference.id, patient!!.firstName, patient.lastName
                                                         )
                                                         context.startActivity(
                                                             Intent(
@@ -206,7 +208,7 @@ class LoginActivity : ComponentActivity() {
 
                     Row {
                         DefaultButton(
-                            onClick = { RegisterPageEnter(context) },
+                            onClick = { registerPageEnter(context) },
                             Alignment.Center,
                             "Create a new account",
                             Modifier
@@ -218,7 +220,7 @@ class LoginActivity : ComponentActivity() {
 
                     Row {
                         DefaultButton(
-                            onClick = { Back(context) },
+                            onClick = { back(context) },
                             Alignment.Center,
                             "Back",
                             Modifier

@@ -1,5 +1,6 @@
 package com.example.test.Misc
 
+import Models.Conversation
 import Models.Department
 import Models.Patient
 import android.content.Intent
@@ -27,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.filterByFieldP
+import com.example.test.Components.goToConvo
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.ListOfPrescriptions
@@ -44,11 +47,14 @@ import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.utils.PATIENTS
+import com.example.test.utils.createNewConversation
+import com.example.test.utils.getNewConversation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class ListOfPatients : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,7 +106,7 @@ class ListOfPatients : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                val filteredPatients = filterByFieldP(patientMap,searchText)
+                val filteredPatients = filterByFieldP(patientMap, searchText)
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(filteredPatients.keys.toList()) {
                         filteredPatients[it]?.let { it1 ->
@@ -118,6 +124,10 @@ class ListOfPatients : ComponentActivity() {
     fun PatientItem(patient: Patient, ref: String) {
         val context = LocalContext.current
         val name = patient.firstName + ", " + patient.lastName
+        val coroutine = rememberCoroutineScope()
+        var convo by remember {
+            mutableStateOf(Conversation())
+        }
         Card(
             modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
         ) {
@@ -181,6 +191,27 @@ class ListOfPatients : ComponentActivity() {
                         )
                     ) {
                         Text("View Prescriptions")
+                    }
+
+                    TextButton(
+                        modifier = Modifier.padding(4.dp), onClick = {
+                            createNewConversation(context, ref, name) { id ->
+                                val flow = getNewConversation(id)
+                                coroutine.launch {
+                                    flow.collect {
+                                        if (it != null) {
+                                            convo = it
+                                            goToConvo(context, convo)
+                                        }
+
+                                    }
+                                }
+                            }
+                        }, colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent,
+                        )
+                    ) {
+                        Text("Message")
                     }
                 }
             }

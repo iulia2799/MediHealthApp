@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.convertMillisToDate
 import com.example.test.Components.getFromUserUids
+import com.example.test.Components.goToList
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.ParcelableConvo
 import com.example.test.ui.theme.AppTheme
@@ -126,7 +127,7 @@ class ConvoList : ComponentActivity() {
                     actions = {
                         FloatingActionButton(
                             onClick = {
-                                //todo
+                                goToList(context)
                             },
                             modifier = Modifier.padding(5.dp),
                             containerColor = universalBackground,

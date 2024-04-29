@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
-import com.example.test.Components.Logout
+import com.example.test.Components.logout
 import com.example.test.Components.Welcome
 import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
@@ -363,7 +363,7 @@ class Home : ComponentActivity() {
 
                     DefaultButton(
                         onClick = {
-                            Logout(context)
+                            logout(context)
                         },
                         Alignment.Center,
                         "Log out",

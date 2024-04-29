@@ -11,9 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -49,8 +47,7 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.FormSelector
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
-import com.example.test.Components.MediumTextField
-import com.example.test.Components.TimeUnitToString
+import com.example.test.Components.timeUnitToString
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.LocalStorage
@@ -251,8 +248,8 @@ class MedicationManager : ComponentActivity() {
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         LargeTextField(
-                                            value = "${TimeUnitToString(pair.first)}:${
-                                                TimeUnitToString(
+                                            value = "${timeUnitToString(pair.first)}:${
+                                                timeUnitToString(
                                                     pair.second
                                                 )
                                             }", modifier = Modifier.padding(4.dp)

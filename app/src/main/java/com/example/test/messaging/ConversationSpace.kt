@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
@@ -58,8 +62,7 @@ class ConversationSpace : ComponentActivity() {
             AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     Content()
                 }
@@ -73,7 +76,8 @@ class ConversationSpace : ComponentActivity() {
         val context = LocalContext.current
         val localStorage = LocalStorage(context)
         val userRef = localStorage.getRef()
-        var initList = emptyList<Message>()
+        var listState = rememberLazyListState()
+        val initList = emptyList<Message>()
         var text by remember {
             mutableStateOf("")
         }
@@ -100,8 +104,10 @@ class ConversationSpace : ComponentActivity() {
         coroutine.launch {
             flow?.collect {
                 if (it?.isNotEmpty() == true) {
-                    Log.d("BUFFER",it.size.toString())
+                    Log.d("BUFFER", it.size.toString())
                     buffer = it
+                    listState.animateScrollToItem(it.size - 1)
+
                 } else {
                     Log.d("NOTHING", "nothing")
                 }
@@ -110,6 +116,7 @@ class ConversationSpace : ComponentActivity() {
         }
         LaunchedEffect(key1 = buffer) {
             messageList = buffer
+
         }
         val otheruser = data?.userUids?.find { uid -> uid != userRef }
         val index = data?.userUids?.indexOf(otheruser)
@@ -120,29 +127,27 @@ class ConversationSpace : ComponentActivity() {
             }
         }, bottomBar = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MessageTextField(
-                    mods = Modifier
-                        .padding(10.dp)
-                        .weight(1f),
+                MessageTextField(mods = Modifier
+                    .padding(10.dp)
+                    .weight(1f),
                     text = text,
                     labelValue = "Send a message",
                     onTextChange = { newValue ->
                         text = newValue
                     })
                 DefaultIconButton(onClick = {
-                    val input =
-                        Message(
-                            text = text,
-                            sender = userRef!!,
-                            receiver = otheruser!!
-                        )
+                    val input = Message(
+                        text = text, sender = userRef!!, receiver = otheruser!!
+                    )
                     data.messagesRef?.collection("messages")?.add(input)?.addOnCompleteListener {
                         text = ""
                     }
                 }, imageVector = Icons.AutoMirrored.Rounded.Send, description = "Send message")
             }
         }) { innerPadding ->
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            LazyColumn(
+                state = listState, modifier = Modifier.padding(innerPadding)
+            ) {
                 items(messageList) { message ->
                     if (userRef == message.receiver) {
                         ReceivedMessage(message = message)

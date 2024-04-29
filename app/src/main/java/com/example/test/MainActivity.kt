@@ -25,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.Greeting
-import com.example.test.Components.LoginPageEnter
-import com.example.test.Components.RegisterPageEnter
+import com.example.test.Components.loginPageEnter
+import com.example.test.Components.registerPageEnter
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
@@ -86,7 +86,7 @@ fun Content() {
             Greeting()
         }
         DefaultButton(
-            { LoginPageEnter(context) },
+            { loginPageEnter(context) },
             Alignment.TopCenter,
             "Login",
             Modifier
@@ -94,7 +94,7 @@ fun Content() {
                 .fillMaxWidth()
         )
         DefaultButton(
-            { RegisterPageEnter(context) },
+            { registerPageEnter(context) },
             Alignment.Center,
             "Register",
             Modifier
