@@ -7,7 +7,7 @@ data class Conversation(
     val userUids: List<String> = emptyList(),
     val userNames: List<String> = emptyList(),
     val lastUpdated: Long = System.currentTimeMillis(),
-    val messagesRef: DocumentReference? = null
+    var messagesRef: DocumentReference? = null
 ) {
     // Optional function to retrieve messages
     fun getMessages(callback: (List<Message>) -> Unit) {

@@ -201,6 +201,9 @@ class ListOfPatients : ComponentActivity() {
                                     flow.collect {
                                         if (it != null) {
                                             convo = it
+                                            if(convo.messagesRef == null) {
+                                                convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                                            }
                                             goToConvo(context, convo)
                                         }
 

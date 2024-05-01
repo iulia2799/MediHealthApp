@@ -96,6 +96,11 @@ fun timeUnitToString(value: Int): String {
 fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String> {
     var localStorage = LocalStorage(context)
     val ref = localStorage.getRef()
-    val index = convo.userUids.indexOf(ref)
+    val result = convo.userUids.find { value -> value != ref }
+    val index = convo.userUids.indexOf(result)
     return Pair(convo.userUids[index], convo.userNames[index])
+}
+
+fun convertBooleanToResult(accepted: Boolean): String {
+    return if (accepted) "Yes" else "No"
 }

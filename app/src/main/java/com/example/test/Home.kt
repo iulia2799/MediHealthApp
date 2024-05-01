@@ -57,6 +57,7 @@ import com.example.test.Components.logout
 import com.example.test.Components.Welcome
 import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
+import com.example.test.Components.convertBooleanToResult
 import com.example.test.Components.zonedDateTimeToTimestampFirebase
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
@@ -386,15 +387,7 @@ class Home : ComponentActivity() {
 
                 items(items = results.keys.toList()) {
 
-                    val color = when (results[it]?.accepted) {
-                        true -> {
-                            universalBackground
-                        }
-
-                        else -> {
-                            universalTertiary
-                        }
-                    }
+                    val color = if (results[it]?.accepted == true) universalBackground else universalTertiary
                     Card(
                         modifier = Modifier.padding(8.dp), colors = CardDefaults.cardColors(
                             containerColor = color
@@ -408,7 +401,13 @@ class Home : ComponentActivity() {
                             Text(text = "Patient: ${results[it]?.patientName}")
                             Text(text = "Description: ${results[it]?.description}")
                             Text(text = "Date: ${results[it]?.date?.toDate()}")
-                            Text(text = "Accepted: ${results[it]?.accepted}")
+                            Text(text = "Accepted: ${
+                                results[it]?.accepted?.let { it1 ->
+                                    convertBooleanToResult(
+                                        it1
+                                    )
+                                }
+                            }")
                             TextButton(onClick = {
                                 isOpen = true
                             }) {
@@ -434,10 +433,11 @@ class Home : ComponentActivity() {
         Log.d("TAaaaaaaG", "token")
         // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(
+                    this, android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
             ) {
-                Log.d("HELLO","TOJE3")
+                Log.d("HELLO", "TOJE3")
                 FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                     if (!task.isSuccessful) {
                         Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
@@ -450,7 +450,7 @@ class Home : ComponentActivity() {
                     // Log and toast
                     //val msg = getString(R.string.msg_token_fmt, token)
                     Log.d("TAaaaaaaG2", token)
-                    sendTokenToServer(context,db,token)
+                    sendTokenToServer(context, db, token)
                     //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                 })
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
@@ -463,7 +463,7 @@ class Home : ComponentActivity() {
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            Log.d("HELLO","TOJE")
+            Log.d("HELLO", "TOJE")
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
@@ -476,7 +476,7 @@ class Home : ComponentActivity() {
                 // Log and toast
                 //val msg = getString(R.string.msg_token_fmt, token)
                 Log.d("TAaaaaaaG3", token)
-                sendTokenToServer(context,db,token)
+                sendTokenToServer(context, db, token)
                 //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         }
