@@ -122,7 +122,6 @@ fun AppointmentDialog(
                                 appointment.alocatedTime
                             )
                             val mode = "edit"
-                            LocalStorage(context).loginUser()
                             intent.putExtra("reference", ref)
                             intent.putExtra("appointment", parcel)
                             intent.putExtra("mode", mode)

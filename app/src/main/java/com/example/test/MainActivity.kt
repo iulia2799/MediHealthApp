@@ -31,6 +31,7 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.HelpPage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.removeTokenFromServer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,11 +66,17 @@ fun Content() {
     val context = LocalContext.current
     val localStorage = LocalStorage(context)
     if(localStorage.getRef() != null && localStorage.getRef() != "") {
-        context.startActivity(
-            Intent(
-                context, Home::class.java
+        if(!localStorage.isLoggedIn()){
+            localStorage.getRef()?.let { removeTokenFromServer(it,localStorage.getToken()) }
+            localStorage.clearDetails()
+        } else {
+            context.startActivity(
+                Intent(
+                    context, Home::class.java
+                )
             )
-        )
+        }
+
     }
     Column(
         modifier = Modifier

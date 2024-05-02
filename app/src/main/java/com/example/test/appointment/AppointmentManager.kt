@@ -403,7 +403,6 @@ class AppointmentManager : ComponentActivity() {
                         onClick = {
                             Log.d("fdsfds", appRef)
                             if (mode == "edit") {
-                                LocalStorage(context).LogOut()
                                 val updateData = mapOf(
                                     "doctorUid" to doctorUid,
                                     "patientUid" to patientUid,

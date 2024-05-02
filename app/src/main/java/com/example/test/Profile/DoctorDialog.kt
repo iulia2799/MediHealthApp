@@ -47,7 +47,7 @@ fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
     }
     LaunchedEffect(key1 = docRef) {
         db.collection(DOCTORS).document(docRef).get().addOnSuccessListener {
-            doctor = it.toObject<Doctor>()!!;
+            doctor = it.toObject<Doctor>()!!
         }.addOnFailureListener {
             Toast.makeText(context, "Oops there was an error.", Toast.LENGTH_SHORT).show()
         }

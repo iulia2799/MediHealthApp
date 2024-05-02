@@ -436,7 +436,7 @@ fun SentMessage(message: Message) {
 }
 
 @Composable
-fun Header(username: String) {
+fun Header(username: String, onClick: () -> Unit = {}) {
     Row {
         LargeTextField(
             value = "Conversation with $username",
@@ -444,7 +444,9 @@ fun Header(username: String) {
                 .padding(10.dp)
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.Start)
-                .weight(1f)
+                .weight(1f).clickable {
+                    onClick()
+                }
         )
     }
 }

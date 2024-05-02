@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -53,11 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
-import com.example.test.Components.logout
 import com.example.test.Components.Welcome
 import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
 import com.example.test.Components.convertBooleanToResult
+import com.example.test.Components.logout
 import com.example.test.Components.zonedDateTimeToTimestampFirebase
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Misc.ListOfDoctors
@@ -112,6 +113,9 @@ class Home : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         setContent {
             setContent()
         }
@@ -125,6 +129,11 @@ class Home : ComponentActivity() {
         val context = LocalContext.current
         askNotificationPermission(context)
         val local = LocalStorage(context)
+        //TODO PLEASE REMOVE IF IT CAUSES MORE PROBLEMS THAN IT SOLVES
+        onBackPressedDispatcher.addCallback {
+            local.logOutUser()
+            context.startActivity(Intent(context,MainActivity:: class.java))
+        }
         var datap by remember {
             mutableStateOf(nullPatient)
         }
@@ -450,6 +459,7 @@ class Home : ComponentActivity() {
                     // Log and toast
                     //val msg = getString(R.string.msg_token_fmt, token)
                     Log.d("TAaaaaaaG2", token)
+                    LocalStorage(context).putToken(token)
                     sendTokenToServer(context, db, token)
                     //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                 })

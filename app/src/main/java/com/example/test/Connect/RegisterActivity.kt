@@ -254,6 +254,7 @@ class RegisterActivity : ComponentActivity() {
                                     localStorage.putUserDetails(
                                         true, it.result.id, departmentValue.ordinal, firstName, lastName
                                     )
+                                    localStorage.loginUser()
                                     context.startActivity(Intent(context, Home::class.java))
                                 }.addOnFailureListener {
                                     //oops
@@ -270,6 +271,7 @@ class RegisterActivity : ComponentActivity() {
                                 db.collection(PATIENTS).add(p).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
                                     localStorage.putUserDetails(false, it.result.id, firstName, lastName)
+                                    localStorage.loginUser()
                                     context.startActivity(Intent(context, Home::class.java))
                                 }.addOnFailureListener {
                                     it.message?.let { it1 -> Log.e("OOPS", it1) }

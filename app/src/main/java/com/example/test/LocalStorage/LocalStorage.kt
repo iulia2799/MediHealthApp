@@ -78,7 +78,7 @@ class LocalStorage(context: Context) {
         editor.apply()
     }
 
-    fun LogOut(){
+    fun logOutUser(){
         editor.remove("logged")
         editor.apply()
     }

@@ -11,6 +11,7 @@ import com.example.test.MainActivity
 import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
 import com.example.test.messaging.ConversationSpace
+import com.example.test.utils.removeTokenFromServer
 
 fun back(context: Context) {
     context.startActivity(Intent(context, MainActivity::class.java))
@@ -26,6 +27,7 @@ fun registerPageEnter(context: Context) {
 
 fun logout(context: Context) {
     val localStorage = LocalStorage(context)
+    localStorage.getRef()?.let { removeTokenFromServer(it,localStorage.getToken()) }
     localStorage.clearDetails()
     context.startActivity(Intent(context, MainActivity::class.java))
 }

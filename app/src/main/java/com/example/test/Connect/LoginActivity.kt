@@ -169,6 +169,7 @@ class LoginActivity : ComponentActivity() {
                                                     localStorage.putUserDetails(
                                                         true, reference.id, d.department.ordinal, d.firstName,d.lastName
                                                     )
+                                                    localStorage.loginUser()
                                                 }
                                                 context.startActivity(
                                                     Intent(
@@ -183,6 +184,7 @@ class LoginActivity : ComponentActivity() {
                                                         localStorage.putUserDetails(
                                                             false, reference.id, patient!!.firstName, patient.lastName
                                                         )
+                                                        localStorage.loginUser()
                                                         context.startActivity(
                                                             Intent(
                                                                 context, Home::class.java

@@ -33,6 +33,20 @@ fun sendTokenToServer(context: Context, firestore: FirebaseFirestore, token: Str
     }
 }
 
+fun removeTokenFromServer(ref: String, token: String) {
+    val firestore = Firebase.firestore
+    firestore.collection(TOKEN_DATA).whereEqualTo("token", token).whereEqualTo("userUid", ref)
+        .get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                it.result.forEach { device ->
+                    firestore.collection(TOKEN_DATA).document(device.id).delete().addOnCompleteListener {
+
+                    }
+                }
+            }
+        }
+}
+
 private val comparator =
     Comparator { message1: Message, message2: Message -> message1.time.compareTo(message2.time) }
 
