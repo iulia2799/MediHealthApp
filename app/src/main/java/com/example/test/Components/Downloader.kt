@@ -9,10 +9,14 @@ import android.util.Log
 
 class Downloader(private val context: Context) {
 
-    fun downloadFromFirebaseStorage(downloadUrl: String) {
-        val filename = downloadUrl.substringAfterLast("/")
+    fun downloadFromFirebaseStorage(downloadUrl: String, directory: String = "") {
+        var filename = downloadUrl.substringAfterLast("/")
 
-        val downloadmanager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        if(directory.isNotEmpty()) {
+            filename = "$directory/$filename"
+        }
+
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(downloadUrl)
         val request = DownloadManager.Request(uri)
 
@@ -23,6 +27,6 @@ class Downloader(private val context: Context) {
         )
         Log.d("DOWNLOAD DIRECTORY",Environment.DIRECTORY_DOWNLOADS)
 
-        downloadmanager.enqueue(request)
+        downloadManager.enqueue(request)
     }
 }

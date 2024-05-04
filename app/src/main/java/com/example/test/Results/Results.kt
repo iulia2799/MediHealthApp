@@ -92,7 +92,10 @@ class Results : ComponentActivity() {
             color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                LargeTextField(value = "Your results", modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally).padding(8.dp))
+                LargeTextField(value = "Your results", modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .padding(8.dp))
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
@@ -103,6 +106,15 @@ class Results : ComponentActivity() {
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                                 .padding(10.dp)
                         )
+                    } else {
+                        DefaultButton(onClick = {
+                            val downloader = Downloader(context)
+                            isLoading = true
+                            results.forEach{ element ->
+                                downloader.downloadFromFirebaseStorage(element.fileRefStorageUrl, "results_${System.currentTimeMillis()}")
+                            }
+                            isLoading = false
+                        }, alignment = Alignment.Center, text = "Export results", modifier = Modifier.padding(10.dp).fillMaxWidth())
                     }
                     results.forEach { result ->
                         ResultCard(result)
