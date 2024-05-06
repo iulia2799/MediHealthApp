@@ -27,9 +27,21 @@ class HelpPage : ComponentActivity() {
                 ) {
                     Column(modifier = Modifier.wrapContentHeight(Alignment.CenterVertically)) {
                         Text(text = "Welcome!", fontFamily = jejugothicFamily, fontSize = 34.sp)
-                        Text(text = "This a patient and doctor application. To get started, please login to your account or create a new one.", fontFamily = jejugothicFamily, fontSize = 24.sp)
-                        Text(text = "You will be able to find your primary doctor, make appointments and chat.", fontFamily = jejugothicFamily, fontSize = 24.sp)
-                        Text(text = "Tech support : iuliasarah27@gmail.com", fontFamily = jejugothicFamily, fontSize = 24.sp)
+                        Text(
+                            text = "This a patient and doctor application. To get started, please login to your account or create a new one.",
+                            fontFamily = jejugothicFamily,
+                            fontSize = 24.sp
+                        )
+                        Text(
+                            text = "You will be able to find your primary doctor, make appointments and chat.",
+                            fontFamily = jejugothicFamily,
+                            fontSize = 24.sp
+                        )
+                        Text(
+                            text = "Tech support : iuliasarah27@gmail.com",
+                            fontFamily = jejugothicFamily,
+                            fontSize = 24.sp
+                        )
                     }
                 }
             }

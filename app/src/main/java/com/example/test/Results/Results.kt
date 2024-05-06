@@ -77,8 +77,7 @@ class Results : ComponentActivity() {
         LaunchedEffect(key1 = ref) {
             isLoading = true
             db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
-                .orderBy("unix", Query.Direction.DESCENDING)
-                .get().addOnSuccessListener {
+                .orderBy("unix", Query.Direction.DESCENDING).get().addOnSuccessListener {
                     results = it.toObjects();
                     isLoading = false
                 }.addOnFailureListener {
@@ -88,33 +87,46 @@ class Results : ComponentActivity() {
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                LargeTextField(value = "Your results", modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-                    .padding(8.dp))
+                LargeTextField(
+                    value = "Your results",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                        .padding(8.dp)
+                )
                 if (isLoading) {
                     CircularProgressIndicator()
                 } else {
                     if (results.isEmpty()) {
                         LargeTextField(
-                            value = "No results found", modifier = Modifier
+                            value = "No results found",
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                                 .padding(10.dp)
                         )
                     } else {
-                        DefaultButton(onClick = {
-                            val downloader = Downloader(context)
-                            isLoading = true
-                            results.forEach{ element ->
-                                downloader.downloadFromFirebaseStorage(element.fileRefStorageUrl, "results_${System.currentTimeMillis()}")
-                            }
-                            isLoading = false
-                        }, alignment = Alignment.Center, text = "Export results", modifier = Modifier.padding(10.dp).fillMaxWidth())
+                        DefaultButton(
+                            onClick = {
+                                val downloader = Downloader(context)
+                                isLoading = true
+                                results.forEach { element ->
+                                    downloader.downloadFromFirebaseStorage(
+                                        element.fileRefStorageUrl,
+                                        "results_${System.currentTimeMillis()}"
+                                    )
+                                }
+                                isLoading = false
+                            },
+                            alignment = Alignment.Center,
+                            text = "Export results",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                        )
                     }
                     results.forEach { result ->
                         ResultCard(result)
@@ -131,26 +143,31 @@ class Results : ComponentActivity() {
         var isDowloading by remember {
             mutableStateOf(false)
         }
-        Card(modifier = Modifier
-            .height(300.dp)
-            .padding(16.dp)) {
+        Card(
+            modifier = Modifier
+                .height(300.dp)
+                .padding(16.dp)
+        ) {
             Column {
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = "Description: " + result.description
+                        .padding(10.dp),
+                    value = "Description: " + result.description
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = "Patient: " + result.patientName
+                        .padding(10.dp),
+                    value = "Patient: " + result.patientName
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp), value = "Doctor: " + result.doctorName
+                        .padding(10.dp),
+                    value = "Doctor: " + result.doctorName
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 DefaultButton(
@@ -159,7 +176,10 @@ class Results : ComponentActivity() {
                         val downloader = Downloader(context)
                         downloader.downloadFromFirebaseStorage(result.fileRefStorageUrl)
 
-                    }, alignment = Alignment.Center, text = "Download", modifier = Modifier
+                    },
+                    alignment = Alignment.Center,
+                    text = "Download",
+                    modifier = Modifier
                         .padding(10.dp)
                         .fillMaxWidth()
                 )

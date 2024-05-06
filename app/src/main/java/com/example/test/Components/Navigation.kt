@@ -27,7 +27,7 @@ fun registerPageEnter(context: Context) {
 
 fun logout(context: Context) {
     val localStorage = LocalStorage(context)
-    localStorage.getRef()?.let { removeTokenFromServer(it,localStorage.getToken()) }
+    localStorage.getRef()?.let { removeTokenFromServer(it, localStorage.getToken()) }
     localStorage.clearDetails()
     context.startActivity(Intent(context, MainActivity::class.java))
 }

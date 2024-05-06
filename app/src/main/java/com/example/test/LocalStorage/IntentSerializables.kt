@@ -5,6 +5,7 @@ import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import kotlinx.parcelize.Parcelize
+
 @Parcelize
 data class AppointmentParceled(
     var doctorUid: String,

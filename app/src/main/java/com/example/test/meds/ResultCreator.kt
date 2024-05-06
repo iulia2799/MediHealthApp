@@ -157,8 +157,7 @@ class ResultCreator : ComponentActivity() {
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             Column(
                 modifier = Modifier
@@ -200,8 +199,7 @@ class ResultCreator : ComponentActivity() {
                 }
 
                 Row {
-                    SearchBar(
-                        query = text,
+                    SearchBar(query = text,
                         onQueryChange = { text = it },
                         onSearch = { filteredData = filterByFieldP(data, text) },
                         active = active,
@@ -224,8 +222,7 @@ class ResultCreator : ComponentActivity() {
                                         }
                                     })
                             }
-                        }
-                    ) {
+                        }) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -247,15 +244,12 @@ class ResultCreator : ComponentActivity() {
                                                 patientName = name
                                                 patientRef = it.key
                                                 active = false
-                                            },
-                                        shape = RoundedCornerShape(8.dp)
+                                            }, shape = RoundedCornerShape(8.dp)
                                     ) {
                                         Column(modifier = Modifier.padding(16.dp)) {
                                             Text(
-                                                text = name,
-                                                style = TextStyle(
-                                                    fontSize = 20.sp,
-                                                    fontFamily = jejugothicFamily
+                                                text = name, style = TextStyle(
+                                                    fontSize = 20.sp, fontFamily = jejugothicFamily
                                                 )
                                             )
                                             Text(text = "Phone: ${it.value.phone}")
@@ -295,8 +289,12 @@ class ResultCreator : ComponentActivity() {
                             val res = doctorRef?.let {
                                 uploadedFileUrl?.let { it1 ->
                                     ResultRecord(
-                                        patientRef, patientName,
-                                        it, doctorName, fileRefStorageUrl = it1, description
+                                        patientRef,
+                                        patientName,
+                                        it,
+                                        doctorName,
+                                        fileRefStorageUrl = it1,
+                                        description
                                     )
                                 }
                             }
@@ -327,8 +325,7 @@ class ResultCreator : ComponentActivity() {
             .add(hashMapOf("fileUrl" to fileUrl)) // Add document with "fileUrl" field
             .addOnSuccessListener { documentReference ->
                 println("Document written with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 println("Error adding document: $e")
             }
     }

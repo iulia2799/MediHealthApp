@@ -1,6 +1,5 @@
 package com.example.test.Components.calendar
 
-import android.util.Log
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -24,15 +23,12 @@ class WeeklyDataSource {
     private fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
         val numOfDays = ChronoUnit.DAYS.between(startDate, endDate)
         return Stream.iterate(startDate) { date ->
-            date.plusDays(/* daysToAdd = */ 1)
-        }
-            .limit(numOfDays)
-            .collect(Collectors.toList())
+            date.plusDays(1)
+        }.limit(numOfDays).collect(Collectors.toList())
     }
 
     private fun toUiModel(
-        dateList: List<LocalDate>,
-        lastSelectedDate: LocalDate
+        dateList: List<LocalDate>, lastSelectedDate: LocalDate
     ): CalendarItemUI {
         return CalendarItemUI(
             currentDate = toItemUiModel(lastSelectedDate, true),

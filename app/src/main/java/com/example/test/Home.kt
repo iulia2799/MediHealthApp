@@ -18,10 +18,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
+import com.example.test.Components.LargeTextField
 import com.example.test.Components.Welcome
 import com.example.test.Components.calendar.CustomCalendar
 import com.example.test.Components.calendar.WeeklyDataSource
@@ -71,6 +74,7 @@ import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
@@ -132,7 +136,7 @@ class Home : ComponentActivity() {
         //TODO PLEASE REMOVE IF IT CAUSES MORE PROBLEMS THAN IT SOLVES
         onBackPressedDispatcher.addCallback {
             local.logOutUser()
-            context.startActivity(Intent(context,MainActivity:: class.java))
+            context.startActivity(Intent(context, MainActivity::class.java))
         }
         var datap by remember {
             mutableStateOf(nullPatient)
@@ -390,13 +394,24 @@ class Home : ComponentActivity() {
     @Composable
     fun UpdateList(results: Map<String, Appointment>) {
         CenteredBox {
+            if (results.keys.toList().isEmpty()) {
+                LargeTextField(
+                    value = "No Appointments",
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                    color = boldPrimary
+                )
+            }
             LazyColumn(
                 modifier = Modifier.heightIn(max = 250.dp)
             ) {
 
                 items(items = results.keys.toList()) {
 
-                    val color = if (results[it]?.accepted == true) universalBackground else universalTertiary
+                    val color =
+                        if (results[it]?.accepted == true) universalBackground else universalTertiary
                     Card(
                         modifier = Modifier.padding(8.dp), colors = CardDefaults.cardColors(
                             containerColor = color

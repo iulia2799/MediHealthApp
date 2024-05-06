@@ -59,7 +59,7 @@ class ListOfPrescriptions : ComponentActivity() {
         val context = LocalContext.current
         val localStorage = LocalStorage(context)
         var ref = localStorage.getRef()
-        if(localStorage.getRole()) {
+        if (localStorage.getRole()) {
             val p = intent.getStringExtra("ref")
             ref = p
         }
@@ -83,10 +83,11 @@ class ListOfPrescriptions : ComponentActivity() {
             Column {
                 Row {
                     var text = "Your prescriptions"
-                    if(localStorage.getRole()) {
+                    if (localStorage.getRole()) {
                         text = "Patient prescriptions"
                     }
-                    LargeTextField(value = text,
+                    LargeTextField(
+                        value = text,
                         modifier = Modifier
                             .padding(10.dp)
                             .fillMaxWidth()
@@ -94,18 +95,21 @@ class ListOfPrescriptions : ComponentActivity() {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                if(prescriptions.isEmpty()){
-                    Row{
-                        LargeTextField(value = "No results", modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally))
+                if (prescriptions.isEmpty()) {
+                    Row {
+                        LargeTextField(
+                            value = "No results",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
                     }
                 } else {
                     ListOfMedicationsCards(prescriptions)
-                }  
+                }
             }
-            
+
         }
     }
 }
@@ -114,10 +118,10 @@ class ListOfPrescriptions : ComponentActivity() {
 fun ListOfMedicationsCards(list: Map<String, Medication>) {
     val context = LocalContext.current
     val localStorage = LocalStorage(context)
-    val intent = Intent(context,ChangeAlerts::class.java)
+    val intent = Intent(context, ChangeAlerts::class.java)
     CenteredBox {
-        LazyColumn{
-            items(list.keys.toList()){index ->
+        LazyColumn {
+            items(list.keys.toList()) { index ->
                 Card(
                     modifier = Modifier.padding(8.dp)
                 ) {
@@ -135,7 +139,7 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                             val pair = convertDayStampToHourAndMinute(alarm)
                             Text(text = "${pair.first}:${pair.second}")
                         }
-                        if(!localStorage.getRole()) {
+                        if (!localStorage.getRole()) {
                             TextButton(onClick = {
                                 val parcel = list[index]?.let {
                                     PrescriptionParceled(
@@ -152,8 +156,8 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                                         it.alarms
                                     )
                                 }
-                                intent.putExtra("item",parcel)
-                                intent.putExtra("ref",index)
+                                intent.putExtra("item", parcel)
+                                intent.putExtra("ref", index)
                                 context.startActivity(intent)
                             }) {
                                 Text("Change")

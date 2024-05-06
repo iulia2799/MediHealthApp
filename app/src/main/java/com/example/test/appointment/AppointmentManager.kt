@@ -54,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.CustomTextField
+import com.example.test.Components.DatePickerCard
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
@@ -64,6 +65,8 @@ import com.example.test.Components.filterByField
 import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.Profile.DoctorItemWithAction
+import com.example.test.Profile.PatientItemWithAction
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
@@ -239,66 +242,20 @@ class AppointmentManager : ComponentActivity() {
                             if (!type) {
                                 filter1.forEach {
                                     val name = it.value.firstName + ", " + it.value.lastName
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentWidth(Alignment.CenterHorizontally)
-                                    ) {
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable {
-                                                    doctor = name
-                                                    doctorUid = it.key
-                                                    active = false
-                                                }, shape = RoundedCornerShape(8.dp)
-                                        ) {
-                                            Column(modifier = Modifier.padding(16.dp)) {
-                                                Text(
-                                                    text = name, style = TextStyle(
-                                                        fontSize = 20.sp,
-                                                        fontFamily = jejugothicFamily
-                                                    )
-                                                )
-                                                Text(text = "Department: ${it.value.department.displayName}")
-                                                Text(text = "Phone: ${it.value.phone}")
-                                                Text(text = "Email: ${it.value.email}")
-                                                Text(text = "Address: ${it.value.address}")
-                                                Text(text = "Schedule: ${it.value.officeHours.start} - ${it.value.officeHours.end}; ${it.value.officeHours.weekStart} to ${it.value.officeHours.weekend}")
-                                            }
-                                        }
+                                    DoctorItemWithAction(doctor = it.value) {
+                                        doctor = name
+                                        doctorUid = it.key
+                                        active = false
                                     }
 
                                 }
                             } else {
                                 filter2.forEach {
                                     val name = it.value.firstName + ", " + it.value.lastName
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .wrapContentWidth(Alignment.CenterHorizontally)
-                                    ) {
-                                        Card(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable {
-                                                    patient = name
-                                                    patientUid = it.key
-                                                    active = false
-                                                }, shape = RoundedCornerShape(8.dp)
-                                        ) {
-                                            Column(modifier = Modifier.padding(16.dp)) {
-                                                Text(
-                                                    text = name, style = TextStyle(
-                                                        fontSize = 20.sp,
-                                                        fontFamily = jejugothicFamily
-                                                    )
-                                                )
-                                                Text(text = "Phone: ${it.value.phone}")
-                                                Text(text = "Email: ${it.value.email}")
-                                                Text(text = "Address: ${it.value.address}")
-                                            }
-                                        }
+                                    PatientItemWithAction(patient = it.value) {
+                                        patient = name
+                                        patientUid = it.key
+                                        active = false
                                     }
 
                                 }
@@ -370,7 +327,8 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
-                OutlinedTextField(value = alocatedTime,
+                OutlinedTextField(
+                    value = alocatedTime,
                     onValueChange = { newValue ->
                         alocatedTime = newValue.filter { it.isDigit() }
                     },
@@ -455,72 +413,8 @@ class AppointmentManager : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun DatePickerCard(onSelection: (String) -> Unit, onDismiss: () -> Unit) {
-        val state = rememberDatePickerState(selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis >= System.currentTimeMillis()
-            }
-        })
-        val selected = state.selectedDateMillis?.let {
-            convertMillisToDate(it)
-        } ?: ""
-        DatePickerDialog(onDismissRequest = { onDismiss() }, confirmButton = {
-            DefaultButton(
-                onClick = {
-                    onSelection(selected)
-                    onDismiss()
-                },
-                alignment = Alignment.Center,
-                text = "Confirm",
-                modifier = Modifier.padding(4.dp)
-            )
-        }, dismissButton = {
-            DefaultButton(
-                onClick = { onDismiss() },
-                alignment = Alignment.Center,
-                text = "Cancel",
-                modifier = Modifier.padding(4.dp)
-            )
-        }) {
-            DatePicker(state = state)
-        }
 
-    }
-
-    @Composable
-    @Preview
-    fun preview() {
-        var alocatedTime by remember { mutableStateOf("") }
-        var unit by remember { mutableStateOf("Minutes") }
-        Column {
-            OutlinedTextField(value = alocatedTime,
-                onValueChange = { newValue ->
-                    alocatedTime = newValue.filter { it.isDigit() }
-                },
-                label = { Text("Enter alocatedTime:") },
-                isError = alocatedTime.isNotEmpty() && alocatedTime.toIntOrNull() == null
-            )
-            Row {
-                RadioButton(
-                    selected = unit == "Minutes",
-                    onClick = { unit = "Minutes" },
-                    colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
-                )
-                Text("Minutes")
-                RadioButton(
-                    selected = unit == "Hours",
-                    onClick = { unit = "Hours" },
-                    colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
-                )
-                Text("Hours")
-            }
-        }
-
-    }
-
-    fun convertAlocatedTime(time: String, unit: String): Long {
+    private fun convertAlocatedTime(time: String, unit: String): Long {
         val convertedUnits = time.toLong()
         return if (unit == "Minutes") {
             convertedUnits * 60L

@@ -23,15 +23,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.boldPrimary
@@ -80,9 +88,7 @@ fun DefaultButton(
         contentAlignment = alignment,
     ) {
         Button(
-            enabled =enabled,
-            onClick = onClick,
-            colors = ButtonDefaults.buttonColors(
+            enabled = enabled, onClick = onClick, colors = ButtonDefaults.buttonColors(
                 containerColor = backgroundColor,
                 contentColor = contentColor,
             )
@@ -129,11 +135,9 @@ fun MessageTextField(
     onTextChange: (String) -> Unit = {},
     type: String = "text",
     pattern: String = textPattern,
-    mods: Modifier = Modifier
-        .padding(10.dp),
-
+    mods: Modifier = Modifier.padding(10.dp)
 ) {
-    CustomTextField(text = text, labelValue = labelValue,onTextChange,type,pattern,mods)
+    CustomTextField(text = text, labelValue = labelValue, onTextChange, type, pattern, mods)
 }
 
 @Composable
@@ -147,7 +151,7 @@ fun LongTextField(
         .fillMaxWidth()
         .padding(10.dp)
 ) {
-    CustomTextField(text = text, labelValue = labelValue,onTextChange,type,pattern,mods)
+    CustomTextField(text = text, labelValue = labelValue, onTextChange, type, pattern, mods)
 }
 
 @Composable
@@ -212,8 +216,7 @@ fun CustomTextField(
             unfocusedSuffixColor = Color.LightGray,
             disabledSuffixColor = Color.DarkGray,
             errorSuffixColor = universalError,
-        )
-        /*colors = OutlinedTextFieldDefaults.colors(
+        )/*colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = unfocusedLabelColor,
             focusedBorderColor = universalAccent,
             focusedLabelColor = universalAccent,
@@ -262,13 +265,10 @@ fun DefaultIconButton(onClick: () -> Unit, imageVector: ImageVector, description
 
 @Composable
 fun CustomCardViewDark(
-    modifier: Modifier,
-    content: @Composable () -> Unit,
-    isSelected: Boolean = false
+    modifier: Modifier, content: @Composable () -> Unit, isSelected: Boolean = false
 ) {
     Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(
+        modifier = modifier, colors = CardDefaults.cardColors(
             containerColor = if (isSelected) boldPrimary else universalAccent,
             contentColor = offWhite,
             disabledContainerColor = Color.LightGray,
@@ -296,11 +296,9 @@ fun FormSelector(
         onValueChange = { /* Handle text input if needed */ },
         label = { Text(text) },
         trailingIcon = {
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
+            Icon(imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,
-                modifier = Modifier.clickable { expanded = true }
-            )
+                modifier = Modifier.clickable { expanded = true })
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color.Black,
@@ -351,18 +349,14 @@ fun FormSelector(
     DropdownMenu(
         modifier = modifier,
         expanded = expanded,
-        onDismissRequest = { expanded = false }
-    ) {
+        onDismissRequest = { expanded = false }) {
         options.forEach { option ->
-            DropdownMenuItem(
-                text = {
-                    Text(text = option)
-                },
-                onClick = {
-                    onOptionSelected(option)
-                    expanded = false
-                }
-            )
+            DropdownMenuItem(text = {
+                Text(text = option)
+            }, onClick = {
+                onOptionSelected(option)
+                expanded = false
+            })
         }
     }
 }
@@ -438,15 +432,78 @@ fun SentMessage(message: Message) {
 @Composable
 fun Header(username: String, onClick: () -> Unit = {}) {
     Row {
-        LargeTextField(
-            value = "Conversation with $username",
+        LargeTextField(value = "Conversation with $username",
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.Start)
-                .weight(1f).clickable {
+                .weight(1f)
+                .clickable {
                     onClick()
-                }
-        )
+                })
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerCard(onSelection: (String) -> Unit, onDismiss: () -> Unit) {
+    val state = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            return utcTimeMillis >= System.currentTimeMillis()
+        }
+    })
+    val selected = state.selectedDateMillis?.let {
+        convertMillisToDate(it)
+    } ?: ""
+    DatePickerDialog(onDismissRequest = { onDismiss() }, confirmButton = {
+        DefaultButton(
+            onClick = {
+                onSelection(selected)
+                onDismiss()
+            }, alignment = Alignment.Center, text = "Confirm", modifier = Modifier.padding(4.dp)
+        )
+    }, dismissButton = {
+        DefaultButton(
+            onClick = { onDismiss() },
+            alignment = Alignment.Center,
+            text = "Cancel",
+            modifier = Modifier.padding(4.dp)
+        )
+    }) {
+        DatePicker(state = state)
+    }
+
+}
+
+
+//optional for preview
+@Composable
+@Preview
+fun preview() {
+    var alocatedTime by remember { mutableStateOf("") }
+    var unit by remember { mutableStateOf("Minutes") }
+    Column {
+        OutlinedTextField(value = alocatedTime,
+            onValueChange = { newValue ->
+                alocatedTime = newValue.filter { it.isDigit() }
+            },
+            label = { Text("Enter alocatedTime:") },
+            isError = alocatedTime.isNotEmpty() && alocatedTime.toIntOrNull() == null
+        )
+        Row {
+            RadioButton(
+                selected = unit == "Minutes",
+                onClick = { unit = "Minutes" },
+                colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+            )
+            Text("Minutes")
+            RadioButton(
+                selected = unit == "Hours",
+                onClick = { unit = "Hours" },
+                colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
+            )
+            Text("Hours")
+        }
+    }
+
 }

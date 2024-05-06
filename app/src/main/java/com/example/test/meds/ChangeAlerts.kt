@@ -108,8 +108,8 @@ class ChangeAlerts : ComponentActivity() {
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                         )
                     }
-                    if(parcelable != null) {
-                        Row{
+                    if (parcelable != null) {
+                        Row {
                             MediumTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -117,7 +117,7 @@ class ChangeAlerts : ComponentActivity() {
                                 value = "Name: ${parcelable.medicationName}"
                             )
                         }
-                        Row{
+                        Row {
                             MediumTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -125,7 +125,7 @@ class ChangeAlerts : ComponentActivity() {
                                 value = "Description: ${parcelable.description}"
                             )
                         }
-                        Row{
+                        Row {
                             MediumTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -133,7 +133,7 @@ class ChangeAlerts : ComponentActivity() {
                                 value = "Frequency: ${parcelable.frequency}"
                             )
                         }
-                        Row{
+                        Row {
                             MediumTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()

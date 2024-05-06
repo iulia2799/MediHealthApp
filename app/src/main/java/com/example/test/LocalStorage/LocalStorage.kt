@@ -19,27 +19,31 @@ class LocalStorage(context: Context) {
     fun putUserDetails(specialist: Boolean, ref: String, gp: Int) {
         editor.putBoolean("SP", specialist)
         editor.putString("REF", ref)
-        editor.putInt("DEP",gp)
-        editor.apply()
-    }
-    fun putUserDetails(specialist: Boolean, ref: String, gp: Int, firstName: String, lastName: String) {
-        editor.putBoolean("SP", specialist)
-        editor.putString("REF", ref)
-        editor.putInt("DEP",gp)
-        editor.putString("first",firstName)
-        editor.putString("last",lastName)
-        editor.apply()
-    }
-    fun putUserDetails(specialist: Boolean, ref: String, firstName: String, lastName: String) {
-        editor.putBoolean("SP", specialist)
-        editor.putString("REF", ref)
-        editor.putString("first",firstName)
-        editor.putString("last",lastName)
+        editor.putInt("DEP", gp)
         editor.apply()
     }
 
-    fun getName(): String{
-        return "${preferences.getString("first","")}, ${preferences.getString("last","")}"
+    fun putUserDetails(
+        specialist: Boolean, ref: String, gp: Int, firstName: String, lastName: String
+    ) {
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putInt("DEP", gp)
+        editor.putString("first", firstName)
+        editor.putString("last", lastName)
+        editor.apply()
+    }
+
+    fun putUserDetails(specialist: Boolean, ref: String, firstName: String, lastName: String) {
+        editor.putBoolean("SP", specialist)
+        editor.putString("REF", ref)
+        editor.putString("first", firstName)
+        editor.putString("last", lastName)
+        editor.apply()
+    }
+
+    fun getName(): String {
+        return "${preferences.getString("first", "")}, ${preferences.getString("last", "")}"
     }
 
     fun putUserDetails(specialist: Boolean) {
@@ -51,6 +55,7 @@ class LocalStorage(context: Context) {
         editor.putString("REF", ref)
         editor.apply()
     }
+
     fun getDep(): Int {
         return preferences.getInt("DEP", 0)
     }
@@ -63,22 +68,22 @@ class LocalStorage(context: Context) {
         return preferences.getString("REF", "")
     }
 
-    fun loginUser(){
-        editor.putBoolean("logged",true)
+    fun loginUser() {
+        editor.putBoolean("logged", true)
         editor.apply()
     }
 
-    fun isLoggedIn(): Boolean{
-        return preferences.getBoolean("logged",false)
+    fun isLoggedIn(): Boolean {
+        return preferences.getBoolean("logged", false)
     }
 
-    fun putName(first: String, last:String) {
-        editor.putString("first",first)
-        editor.putString("last",last)
+    fun putName(first: String, last: String) {
+        editor.putString("first", first)
+        editor.putString("last", last)
         editor.apply()
     }
 
-    fun logOutUser(){
+    fun logOutUser() {
         editor.remove("logged")
         editor.apply()
     }

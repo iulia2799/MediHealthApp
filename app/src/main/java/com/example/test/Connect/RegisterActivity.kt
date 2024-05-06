@@ -66,7 +66,6 @@ class RegisterActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
@@ -126,15 +125,13 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomTextField(
-                    text = firstName,
+                CustomTextField(text = firstName,
                     labelValue = "First Name",
                     onTextChange = { newValue ->
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(
-                    text = lastName,
+                CustomTextField(text = lastName,
                     labelValue = "Last Name",
                     onTextChange = { newValue ->
                         lastName = newValue
@@ -252,7 +249,11 @@ class RegisterActivity : ComponentActivity() {
                                 db.collection(PATIENTS).add(doc).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
                                     localStorage.putUserDetails(
-                                        true, it.result.id, departmentValue.ordinal, firstName, lastName
+                                        true,
+                                        it.result.id,
+                                        departmentValue.ordinal,
+                                        firstName,
+                                        lastName
                                     )
                                     localStorage.loginUser()
                                     context.startActivity(Intent(context, Home::class.java))
@@ -270,7 +271,9 @@ class RegisterActivity : ComponentActivity() {
                                 )
                                 db.collection(PATIENTS).add(p).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
-                                    localStorage.putUserDetails(false, it.result.id, firstName, lastName)
+                                    localStorage.putUserDetails(
+                                        false, it.result.id, firstName, lastName
+                                    )
                                     localStorage.loginUser()
                                     context.startActivity(Intent(context, Home::class.java))
                                 }.addOnFailureListener {

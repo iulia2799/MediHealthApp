@@ -65,9 +65,9 @@ fun MainSurface() {
 fun Content() {
     val context = LocalContext.current
     val localStorage = LocalStorage(context)
-    if(localStorage.getRef() != null && localStorage.getRef() != "") {
-        if(!localStorage.isLoggedIn()){
-            localStorage.getRef()?.let { removeTokenFromServer(it,localStorage.getToken()) }
+    if (localStorage.getRef() != null && localStorage.getRef() != "") {
+        if (!localStorage.isLoggedIn()) {
+            localStorage.getRef()?.let { removeTokenFromServer(it, localStorage.getToken()) }
             localStorage.clearDetails()
         } else {
             context.startActivity(
@@ -110,7 +110,9 @@ fun Content() {
         )
 
         DefaultButton(
-            { HelpPageEnter(context) }, Alignment.BottomCenter, "Help",
+            { HelpPageEnter(context) },
+            Alignment.BottomCenter,
+            "Help",
             Modifier
                 .padding(20.dp)
                 .fillMaxWidth()

@@ -12,7 +12,7 @@ class Downloader(private val context: Context) {
     fun downloadFromFirebaseStorage(downloadUrl: String, directory: String = "") {
         var filename = downloadUrl.substringAfterLast("/")
 
-        if(directory.isNotEmpty()) {
+        if (directory.isNotEmpty()) {
             filename = "$directory/$filename"
         }
 
@@ -22,10 +22,9 @@ class Downloader(private val context: Context) {
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         request.setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOWNLOADS,
-            filename
+            Environment.DIRECTORY_DOWNLOADS, filename
         )
-        Log.d("DOWNLOAD DIRECTORY",Environment.DIRECTORY_DOWNLOADS)
+        Log.d("DOWNLOAD DIRECTORY", Environment.DIRECTORY_DOWNLOADS)
 
         downloadManager.enqueue(request)
     }

@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.jejugothicFamily
 
 @Composable
-fun LargeTextField(value: String, modifier: Modifier) {
+fun LargeTextField(value: String, modifier: Modifier, color: Color = Color.Black) {
     Text(
         modifier = modifier,
         text = value,
         fontFamily = jejugothicFamily,
         fontSize = 25.sp,
         fontWeight = FontWeight.Bold,
-        color = Color.Black
+        color = color
     )
 }
 
@@ -50,9 +50,7 @@ fun SmallTextField(value: String) {
 @Composable
 fun Greeting() {
     Box(
-        modifier = Modifier
-            .padding(10.dp),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.padding(10.dp), contentAlignment = Alignment.Center
     ) {
         AppName()
     }

@@ -6,11 +6,14 @@ import Models.nullPatient
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,13 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.MedicationManager
+import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.PATIENTS
 import com.google.firebase.firestore.ktx.firestore
@@ -50,7 +56,7 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
     }
     LaunchedEffect(key1 = patientRef) {
         db.collection(PATIENTS).document(patientRef).get().addOnSuccessListener {
-            patient = it.toObject<Patient>()!!;
+            patient = it.toObject<Patient>()!!
         }.addOnFailureListener {
             Toast.makeText(context, "Oops there was an error.", Toast.LENGTH_SHORT).show()
         }
@@ -146,6 +152,35 @@ fun PatientCard(patient: Patient) {
             MediumTextField(value = "Phone: ${patient.phone}", modifier = Modifier)
             MediumTextField(value = "Age: ${patient.age} years", modifier = Modifier)
 
+        }
+    }
+}
+
+@Composable
+fun PatientItemWithAction(patient: Patient, onClick: () -> Unit = {}) {
+    val name = patient.firstName + ", " + patient.lastName
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onClick()
+                }, shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = name, style = TextStyle(
+                        fontSize = 20.sp, fontFamily = jejugothicFamily
+                    )
+                )
+                Text(text = "Phone: ${patient.phone}")
+                Text(text = "Email: ${patient.email}")
+                Text(text = "Address: ${patient.address}")
+            }
         }
     }
 }

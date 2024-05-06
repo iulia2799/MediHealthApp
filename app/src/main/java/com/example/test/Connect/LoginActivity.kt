@@ -167,7 +167,11 @@ class LoginActivity : ComponentActivity() {
                                                 val d = reference.toObject<Doctor>()
                                                 if (d != null) {
                                                     localStorage.putUserDetails(
-                                                        true, reference.id, d.department.ordinal, d.firstName,d.lastName
+                                                        true,
+                                                        reference.id,
+                                                        d.department.ordinal,
+                                                        d.firstName,
+                                                        d.lastName
                                                     )
                                                     localStorage.loginUser()
                                                 }
@@ -182,7 +186,10 @@ class LoginActivity : ComponentActivity() {
                                                         val reference = it.result.documents[0]
                                                         val patient = reference.toObject<Patient>()
                                                         localStorage.putUserDetails(
-                                                            false, reference.id, patient!!.firstName, patient.lastName
+                                                            false,
+                                                            reference.id,
+                                                            patient!!.firstName,
+                                                            patient.lastName
                                                         )
                                                         localStorage.loginUser()
                                                         context.startActivity(

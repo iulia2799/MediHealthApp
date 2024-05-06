@@ -5,23 +5,23 @@ import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
-fun CheckEmail(email: String, context: Context){
+fun CheckEmail(email: String, context: Context) {
     val db = Firebase.firestore
-    val queryD = db.collection("doctors").whereEqualTo("email",email)
-    val queryP = db.collection("patients").whereEqualTo("email",email)
+    val queryD = db.collection("doctors").whereEqualTo("email", email)
+    val queryP = db.collection("patients").whereEqualTo("email", email)
     val localStorage = LocalStorage(context)
-    queryD.get().addOnCompleteListener{
+    queryD.get().addOnCompleteListener {
         if (it.isSuccessful && it.result.documents.size > 0) {
             val reference = it.result.documents[0]
-            localStorage.putUserDetails(true,reference.id)
+            localStorage.putUserDetails(true, reference.id)
 
         } else {
-            queryP.get().addOnCompleteListener{
-                if(it.isSuccessful && it.result.documents.size > 0){
+            queryP.get().addOnCompleteListener {
+                if (it.isSuccessful && it.result.documents.size > 0) {
                     val reference = it.result.documents[0]
-                    localStorage.putUserDetails( false, reference.id)
+                    localStorage.putUserDetails(false, reference.id)
                 } else {
-                    Log.e("oops","OOPs")
+                    Log.e("oops", "OOPs")
                 }
             }
         }

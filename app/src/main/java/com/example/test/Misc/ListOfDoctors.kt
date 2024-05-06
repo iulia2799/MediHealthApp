@@ -165,30 +165,32 @@ class ListOfDoctors : ComponentActivity() {
                     ) {
                         Text("Make Appointment")
                     }
-
-                    TextButton(
-                        modifier = Modifier.padding(4.dp), onClick = {
-                            createNewConversation(context, ref, name) { id ->
-                                val flow = getNewConversation(id)
-                                coroutine.launch {
-                                    flow.collect {
-                                        if (it != null) {
-                                            convo = it
-                                            if(convo.messagesRef == null) {
-                                                convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                    if(doctor.available) {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp), onClick = {
+                                createNewConversation(context, ref, name) { id ->
+                                    val flow = getNewConversation(id)
+                                    coroutine.launch {
+                                        flow.collect {
+                                            if (it != null) {
+                                                convo = it
+                                                if(convo.messagesRef == null) {
+                                                    convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                                                }
+                                                goToConvo(context, convo)
                                             }
-                                            goToConvo(context, convo)
-                                        }
 
+                                        }
                                     }
                                 }
-                            }
-                        }, colors = ButtonDefaults.textButtonColors(
-                            contentColor = universalAccent,
-                        )
-                    ) {
-                        Text("Message")
+                            }, colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent,
+                            )
+                        ) {
+                            Text("Message")
+                        }
                     }
+
                 }
             }
         }
