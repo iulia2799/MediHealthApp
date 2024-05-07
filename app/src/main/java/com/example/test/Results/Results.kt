@@ -44,7 +44,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
-//filter results after reference
 
 class Results : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
@@ -78,10 +77,10 @@ class Results : ComponentActivity() {
             isLoading = true
             db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
                 .orderBy("unix", Query.Direction.DESCENDING).get().addOnSuccessListener {
-                    results = it.toObjects();
+                    results = it.toObjects()
                     isLoading = false
                 }.addOnFailureListener {
-                    Log.d("eeerrrrrrooorrrrr", it.message.toString())
+                    Log.d("ERROR RETRIEVING", it.message.toString())
                     isLoading = false
                 }
         }

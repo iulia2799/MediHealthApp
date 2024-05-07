@@ -126,9 +126,9 @@ class MedicationManager : ComponentActivity() {
                         )
                     }
                 },
-            ) {
+            ) { paddingValues ->
                 Column(
-                    modifier = Modifier.padding(it)
+                    modifier = Modifier.padding(paddingValues)
                 ) {
                     Row {
                         LargeTextField(
@@ -170,7 +170,11 @@ class MedicationManager : ComponentActivity() {
                             text = pills.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                pills = newValue.toInt()
+                                pills = if(newValue.isEmpty()) {
+                                    0
+                                } else {
+                                    newValue.toInt()
+                                }
                             })
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -179,7 +183,12 @@ class MedicationManager : ComponentActivity() {
                             text = days.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                days = newValue.toInt()
+                                days = if(newValue.isEmpty()) {
+                                    0
+                                } else {
+                                    newValue.toInt()
+                                }
+
                             })
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -188,7 +197,12 @@ class MedicationManager : ComponentActivity() {
                             text = pillsPerPortion.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                pillsPerPortion = newValue.toInt()
+                                pillsPerPortion = if(newValue.isEmpty()) {
+                                    0
+                                } else {
+                                    newValue.toInt()
+                                }
+
                             })
                     }
                     Spacer(modifier = Modifier.weight(1f))

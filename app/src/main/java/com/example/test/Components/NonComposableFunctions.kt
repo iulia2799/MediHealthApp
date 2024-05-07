@@ -49,7 +49,7 @@ fun <K> filterByFieldP(map: Map<K, Patient>, query: String): Map<K, Patient> {
 }
 
 fun convertTimestampToDate(timestamp: Timestamp): Triple<String, Int, Int> {
-    val format = SimpleDateFormat("dd/MM/yyyy")
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     val dateString = format.format(timestamp.toDate())
 
     val calendar = Calendar.getInstance()
@@ -61,12 +61,14 @@ fun convertTimestampToDate(timestamp: Timestamp): Triple<String, Int, Int> {
 }
 
 fun convertDateToTimeStamp(hour: Int, minute: Int, dateString: String): Timestamp {
-    val format = SimpleDateFormat("dd/MM/yyyy")
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     var timestamp = Timestamp.now()
     try {
-        val date: Date = format.parse(dateString)
+        val date: Date? = format.parse(dateString)
         val calendar = Calendar.getInstance()
-        calendar.time = date
+        if (date != null) {
+            calendar.time = date
+        }
         calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minute)
 
@@ -94,7 +96,7 @@ fun timeUnitToString(value: Int): String {
 }
 
 fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String> {
-    var localStorage = LocalStorage(context)
+    val localStorage = LocalStorage(context)
     val ref = localStorage.getRef()
     val result = convo.userUids.find { value -> value != ref }
     val index = convo.userUids.indexOf(result)

@@ -7,6 +7,8 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.google.firebase.iid.permission.FCM_TOKEN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
@@ -28,6 +30,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
         tools:targetApi="31">
+        <activity
+            android:name=".map.MapActivity"
+            android:exported="false"
+            android:label="@string/title_activity_map"
+            android:theme="@style/Theme.App" />
         <activity
             android:name=".messaging.ConversationSpace"
             android:exported="false"
@@ -59,11 +66,6 @@
             android:label="@string/title_activity_list_of_patients"
             android:theme="@style/Theme.App" />
         <activity
-            android:name=".Misc.Prescriptions"
-            android:exported="false"
-            android:label="@string/title_activity_prescriptions"
-            android:theme="@style/Theme.App" />
-        <activity
             android:name=".Misc.ListOfDoctors"
             android:exported="false"
             android:label="@string/title_activity_list_of_doctors"
@@ -91,31 +93,17 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="${MAPS_API_KEY}" />
 
-        <activity
-            android:name=".MapActivity"
-            android:exported="false"
-            android:label="@string/title_activity_map" />
         <activity
             android:name=".Results.Results"
             android:exported="false"
             android:label="@string/title_activity_results"
             android:theme="@style/Theme.App" />
         <activity
-            android:name=".Misc.History"
-            android:exported="false"
-            android:label="@string/title_activity_history"
-            android:theme="@style/Theme.App" />
-        <activity
             android:name=".Profile.Profile"
             android:exported="false"
             android:label="@string/title_activity_profile"
-            android:theme="@style/Theme.App" />
-        <activity
-            android:name=".Misc.Settings"
-            android:exported="false"
-            android:label="@string/title_activity_settings"
             android:theme="@style/Theme.App" />
         <activity
             android:name=".Home"

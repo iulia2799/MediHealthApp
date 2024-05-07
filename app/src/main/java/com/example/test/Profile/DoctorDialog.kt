@@ -123,15 +123,12 @@ fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
                 .fillMaxWidth()
                 .clickable {
                     onClick()
-                },
-            shape = RoundedCornerShape(8.dp)
+                }, shape = RoundedCornerShape(8.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = name,
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = jejugothicFamily
+                    text = name, style = TextStyle(
+                        fontSize = 20.sp, fontFamily = jejugothicFamily
                     )
                 )
                 Text(text = "Department: ${doctor.department.displayName}")

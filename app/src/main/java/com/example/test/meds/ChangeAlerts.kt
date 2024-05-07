@@ -2,7 +2,6 @@ package com.example.test.meds
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -36,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.CenteredBox
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
@@ -59,7 +55,6 @@ class ChangeAlerts : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Content()
             }
         }
@@ -145,10 +140,6 @@ class ChangeAlerts : ComponentActivity() {
                     Row {
                         DefaultButton(
                             onClick = {
-                                Log.d("LIST", list[0].toString())
-                                if (reference != null) {
-                                    Log.d("REFFFFF", reference)
-                                }
                                 if (reference != null) {
                                     db.collection(MEDICATION_DATA).document(reference).update(
                                         mapOf(
@@ -198,7 +189,6 @@ class ChangeAlerts : ComponentActivity() {
 
 
                                 LaunchedEffect(key1 = state.hour, key2 = state.minute) {
-                                    Log.d("STERTATERWTRESTGRESTRE", state.hour.toString())
                                     list = list.mapIndexed { i1, time ->
                                         if (i1 == index) convertTimeToTimestamp(
                                             state.hour, state.minute

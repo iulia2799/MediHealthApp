@@ -4,7 +4,6 @@ import Models.Conversation
 import Models.Message
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -37,6 +36,8 @@ import com.example.test.Components.ReceivedMessage
 import com.example.test.Components.SentMessage
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.ParcelableConvo
+import com.example.test.Profile.DoctorDialog
+import com.example.test.Profile.PatientDialog
 import com.example.test.ui.theme.AppTheme
 import com.example.test.utils.getMessages
 import com.google.firebase.Firebase
@@ -49,7 +50,6 @@ class ConversationSpace : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
@@ -85,20 +85,14 @@ class ConversationSpace : ComponentActivity() {
                 Firebase.firestore.document(convo.messagesRef)
             )
         }
-        if (data != null) {
-            data.messagesRef?.let { Log.d("REFRE", it.id) }
-        }
         val flow = data?.let { getMessages(it) }
         val coroutine = rememberCoroutineScope()
         coroutine.launch {
             flow?.collect {
                 if (it?.isNotEmpty() == true) {
-                    Log.d("BUFFER", it.size.toString())
                     buffer = it
                     listState.animateScrollToItem(it.size - 1)
 
-                } else {
-                    Log.d("NOTHING", "nothing")
                 }
 
             }
@@ -107,12 +101,17 @@ class ConversationSpace : ComponentActivity() {
             messageList = buffer
 
         }
+        var active by remember {
+            mutableStateOf(false)
+        }
         val otheruser = data?.userUids?.find { uid -> uid != userRef }
         val index = data?.userUids?.indexOf(otheruser)
         val username = index?.let { data.userNames[it] }
         Scaffold(topBar = {
             if (username != null) {
-                Header(username = username)
+                Header(username = username) {
+                    active = !active
+                }
             }
         }, bottomBar = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -144,6 +143,18 @@ class ConversationSpace : ComponentActivity() {
                         SentMessage(message = message)
                     }
 
+                }
+            }
+
+            if(active && otheruser != null) {
+                if(localStorage.getRole()){
+                    PatientDialog(patientRef = otheruser, type = true) {
+                        active = false
+                    }
+                } else {
+                    DoctorDialog(docRef = otheruser, type = false) {
+                        active = false
+                    }
                 }
             }
         }

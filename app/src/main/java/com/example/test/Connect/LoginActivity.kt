@@ -35,13 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.back
-import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
-import com.example.test.Components.registerPageEnter
+import com.example.test.Components.LongTextField
+import com.example.test.Components.back
 import com.example.test.Components.emailPattern
 import com.example.test.Components.passwordPattern
+import com.example.test.Components.registerPageEnter
 import com.example.test.Home
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
@@ -119,7 +119,7 @@ class LoginActivity : ComponentActivity() {
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
                     ) {
-                        CustomTextField(
+                        LongTextField(
                             text = email,
                             labelValue = "Email",
                             pattern = emailPattern,
@@ -132,7 +132,7 @@ class LoginActivity : ComponentActivity() {
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
                     ) {
-                        CustomTextField(
+                        LongTextField(
                             text = password,
                             labelValue = "Password",
                             onTextChange = { newValue -> password = newValue },

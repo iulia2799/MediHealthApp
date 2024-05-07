@@ -69,6 +69,7 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
+import com.example.test.map.MapActivity
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
@@ -264,6 +265,7 @@ class Home : ComponentActivity() {
         }, floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                          //context.startActivity(Intent(context,MapActivity::class.java))
                     context.startActivity(Intent(context, ConvoList::class.java))
                 }, contentColor = universalPrimary, containerColor = universalBackground
             ) {

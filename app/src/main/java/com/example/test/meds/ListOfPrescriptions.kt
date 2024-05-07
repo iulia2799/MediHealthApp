@@ -46,7 +46,6 @@ class ListOfPrescriptions : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Content()
             }
         }
