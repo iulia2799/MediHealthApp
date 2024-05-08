@@ -37,11 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.FormSelector
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.goToConvo
 import com.example.test.appointment.AppointmentManager
 import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
+import com.example.test.utils.createNewConversation
+import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
@@ -169,7 +172,21 @@ class ListOfDoctors : ComponentActivity() {
                     if (doctor.messageAvailable) {
                         TextButton(
                             modifier = Modifier.padding(4.dp), onClick = {
+                                createNewConversation(context, ref, name) { id ->
+                                    val flow = getNewConversation(id)
+                                    coroutine.launch {
+                                        flow.collect {
+                                            if (it != null) {
+                                                convo = it
+                                                if(convo.messagesRef == null) {
+                                                    convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                                                }
+                                                goToConvo(context, convo)
+                                            }
 
+                                        }
+                                    }
+                                }
                             }, colors = ButtonDefaults.textButtonColors(
                                 contentColor = universalAccent,
                             )

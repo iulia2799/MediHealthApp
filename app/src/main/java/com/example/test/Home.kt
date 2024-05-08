@@ -196,27 +196,30 @@ class Home : ComponentActivity() {
         val source = WeeklyDataSource()
         var sourceModel by remember { mutableStateOf(source.getData(lastSelectedDate = source.today)) }
         var data by remember { mutableStateOf(emptyMap<String, Appointment>()) }
+        var isLoading by remember {
+            mutableStateOf(false)
+        }
 
         LaunchedEffect(sourceModel) {
             var field = "patientUid"
             if (type) {
                 field = "doctorUid"
             }
+            isLoading = true
             Log.d("REF", ref)
             val today = sourceModel.currentDate.date
             val start = today.atStartOfDay(ZoneId.of("UTC"))
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
             db.collection(APPOINTMENTS_DATA).whereEqualTo(field, ref)
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
-                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).get()
-                .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.d("fdsfds", it.result.documents.toString())
-                        if (it.result.size() == 0) {
+                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).addSnapshotListener { value, error ->
+                    if (value != null) {
+                        Log.d("fdsfds", value.documents.toString())
+                        if (value.size() == 0) {
                             Log.d("SIZE", ":NOT EMPTY")
                             data = emptyMap()
                         } else {
-                            it.result.forEach { it1 ->
+                            value.forEach { it1 ->
                                 val app = it1.toObject<Appointment>()
                                 data += (it1.reference.id to app)
                             }
@@ -225,8 +228,12 @@ class Home : ComponentActivity() {
 
                         Log.d("SIZE", ":EMPTY")
                         Log.d("TODAT", "TODAY $today")
+                        isLoading = false
                     } else {
-                        Log.w("SNAPSHOT", "Error getting documents:", it.exception)
+                        isLoading = false
+                        if (error != null) {
+                            Log.w("SNAPSHOT", error.message.toString())
+                        }
                     }
                 }
         }

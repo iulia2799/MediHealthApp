@@ -115,7 +115,6 @@ class MedicationManager : ComponentActivity() {
             modifier = Modifier.fillMaxWidth(), color = universalBackground
         ) {
             Scaffold(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
                 snackbarHost = {
                     SnackbarHost(hostState = snackbarState) { data ->
                         Snackbar(
@@ -128,7 +127,9 @@ class MedicationManager : ComponentActivity() {
                 },
             ) { paddingValues ->
                 Column(
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Row {
                         LargeTextField(

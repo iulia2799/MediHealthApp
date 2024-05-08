@@ -71,7 +71,7 @@ class Search(context: Context) {
                 )
             }
             if(user != null) {
-                list[hit["objectID"].toString()] = user
+                list[hit["objectID"].toString().trim('"')] = user
             }
         }
         return list
