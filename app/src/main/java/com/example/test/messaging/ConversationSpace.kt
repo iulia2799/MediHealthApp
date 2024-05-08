@@ -130,6 +130,10 @@ class ConversationSpace : ComponentActivity() {
                     data.messagesRef?.collection("messages")?.add(input)?.addOnCompleteListener {
                         text = ""
                     }
+                    data.messagesRef?.update("lastUpdated",System.currentTimeMillis())
+                        ?.addOnCompleteListener {
+
+                        }
                 }, imageVector = Icons.AutoMirrored.Rounded.Send, description = "Send message")
             }
         }) { innerPadding ->

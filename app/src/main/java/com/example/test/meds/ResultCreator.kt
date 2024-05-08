@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
+import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.LocalStorage
@@ -275,7 +276,7 @@ class ResultCreator : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    CustomTextField(text = description, labelValue = "Description", onTextChange = {
+                    LongTextField(text = description, labelValue = "Description", onTextChange = {
                         description = it
                     })
                 }

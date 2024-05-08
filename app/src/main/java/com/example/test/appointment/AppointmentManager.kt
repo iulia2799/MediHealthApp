@@ -96,17 +96,7 @@ class AppointmentManager : ComponentActivity() {
         val parcel = intent.getParcelableExtra("appointment", AppointmentParceled::class.java)
         mode = intent.getStringExtra("mode").toString()
         appointment = Appointment("", "", "", "", "", Timestamp.now(), 0)
-        if (mode == "create") {
-            otherRef = intent.getStringExtra("otherRef").toString()
-            otherName = intent.getStringExtra("otherName").toString()
-            if (type) {
-                appointment.patientUid = otherRef
-                appointment.patientName = otherName
-            } else {
-                appointment.doctorUid = otherRef
-                appointment.doctorName = otherName
-            }
-        }
+
         appRef = intent.getStringExtra("reference").toString()
         if (parcel != null) {
             appointment = Appointment(
@@ -136,6 +126,18 @@ class AppointmentManager : ComponentActivity() {
         db = Firebase.firestore
         localStorage = LocalStorage(context)
         type = localStorage.getRole()
+        if (mode == "create") {
+            otherRef = intent.getStringExtra("otherRef").toString()
+            otherName = intent.getStringExtra("otherName").toString()
+
+            if (type) {
+                appointment.patientUid = otherRef
+                appointment.patientName = otherName
+            } else {
+                appointment.doctorUid = otherRef
+                appointment.doctorName = otherName
+            }
+        }
         Log.d("TYYYYYPE", localStorage.getName())
         val formDate = convertTimestampToDate(appointment.date).first
         var date by remember { mutableStateOf(if (mode == "edit") formDate else "Change the date") }

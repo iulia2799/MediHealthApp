@@ -8,7 +8,9 @@ import android.util.Log
 import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -75,30 +77,52 @@ fun createNewConversation(
     context: Context,
     ref: String,
     name: String,
-    callBack: (id: String) -> Unit
+    callBack: (String) -> Unit
 ) {
     val localStorage = LocalStorage(context)
     val db = Firebase.firestore
-    val userUids = emptyList<String>().toMutableList()
-    val userName = emptyList<String>().toMutableList()
-    if (localStorage.getRef()?.isNotEmpty() == true) {
-        userUids += localStorage.getRef().toString()
-        userUids += ref
-        userName += localStorage.getName()
-        userName += name
-    }
+    val userUids = mutableListOf(localStorage.getRef().toString(), ref)
+    val userUids2 = mutableListOf(ref, localStorage.getRef().toString())
+    val userName = mutableListOf(localStorage.getName(), name)
 
-    val conversation = Conversation(
-        userUids, userName
-    )
-    db.collection(CONVO_LIST).add(conversation).addOnCompleteListener {
-        if (it.isSuccessful) {
-            callBack(it.result.id)
+    val conversation = Conversation(userUids, userName)
+
+
+    val query = db.collection(CONVO_LIST).whereEqualTo("userUids",userUids)
+    val permutted = db.collection(CONVO_LIST).whereEqualTo("userUids",userUids)
+
+    query.get().addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            if (task.result.isEmpty) {
+                // No existing conversation, create a new one
+                permutted.get().addOnCompleteListener { task2 ->
+                    if(task2.isSuccessful) {
+                        if(task2.result.isEmpty){
+                            db.collection(CONVO_LIST).add(conversation).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    callBack(it.result.id) // New conversation created, pass null for error
+                                } else {
+                                    Log.d("fjdsfjorieghesupghrges",it.exception?.message.toString()) // Error creating conversation
+                                }
+                            }
+                        } else {
+                            val existingConversationId = task2.result.documents[0].id
+                            callBack(existingConversationId) // Existing conversation found, pass null for error
+                        }
+                    }
+                }
+            } else {
+                // Existing conversation found, return its ID
+                val existingConversationId = task.result.documents[0].id
+                callBack(existingConversationId) // Existing conversation found, pass null for error
+            }
         } else {
-            Log.d("ERROR", it.exception?.message.toString())
+            // Error fetching conversations
+            Log.d("SFJREUOISGHE",task.exception?.message.toString())
         }
     }
 }
+
 
 fun getNewConversation(id: String) = callbackFlow {
 

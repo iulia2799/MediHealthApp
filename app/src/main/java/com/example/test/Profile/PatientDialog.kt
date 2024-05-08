@@ -127,7 +127,7 @@ fun PatientCard(patient: Patient) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(250.dp)
             .padding(4.dp),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(

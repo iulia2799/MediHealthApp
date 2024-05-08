@@ -48,6 +48,7 @@ import com.example.test.Home
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
+import com.example.test.utils.DOCTORS
 import com.example.test.utils.PATIENTS
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -246,7 +247,7 @@ class RegisterActivity : ComponentActivity() {
                                     address = address,
                                     department = departmentValue!!
                                 )
-                                db.collection(PATIENTS).add(doc).addOnCompleteListener {
+                                db.collection(DOCTORS).add(doc).addOnCompleteListener {
                                     val localStorage = LocalStorage(context)
                                     localStorage.putUserDetails(
                                         true,

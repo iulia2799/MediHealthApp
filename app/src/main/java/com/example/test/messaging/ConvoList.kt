@@ -87,6 +87,7 @@ class ConvoList : ComponentActivity() {
                         if (value != null) {
                             if (!value.isEmpty) {
                                 val results = value.documents
+                                list = emptyList()
                                 results.iterator().forEach {
                                     val element = it.toObject<Conversation>()
                                     if (element != null) {

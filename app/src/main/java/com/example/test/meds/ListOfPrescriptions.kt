@@ -93,7 +93,6 @@ class ListOfPrescriptions : ComponentActivity() {
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
-                Spacer(modifier = Modifier.weight(1f))
                 if (prescriptions.isEmpty()) {
                     Row {
                         LargeTextField(
