@@ -5,6 +5,7 @@ import Models.Department
 import Models.Doctor
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -35,18 +36,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.FormSelector
-import com.example.test.Components.goToConvo
-import com.example.test.LocalStorage.ParcelableConvo
+import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
-import com.example.test.messaging.ConversationSpace
+import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
-import com.example.test.utils.createNewConversation
-import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ListOfDoctors : ComponentActivity() {
@@ -64,13 +62,25 @@ class ListOfDoctors : ComponentActivity() {
     @Composable
     fun Content() {
         val db = Firebase.firestore
+        val context = LocalContext.current
+        var searchService = Search(context)
+        var isLoading by remember {
+            mutableStateOf(false)
+        }
         var doctorMap by remember { mutableStateOf(emptyMap<String, Doctor>()) }
         var searchText by remember { mutableStateOf("") }
         var selectedDepartment by remember { mutableStateOf(departmentList[0]) } // State for selected department
-
-        LaunchedEffect(Unit) {
-            val query = db.collection("doctors")
-            query.get().addOnCompleteListener {
+        var coroutine = rememberCoroutineScope()
+        LaunchedEffect(searchText, selectedDepartment) {
+            isLoading = true
+            delay(1000)
+            Log.d("COROUTINE", "SCOPE")
+            launch {
+                doctorMap = searchService.retrieveValues(searchText)
+                isLoading = false
+            }
+            //val query = db.collection("doctors")
+            /*query.get().addOnCompleteListener {
                 if (it.isSuccessful) {
                     val documents = it.result!!.documents
                     val doctorMapTemp = mutableMapOf<String, Doctor>()
@@ -80,39 +90,30 @@ class ListOfDoctors : ComponentActivity() {
                     }
                     doctorMap = doctorMapTemp
                 }
-            }
+            }*/
         }
 
         Column {
             // Dropdown for department filtering
+            if (isLoading) MediumTextField(modifier = Modifier.fillMaxWidth(), value = "Loading...")
             FormSelector(
                 options = departmentList, selectedOption = selectedDepartment, onOptionSelected = {
                     selectedDepartment = it
+                    searchText =
+                        if (selectedDepartment != Department.NA.displayName) Department.values().find { el ->
+                            el.displayName == selectedDepartment
+                        }?.name ?: "NA"
+                        else ""
                 }, text = "Select a department", modifier = Modifier.fillMaxWidth()
             )
 
-            // Search bar (optional)
-            OutlinedTextField(value = searchText,
+            OutlinedTextField(
+                value = searchText,
                 onValueChange = { searchText = it },
                 label = { Text("Search for doctors") },
                 modifier = Modifier.fillMaxWidth()
             )
-
-            // Display doctor list with filtering
-            val filteredDoctors = doctorMap.filter { it ->
-                (selectedDepartment == Department.NA.displayName || it.value.department == Department.values()
-                    .find {
-                        it.displayName == selectedDepartment
-                    }) && (searchText.isEmpty() || it.value.firstName.contains(
-                    searchText,
-                    ignoreCase = true
-                ) || it.value.lastName.contains(
-                    searchText,
-                    ignoreCase = true
-                ) || "${it.value.firstName} ${it.value.lastName}".contains(
-                    searchText, ignoreCase = true
-                ))
-            }
+            val filteredDoctors = doctorMap
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(filteredDoctors.keys.toList()) {
                     filteredDoctors[it]?.let { it1 ->
@@ -165,24 +166,10 @@ class ListOfDoctors : ComponentActivity() {
                     ) {
                         Text("Make Appointment")
                     }
-                    if(doctor.available) {
+                    if (doctor.messageAvailable) {
                         TextButton(
                             modifier = Modifier.padding(4.dp), onClick = {
-                                createNewConversation(context, ref, name) { id ->
-                                    val flow = getNewConversation(id)
-                                    coroutine.launch {
-                                        flow.collect {
-                                            if (it != null) {
-                                                convo = it
-                                                if(convo.messagesRef == null) {
-                                                    convo.messagesRef = Firebase.firestore.document("convolist/$id")
-                                                }
-                                                goToConvo(context, convo)
-                                            }
 
-                                        }
-                                    }
-                                }
                             }, colors = ButtonDefaults.textButtonColors(
                                 contentColor = universalAccent,
                             )

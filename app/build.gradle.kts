@@ -129,4 +129,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     // Android Maps Compose composables for the Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:4.4.1")
+
+    implementation("com.algolia:algoliasearch-client-kotlin:2.0.0")
+    implementation("io.ktor:ktor-client-okhttp:2.0.1")
+    implementation("com.google.code.gson:gson:2.10.1")
 }

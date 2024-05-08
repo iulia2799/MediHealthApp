@@ -177,7 +177,7 @@ class Profile : ComponentActivity() {
                             end = user.officeHours.end
                             weekstart = user.officeHours.weekStart
                             weekEnd = user.officeHours.weekend
-                            available = user.available
+                            available = user.messageAvailable
                         }
                     }
                 }

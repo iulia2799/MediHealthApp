@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">MediHealth</string>
     <string name="title_activity_help_page">HelpPage</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
@@ -27,6 +26,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Activities -->
     <string name="title_activity_conversation">Conversation</string>
     <string name="title_activity_convo_list">ConvoList</string>
     <string name="title_activity_appointment_manager">AppointmentManager</string>
@@ -41,4 +41,6 @@
     <string name="notification_channel_id">APP_CHANNEL</string>
     <string name="notification_channel_name">App Channel</string>
     <string name="title_activity_conversation_space">ConversationSpace</string>
+    <string name="searchAPI">VOC1ZACRCT</string>
+    <string name="publicKey">9d99f71a3b5515da7ec41dbe75b6d7ea</string>
 </resources>
