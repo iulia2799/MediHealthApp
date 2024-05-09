@@ -79,6 +79,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 class AppointmentManager : ComponentActivity() {
@@ -148,7 +149,7 @@ class AppointmentManager : ComponentActivity() {
         var description by remember {
             mutableStateOf(appointment.description)
         }
-        val datetime = LocalDateTime.now()
+        val datetime = LocalDateTime.now(ZoneId.systemDefault())
         var state = remember {
             TimePickerState(
                 is24Hour = true,

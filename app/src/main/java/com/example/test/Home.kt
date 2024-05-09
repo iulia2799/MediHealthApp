@@ -214,6 +214,7 @@ class Home : ComponentActivity() {
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
                 .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).addSnapshotListener { value, error ->
                     if (value != null) {
+                        data = emptyMap()
                         Log.d("fdsfds", value.documents.toString())
                         if (value.size() == 0) {
                             Log.d("SIZE", ":NOT EMPTY")
