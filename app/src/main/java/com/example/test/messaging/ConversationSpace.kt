@@ -42,6 +42,7 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.utils.getMessages
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class ConversationSpace : ComponentActivity() {
@@ -92,7 +93,6 @@ class ConversationSpace : ComponentActivity() {
                 if (it?.isNotEmpty() == true) {
                     buffer = it
                     listState.animateScrollToItem(it.size - 1)
-
                 }
 
             }

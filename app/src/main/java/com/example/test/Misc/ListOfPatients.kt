@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.example.test.Components.filterByFieldP
 import com.example.test.Components.goToConvo
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.MedicationManager
@@ -49,11 +50,10 @@ import com.example.test.ui.theme.universalBackground
 import com.example.test.utils.PATIENTS
 import com.example.test.utils.createNewConversation
 import com.example.test.utils.getNewConversation
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 
 class ListOfPatients : ComponentActivity() {
@@ -123,10 +123,14 @@ class ListOfPatients : ComponentActivity() {
     @Composable
     fun PatientItem(patient: Patient, ref: String) {
         val context = LocalContext.current
+        val localStorage = LocalStorage(context)
         val name = patient.firstName + ", " + patient.lastName
         val coroutine = rememberCoroutineScope()
         var convo by remember {
             mutableStateOf(Conversation())
+        }
+        var isLoading by remember {
+            mutableStateOf(false)
         }
         Card(
             modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
@@ -192,19 +196,36 @@ class ListOfPatients : ComponentActivity() {
                     ) {
                         Text("View Prescriptions")
                     }
+                    if (localStorage.getRole() && patient.doctorUid == localStorage.getRef()) {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp), onClick = {
+                                val intent = Intent(context, Results::class.java)
+                                intent.putExtra("ref", ref)
+                                context.startActivity(intent)
+                            }, colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent,
+                            )
+                        ) {
+                            Text("View Results")
+                        }
+                    }
 
                     TextButton(
                         modifier = Modifier.padding(4.dp), onClick = {
                             createNewConversation(context, ref, name) { id ->
                                 val flow = getNewConversation(id)
+                                isLoading = true
                                 coroutine.launch {
-                                    flow.collect {
+                                    flow.takeWhile { isLoading }.collect {
                                         if (it != null) {
                                             convo = it
-                                            if(convo.messagesRef == null) {
-                                                convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                                            if (convo.messagesRef == null) {
+                                                convo.messagesRef =
+                                                    Firebase.firestore.document("convolist/$id")
                                             }
-                                            goToConvo(context, convo)
+                                            goToConvo(context, convo) {
+                                                isLoading = false
+                                            }
                                         }
 
                                     }

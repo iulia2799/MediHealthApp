@@ -18,7 +18,7 @@ fun convertMillisToDate(millis: Long): String {
 }
 
 fun convertMillisToExactDate(millis: Long): String {
-    val formatter = SimpleDateFormat("hh:mm dd/MM/yyyy", Locale.ROOT)
+    val formatter = SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.ROOT)
     return formatter.format(Date(millis))
 }
 

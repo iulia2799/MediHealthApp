@@ -15,6 +15,11 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +41,14 @@ import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
+import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class ListOfPrescriptions : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +71,9 @@ class ListOfPrescriptions : ComponentActivity() {
             val p = intent.getStringExtra("ref")
             ref = p
         }
+        val snackbarState = SnackbarHostState()
         var prescriptions by remember { mutableStateOf(emptyMap<String, Medication>()) }
+        var coroutine = rememberCoroutineScope()
         LaunchedEffect(key1 = ref) {
             db.collection(MEDICATION_DATA).whereEqualTo("patientUid", ref).get()
                 .addOnCompleteListener {
@@ -79,42 +90,67 @@ class ListOfPrescriptions : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
-            Column {
-                Row {
-                    var text = "Your prescriptions"
-                    if (localStorage.getRole()) {
-                        text = "Patient prescriptions"
+            Scaffold(
+                snackbarHost = {
+                    SnackbarHost(hostState = snackbarState) { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            actionColor = universalAccent,
+                            containerColor = universalBackground,
+                            contentColor = universalTertiary
+                        )
                     }
-                    LargeTextField(
-                        value = text,
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
                 }
-                if (prescriptions.isEmpty()) {
+            ) {paddingValues ->
+                Column(modifier = Modifier.padding(paddingValues)) {
                     Row {
+                        var text = "Your prescriptions"
+                        if (localStorage.getRole()) {
+                            text = "Patient prescriptions"
+                        }
                         LargeTextField(
-                            value = "No results",
+                            value = text,
                             modifier = Modifier
                                 .padding(10.dp)
                                 .fillMaxWidth()
                                 .wrapContentWidth(Alignment.CenterHorizontally)
                         )
                     }
-                } else {
-                    ListOfMedicationsCards(prescriptions)
+                    if (prescriptions.isEmpty()) {
+                        Row {
+                            LargeTextField(
+                                value = "No results",
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+                        }
+                    } else {
+                        ListOfMedicationsCards(prescriptions) {
+                            coroutine.launch {
+                                snackbarState.showSnackbar(
+                                    "Prescription was successfully deleted.",
+                                    "ok",
+                                    true,
+                                    SnackbarDuration.Short
+                                )
+                            }
+
+                        }
+                    }
                 }
             }
+
 
         }
     }
 }
 
 @Composable
-fun ListOfMedicationsCards(list: Map<String, Medication>) {
+fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> Unit = {}) {
     val context = LocalContext.current
+    val db = Firebase.firestore
     val localStorage = LocalStorage(context)
     val intent = Intent(context, ChangeAlerts::class.java)
     CenteredBox {
@@ -159,6 +195,14 @@ fun ListOfMedicationsCards(list: Map<String, Medication>) {
                                 context.startActivity(intent)
                             }) {
                                 Text("Change")
+                            }
+                        } else if(localStorage.getRef() == list[index]?.doctorUid) {
+                            TextButton(onClick = {
+                                db.collection(MEDICATION_DATA).document(index).delete().addOnCompleteListener {
+                                    removeCallBack()
+                                }
+                            }) {
+                                Text("Remove prescription")
                             }
                         }
 

@@ -48,6 +48,7 @@ import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 
 class ListOfDoctors : ComponentActivity() {
@@ -131,6 +132,9 @@ class ListOfDoctors : ComponentActivity() {
 
     @Composable
     fun DoctorItem(doctor: Doctor, ref: String) {
+        var isLoading by remember {
+            mutableStateOf(false)
+        }
         val context = LocalContext.current
         val name = doctor.firstName + ", " + doctor.lastName
         val coroutine = rememberCoroutineScope()
@@ -174,16 +178,21 @@ class ListOfDoctors : ComponentActivity() {
                             modifier = Modifier.padding(4.dp), onClick = {
                                 createNewConversation(context, ref, name) { id ->
                                     val flow = getNewConversation(id)
+                                    isLoading = true
                                     coroutine.launch {
-                                        flow.collect {
+                                        flow.takeWhile{
+                                            isLoading
+                                        }.collect {
                                             if (it != null) {
                                                 convo = it
+                                                Log.d("CONVERSATIONS","going to conversation")
                                                 if(convo.messagesRef == null) {
                                                     convo.messagesRef = Firebase.firestore.document("convolist/$id")
                                                 }
-                                                goToConvo(context, convo)
+                                                goToConvo(context, convo){
+                                                    isLoading = false
+                                                }
                                             }
-
                                         }
                                     }
                                 }

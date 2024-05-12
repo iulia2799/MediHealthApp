@@ -12,6 +12,7 @@ import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
 import com.example.test.messaging.ConversationSpace
 import com.example.test.utils.removeTokenFromServer
+import kotlinx.coroutines.delay
 
 fun back(context: Context) {
     context.startActivity(Intent(context, MainActivity::class.java))
@@ -41,11 +42,12 @@ fun goToList(context: Context) {
     }
 }
 
-fun goToConvo(context: Context, convo: Conversation) {
+fun goToConvo(context: Context, convo: Conversation, callBack: () -> Unit = {}) {
     val intent = Intent(context, ConversationSpace::class.java)
     val parcel = ParcelableConvo(
         convo.userUids, convo.userNames, convo.lastUpdated, convo.messagesRef?.path.toString()
     )
     intent.putExtra("data", parcel)
     context.startActivity(intent)
+    callBack()
 }
