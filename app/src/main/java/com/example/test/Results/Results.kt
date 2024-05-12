@@ -60,11 +60,22 @@ class Results : ComponentActivity() {
     @Composable
     @Preview
     fun Content() {
-        val context = LocalContext.current
-        val local = LocalStorage(context)
-        val ref = local.getRef()
         db = Firebase.firestore
         storage = Firebase.storage
+        val context = LocalContext.current
+        val local = LocalStorage(context)
+        var ref = local.getRef()
+        var title = "Your results"
+        val hasIntentExtra = intent.hasExtra("ref")
+        if (hasIntentExtra) {
+            ref = intent.getStringExtra("ref")
+            title = "Patient results"
+        }
+        val query = when (hasIntentExtra) {
+            true -> db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
+            false -> db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
+        }
+
         var isLoading by remember {
             mutableStateOf(false)
         }
@@ -75,14 +86,13 @@ class Results : ComponentActivity() {
 
         LaunchedEffect(key1 = ref) {
             isLoading = true
-            db.collection(RESULTS_RECORDS).whereEqualTo("patientRef", ref)
-                .orderBy("unix", Query.Direction.DESCENDING).get().addOnSuccessListener {
-                    results = it.toObjects()
-                    isLoading = false
-                }.addOnFailureListener {
-                    Log.d("ERROR RETRIEVING", it.message.toString())
-                    isLoading = false
-                }
+            query.orderBy("unix", Query.Direction.DESCENDING).get().addOnSuccessListener {
+                results = it.toObjects()
+                isLoading = false
+            }.addOnFailureListener {
+                Log.d("ERROR RETRIEVING", it.message.toString())
+                isLoading = false
+            }
         }
 
         Surface(
@@ -90,7 +100,7 @@ class Results : ComponentActivity() {
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 LargeTextField(
-                    value = "Your results",
+                    value = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
