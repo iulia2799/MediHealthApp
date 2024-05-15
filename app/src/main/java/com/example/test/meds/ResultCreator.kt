@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -39,12 +41,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
@@ -128,6 +135,8 @@ class ResultCreator : ComponentActivity() {
             mutableStateOf(false)
         }
 
+        val uriHandler = LocalUriHandler.current
+
         var filePath by remember { mutableStateOf<Uri?>(null) }
         var isLoading by remember { mutableStateOf(false) }
         var uploadedFileUrl by remember { mutableStateOf<String?>(null) }
@@ -168,8 +177,10 @@ class ResultCreator : ComponentActivity() {
             ) {
                 Row {
                     LargeTextField(
-                        value = "Send Results", modifier = Modifier
+                        value = "Send Results",
+                        modifier = Modifier
                             .padding(10.dp)
+                            .fillMaxWidth()
                             .wrapContentSize(
                                 Alignment.Center
                             )
@@ -188,11 +199,32 @@ class ResultCreator : ComponentActivity() {
                         modifier = Modifier.padding(4.dp),
                         text = "Pick a file"
                     )
-                    if (filePath != null) {
-                        Text("File: ${filePath!!.path}")
+                    var annotation: String? = ""
+                    if (filePath != null) annotation = filePath!!.path
+                    else if (uploadedFileUrl != null) annotation = uploadedFileUrl
+                    val hyperLink = buildAnnotatedString {
+                        append("Uploaded file URL: ")
+                        if (annotation != null) {
+                            pushStringAnnotation(tag = "URL", annotation = annotation)
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Blue, fontWeight = FontWeight.Bold
+                                )
+                            ) {
+                                append("Here is your valid URL")
+                            }
+                        }
+                        pop()
                     }
-                    if (uploadedFileUrl != null) {
-                        Text("Uploaded File URL: $uploadedFileUrl")
+                    if (annotation != null) {
+                        ClickableText(text = hyperLink, onClick = { offset ->
+                            hyperLink.getStringAnnotations(
+                                tag = "URL", start = offset, end = offset
+                            ).firstOrNull()?.let {
+                                Log.d("valid URL", it.item)
+                                uriHandler.openUri(it.item)
+                            }
+                        })
                     }
                     if (isLoading) {
                         CircularProgressIndicator()
@@ -223,7 +255,12 @@ class ResultCreator : ComponentActivity() {
                                         }
                                     })
                             }
-                        }) {
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -268,7 +305,9 @@ class ResultCreator : ComponentActivity() {
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    MediumTextField(modifier = Modifier, value = "Patient: $patientName")
+                    MediumTextField(
+                        modifier = Modifier.padding(4.dp), value = "Patient: $patientName"
+                    )
                 }
 
                 Row(
