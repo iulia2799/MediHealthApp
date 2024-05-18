@@ -1,5 +1,6 @@
 package com.example.test.utils
 
+import Models.Billing
 import Models.Conversation
 import Models.DeviceToken
 import Models.Message
@@ -158,5 +159,16 @@ fun sendFirstMessage(
             Log.d("error",it.exception?.message.toString())
         }
         Log.d("SUCCESS","SUCCESS")
+    }
+}
+
+fun sendBilling(billing: Billing, context: Context, onDone: () -> Unit) {
+    val db = Firebase.firestore
+    db.collection(BILLING_DATA).add(billing).addOnCompleteListener {
+        if(it.isSuccessful) {
+            onDone()
+        } else {
+            Log.d("Exception","Exception here: ${it.exception?.message.toString()}")
+        }
     }
 }
