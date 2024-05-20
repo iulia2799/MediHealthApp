@@ -6,6 +6,7 @@ data class ResultRecord(
     var doctorRef: String = "",
     var doctorName: String = "",
     var fileRefStorageUrl: String = "",
+    var optionalFiles: List<String> = emptyList(),
     var description: String = "",
     var unix: Long = System.currentTimeMillis()
 )

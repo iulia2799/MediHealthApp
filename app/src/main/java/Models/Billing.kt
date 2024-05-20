@@ -13,6 +13,6 @@ data class Billing(
     var discount: Int = 0,
     var finalSum: Int = 0,
     var AccountNumber: String = "",
-    var fileUrl: String = "",
-    var currency: Currency = Currency.getInstance(Locale.getDefault().country)
+    var files: List<String> = emptyList(),
+    var currency: String = ""
 )

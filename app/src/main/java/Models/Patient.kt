@@ -9,7 +9,7 @@ data class Patient(
     var password: String= "",
     var age: Int = 0,
     var doctorUid: String = "0",
-    var doctorName: String = ""
+    var doctorName: String = "",
 )
 
 val nullPatient = Patient("","","","","","",0)

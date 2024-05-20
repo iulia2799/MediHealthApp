@@ -181,10 +181,8 @@ class Results : ComponentActivity() {
                 Spacer(modifier = Modifier.weight(1f))
                 DefaultButton(
                     onClick = {
-
                         val downloader = Downloader(context)
                         downloader.downloadFromFirebaseStorage(result.fileRefStorageUrl)
-
                     },
                     alignment = Alignment.Center,
                     text = "Download",
@@ -192,6 +190,22 @@ class Results : ComponentActivity() {
                         .padding(10.dp)
                         .fillMaxWidth()
                 )
+                if (result.optionalFiles.isNotEmpty()) {
+                    result.optionalFiles.forEach {
+                        Spacer(modifier = Modifier.weight(1f))
+                        DefaultButton(
+                            onClick = {
+                                val downloader = Downloader(context)
+                                downloader.downloadFromFirebaseStorage(it)
+                            },
+                            alignment = Alignment.Center,
+                            text = "Download",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                }
 
                 if (isDowloading) {
                     CircularProgressIndicator()

@@ -2,6 +2,7 @@ package com.example.test.meds
 
 import Models.Patient
 import Models.ResultRecord
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.DefaultButton
+import com.example.test.Components.FilePicker
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
@@ -69,10 +74,6 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class ResultCreator : ComponentActivity() {
 
@@ -137,13 +138,23 @@ class ResultCreator : ComponentActivity() {
 
         val uriHandler = LocalUriHandler.current
 
-        var filePath by remember { mutableStateOf<Uri?>(null) }
+        val filePath by remember { mutableStateOf<Uri?>(null) }
         var isLoading by remember { mutableStateOf(false) }
         var uploadedFileUrl by remember { mutableStateOf<String?>(null) }
+        var fileRefUrl by remember { mutableStateOf<String?>(null) }
+        var optionalFilesUrl by remember { mutableStateOf<List<String>>(emptyList()) }
+
+        val filePicker = FilePicker()
+
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.data != null) {
+            filePicker.pickFile(result, { isLoading = !isLoading }, { downloadUri ->
+                uploadedFileUrl = downloadUri.toString()
+                if (fileRefUrl == null) {
+                    fileRefUrl = uploadedFileUrl
+                }
+            }, storage, db, "${patientRef}_${doctorRef}")/*if (result.data != null) {
                 isLoading = true
                 val storageRef =
                     storage.reference.child("${patientRef}_${doctorRef}/${result.data!!.data?.lastPathSegment}_${timeMillis}")
@@ -153,6 +164,9 @@ class ResultCreator : ComponentActivity() {
                             val snapshot = storageRef.putFile(it).await()
                             val downloadUri = snapshot.storage.downloadUrl.await()
                             uploadedFileUrl = downloadUri.toString()
+                            if(fileRefUrl == null) {
+                                fileRefUrl = uploadedFileUrl
+                            }
                             isLoading = false
                             // Add the URL to Firestore (call separate function)
                             addUrlToFirestore(downloadUri.toString())
@@ -163,7 +177,17 @@ class ResultCreator : ComponentActivity() {
                         }
                     }
                 }
-            }
+            }*/
+        }
+
+        val multipleFileLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            filePicker.pickMultipleFiles(result, { isLoading = !isLoading }, { downloadUri ->
+                val uri = downloadUri.toString()
+                optionalFilesUrl += uri
+                Log.d("OPTIONAL FILES",downloadUri.toString())
+            }, storage, db, "${patientRef}_${doctorRef}")
         }
 
         Surface(
@@ -205,7 +229,7 @@ class ResultCreator : ComponentActivity() {
                     val hyperLink = buildAnnotatedString {
                         append("Uploaded file URL: ")
                         if (annotation != null) {
-                            pushStringAnnotation(tag = "URL", annotation = annotation)
+                            pushStringAnnotation(tag = "URL", annotation = annotation!!)
                             withStyle(
                                 style = SpanStyle(
                                     color = Color.Blue, fontWeight = FontWeight.Bold
@@ -228,6 +252,65 @@ class ResultCreator : ComponentActivity() {
                     }
                     if (isLoading) {
                         CircularProgressIndicator()
+                    }
+                }
+
+                Row {
+                    DefaultButton(
+                        onClick = {
+                            multipleFileLauncher.launch(
+                                Intent(Intent.ACTION_GET_CONTENT).setType(
+                                    "*/*"
+                                ).putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
+                            )
+                        },
+                        alignment = Alignment.Center,
+                        modifier = Modifier.padding(4.dp),
+                        text = "Pick more files"
+                    )
+                }
+
+                if (optionalFilesUrl.isNotEmpty()) {
+                    optionalFilesUrl.forEachIndexed { index, url ->
+                        var annotation = ""
+                        annotation = url
+                        val hyperLink = buildAnnotatedString {
+                            append("Uploaded file URL: ")
+                            pushStringAnnotation(tag = "URL", annotation = annotation)
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color.Blue, fontWeight = FontWeight.Bold
+                                )
+                            ) {
+                                append("Here is your valid URL (${index+1})")
+                            }
+                            pop()
+                        }
+                        Row(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        ) {
+                            ClickableText(text = hyperLink, onClick = { offset ->
+                                hyperLink.getStringAnnotations(
+                                    tag = "URL", start = offset, end = offset
+                                ).firstOrNull()?.let {
+                                    Log.d("valid URL", it.item)
+                                    uriHandler.openUri(it.item)
+                                }
+                            })
+                            Spacer(modifier = Modifier.weight(1f))
+                            Button(onClick = { optionalFilesUrl -= optionalFilesUrl[index]
+                            Log.d("Siiiiize:",optionalFilesUrl.size.toString())}) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Delete file",
+                                    modifier = Modifier.padding(10.dp)
+                                )
+                            }
+                        }
+
                     }
                 }
 
@@ -327,14 +410,15 @@ class ResultCreator : ComponentActivity() {
                     DefaultButton(
                         onClick = {
                             val res = doctorRef?.let {
-                                uploadedFileUrl?.let { it1 ->
+                                fileRefUrl?.let { it1 ->
                                     ResultRecord(
-                                        patientRef,
-                                        patientName,
-                                        it,
-                                        doctorName,
+                                        patientRef = patientRef,
+                                        patientName = patientName,
+                                        doctorRef = it,
+                                        doctorName = doctorName,
                                         fileRefStorageUrl = it1,
-                                        description
+                                        description = description,
+                                        optionalFiles = optionalFilesUrl
                                     )
                                 }
                             }

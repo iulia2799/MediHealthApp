@@ -12,17 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -36,7 +36,6 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
 import com.example.test.ui.theme.AppTheme
-import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
@@ -65,16 +64,20 @@ fun preview() {
             color = universalBackground
         ) {
             Scaffold(topBar = {
-                TopAppBar(title = { LargeTextField(value = "Your Billings",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                        .padding(10.dp)
+                TopAppBar(
+                    title = {
+                        LargeTextField(
+                            value = "Your Billings",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                                .padding(10.dp)
+                        )
+                    }, colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = universalBackground,
+                        titleContentColor = Color.Black,
+                    )
                 )
-                },colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = universalBackground,
-                    titleContentColor = Color.Black,
-                ))
 
             }, snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState) { data ->
@@ -85,9 +88,11 @@ fun preview() {
                         contentColor = universalError
                     )
                 }
-            }, containerColor = universalBackground) {
-                Column(modifier = Modifier.padding(it)) {
-
+            }, containerColor = universalBackground) { innerPadding ->
+                LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                    items(5) {
+                        BillingCard()
+                    }
                 }
             }
         }
@@ -98,17 +103,33 @@ fun preview() {
 @Preview
 fun BillingCard() {
     val emptyBilling = Billing(doctorName = "Some doctor name")
-    Card(modifier = Modifier
-        .padding(10.dp)
-        .width(200.dp)
-        .height(200.dp), shape = RoundedCornerShape(10.dp), colors = CardColors(containerColor = universalAccent, contentColor = Color.White, disabledContentColor = Color.DarkGray, disabledContainerColor = Color.White)) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .width(200.dp)
+            .height(200.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardColors(
+            containerColor = universalAccent,
+            contentColor = Color.White,
+            disabledContentColor = Color.DarkGray,
+            disabledContainerColor = Color.White
+        )
+    ) {
         Column {
-            Row{
+            Row {
                 MediumTextField(modifier = Modifier.padding(10.dp), value = emptyBilling.doctorName)
             }
-            Row(modifier = Modifier.padding(10.dp)){
-                SmallTextField(value = emptyBilling.finalSum.toString())
+            Row(modifier = Modifier.padding(10.dp)) {
+                SmallTextField(value = "Initial sum to pay: " + emptyBilling.finalSum.toString())
             }
+            Row(modifier = Modifier.padding(10.dp)) {
+                SmallTextField(value = "Covered by insurance: "+emptyBilling.discount.toString() + "%")
+            }
+            Row(modifier = Modifier.padding(10.dp)){
+                SmallTextField(value = "Final sum to pay: " + emptyBilling.finalSum.toString())
+            }
+
         }
     }
 }
