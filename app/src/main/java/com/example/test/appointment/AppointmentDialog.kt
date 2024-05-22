@@ -43,10 +43,7 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun AppointmentDialog(
-    appointment: Appointment,
-    ref: String,
-    type: Boolean = false,
-    onDismiss: () -> Unit
+    appointment: Appointment, ref: String, type: Boolean = false, onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val db = Firebase.firestore
@@ -59,14 +56,13 @@ fun AppointmentDialog(
     val intent = Intent(context, AppointmentManager::class.java)
     Dialog(
         onDismissRequest = { onDismiss() }, properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
+            dismissOnBackPress = true, dismissOnClickOutside = true
         )
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(320.dp)
+                .height(360.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
@@ -99,10 +95,9 @@ fun AppointmentDialog(
                 MediumTextField(modifier = Modifier, value = "Date: ${appointment.date.toDate()}")
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(
-                    modifier = Modifier,
-                    value = "Time: ${appointment.alocatedTime / 60} minutes"
+                    modifier = Modifier, value = "Time: ${appointment.alocatedTime / 60} minutes"
                 )
-
+                Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -110,8 +105,7 @@ fun AppointmentDialog(
                         .wrapContentSize(Alignment.Center)
                 ) {
                     TextButton(
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
+                        modifier = Modifier.padding(4.dp), onClick = {
                             val parcel = AppointmentParceled(
                                 appointment.doctorUid,
                                 appointment.doctorName,
@@ -126,29 +120,24 @@ fun AppointmentDialog(
                             intent.putExtra("appointment", parcel)
                             intent.putExtra("mode", mode)
                             context.startActivity(intent)
-                        },
-                        colors = ButtonDefaults.textButtonColors(
+                        }, colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent,
                         )
                     ) {
                         Text("Edit")
                     }
                     TextButton(
-                        modifier = Modifier.padding(4.dp),
-                        onClick = {
+                        modifier = Modifier.padding(4.dp), onClick = {
                             db.collection("appointments").document(ref).delete()
                                 .addOnSuccessListener {
                                     Toast.makeText(
-                                        context,
-                                        "Succesfully deleted",
-                                        Toast.LENGTH_LONG
+                                        context, "Succesfully deleted", Toast.LENGTH_LONG
                                     ).show()
                                 }.addOnFailureListener {
                                     Toast.makeText(context, "Failed to delete", Toast.LENGTH_LONG)
                                         .show()
                                 }
-                        },
-                        colors = ButtonDefaults.textButtonColors(
+                        }, colors = ButtonDefaults.textButtonColors(
                             contentColor = universalAccent
                         )
                     ) {
@@ -156,8 +145,7 @@ fun AppointmentDialog(
                     }
                     if (type) {
                         TextButton(
-                            modifier = Modifier.padding(4.dp),
-                            onClick = {
+                            modifier = Modifier.padding(4.dp), onClick = {
                                 db.collection("appointments").document(ref).update(
                                     mapOf(
                                         "accepted" to true
@@ -168,8 +156,7 @@ fun AppointmentDialog(
 
                                 }
 
-                            },
-                            colors = ButtonDefaults.textButtonColors(
+                            }, colors = ButtonDefaults.textButtonColors(
                                 contentColor = universalAccent
                             )
                         ) {
@@ -177,20 +164,44 @@ fun AppointmentDialog(
                         }
                     } else {
                         TextButton(
-                            modifier = Modifier.padding(4.dp),
-                            onClick = {
+                            modifier = Modifier.padding(4.dp), onClick = {
                                 onDismiss()
-                            },
-                            colors = ButtonDefaults.textButtonColors(
+                            }, colors = ButtonDefaults.textButtonColors(
                                 contentColor = universalAccent
                             )
                         ) {
                             Text("Close")
                         }
                     }
-
-
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center)
+                ) {
+                    TextButton(
+                        modifier = Modifier.padding(4.dp), onClick = {
+                            db.collection("appointments").document(ref).update(
+                                mapOf(
+                                    "missed" to true
+                                )
+                            ).addOnSuccessListener {
+                                onDismiss()
+                            }.addOnFailureListener {
+
+                            }
+
+                        }, colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent
+                        )
+                    ) {
+                        Text("Mark as missed")
+                    }
+                }
+
 
             }
         }

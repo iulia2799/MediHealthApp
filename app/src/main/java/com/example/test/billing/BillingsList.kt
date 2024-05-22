@@ -30,8 +30,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.test.Components.DefaultButton
+import com.example.test.Components.Downloader
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
@@ -60,8 +63,7 @@ fun preview() {
     val snackbarHostState = remember { SnackbarHostState() }
     AppTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = universalBackground
+            modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             Scaffold(topBar = {
                 TopAppBar(
@@ -103,11 +105,10 @@ fun preview() {
 @Preview
 fun BillingCard() {
     val emptyBilling = Billing(doctorName = "Some doctor name")
+    val context = LocalContext.current
     Card(
         modifier = Modifier
-            .padding(10.dp)
-            .width(200.dp)
-            .height(200.dp),
+            .padding(10.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardColors(
             containerColor = universalAccent,
@@ -124,10 +125,20 @@ fun BillingCard() {
                 SmallTextField(value = "Initial sum to pay: " + emptyBilling.finalSum.toString())
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Covered by insurance: "+emptyBilling.discount.toString() + "%")
+                SmallTextField(value = "Covered by insurance: " + emptyBilling.discount.toString() + "%")
             }
-            Row(modifier = Modifier.padding(10.dp)){
+            Row(modifier = Modifier.padding(10.dp)) {
                 SmallTextField(value = "Final sum to pay: " + emptyBilling.finalSum.toString())
+            }
+            Row {
+                DefaultButton(onClick = {
+                    val downloader = Downloader(context = context)
+                    emptyBilling.files.forEach {
+                        downloader.downloadFromFirebaseStorage(
+                            it
+                        )
+                    }
+                }, alignment = Alignment.Center, text = "Download bills", modifier = Modifier.fillMaxWidth().padding(10.dp))
             }
 
         }

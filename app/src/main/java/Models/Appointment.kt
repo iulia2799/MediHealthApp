@@ -11,5 +11,6 @@ data class Appointment(
     var description: String = "",
     var date: Timestamp = Timestamp.now(),
     var alocatedTime: Long = 15 * 60,
-    var accepted: Boolean = false
+    var accepted: Boolean = false,
+    var missed: Boolean = false
 )

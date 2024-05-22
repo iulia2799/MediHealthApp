@@ -127,6 +127,14 @@ class Results : ComponentActivity() {
                                         element.fileRefStorageUrl,
                                         "results_${System.currentTimeMillis()}"
                                     )
+                                    if(element.optionalFiles.isNotEmpty()) {
+                                        element.optionalFiles.forEach {
+                                            downloader.downloadFromFirebaseStorage(
+                                                it,
+                                                "results_${System.currentTimeMillis()}"
+                                            )
+                                        }
+                                    }
                                 }
                                 isLoading = false
                             },
