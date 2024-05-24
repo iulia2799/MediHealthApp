@@ -1,14 +1,47 @@
 package Models.Diseases
 
-import Models.Department
+data class Disease(val name: String, val causes: String = "", val treatment: String = "", val cure: String = "")
 
-data class Disease(
-    val uid: Long,
-    val name: String,
-    val description: String,
-    val symptoms: List<String>,
-    val type: Department,
-    val treatment: String,
-    val cure: String,
-    val curable: Boolean
+val diseaseList = listOf(
+    Disease("AIDS"),
+    Disease("Acne"),
+    Disease("Alcoholic Hepatitis"),
+    Disease("Allergy"),
+    Disease("Arthritis"),
+    Disease("Bronchial Asthma"),
+    Disease("Cervical Spondylosis"),
+    Disease("Chickenpox"),
+    Disease("Chronic Cholestasis"),
+    Disease("Common Cold"),
+    Disease("Dengue"),
+    Disease("Diabetes"),
+    Disease("Dimorphic Hemmorhoids (piles)"),
+    Disease("Drug Reaction"),
+    Disease("Fungal Infection"),
+    Disease("GERD"),
+    Disease("Gastroenteritis"),
+    Disease("Heart Attack"),
+    Disease("Hepatitis A"),
+    Disease("Hepatitis B"),
+    Disease("Hepatitis C"),
+    Disease("Hepatitis D"),
+    Disease("Hepatitis E"),
+    Disease("Hypertension"),
+    Disease("Hyperthyroidism"),
+    Disease("Hypoglycemia"),
+    Disease("Hypothyroidism"),
+    Disease("Impetigo"),
+    Disease("Jaundice"),
+    Disease("Malaria"),
+    Disease("Migraine"),
+    Disease("Osteoarthritis"),
+    Disease("Paralysis (brain hemorrhage)"),
+    Disease("Peptic Ulcer Disease"),
+    Disease("Pneumonia"),
+    Disease("Psoriasis"),
+    Disease("Tuberculosis"),
+    Disease("Typhoid"),
+    Disease("Urinary Tract Infection"),
+    Disease("Varicose Veins"),
+    Disease("Vertigo")
 )

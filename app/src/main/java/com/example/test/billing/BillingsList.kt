@@ -1,7 +1,9 @@
 package com.example.test.billing
 
 import Models.Billing
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -26,7 +28,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,10 +44,16 @@ import com.example.test.Components.Downloader
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
+import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
+import com.example.test.utils.BILLING_DATA
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.storage.storage
 
 class BillingsList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,17 +61,47 @@ class BillingsList : ComponentActivity() {
         setContent {
             AppTheme {
                 // A surface container using the 'background' color from the theme
-
+                Content()
             }
         }
     }
 }
 
+@Composable
+fun Content() {
+    val context = LocalContext.current
+    val localStorage = LocalStorage(context)
+    val userReference = localStorage.getRef()
+    val db = Firebase.firestore
+
+    var areResultsLoading by remember {
+        mutableStateOf(false)
+    }
+    var billingsList by remember {
+        mutableStateOf(emptyList<Billing>())
+    }
+    LaunchedEffect(key1 = userReference) {
+        areResultsLoading = true
+        db.collection(BILLING_DATA).addSnapshotListener { value, error ->
+            if(error != null) {
+                areResultsLoading = false
+                Log.d("Error retrieving bills: ", error.message.toString())
+            }
+            if(value != null) {
+                areResultsLoading = false
+                billingsList = value.toObjects(Billing::class.java)
+            }
+        }
+    }
+
+    preview(billingsList)
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun preview() {
+fun preview(billingList: List<Billing>) {
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     AppTheme {
         Surface(
@@ -78,7 +120,10 @@ fun preview() {
                     }, colors = TopAppBarDefaults.largeTopAppBarColors(
                         containerColor = universalBackground,
                         titleContentColor = Color.Black,
-                    )
+                    ),
+                    actions = {
+                        DefaultButton(onClick = { exportAll(billingList,context) }, alignment = Alignment.Center, text = "Export all", modifier = Modifier.padding(10.dp))
+                    }
                 )
 
             }, snackbarHost = {
@@ -92,8 +137,8 @@ fun preview() {
                 }
             }, containerColor = universalBackground) { innerPadding ->
                 LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                    items(5) {
-                        BillingCard()
+                    items(billingList) {
+                        BillingCard(it)
                     }
                 }
             }
@@ -102,9 +147,7 @@ fun preview() {
 }
 
 @Composable
-@Preview
-fun BillingCard() {
-    val emptyBilling = Billing(doctorName = "Some doctor name")
+fun BillingCard(billing: Billing) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
@@ -119,28 +162,39 @@ fun BillingCard() {
     ) {
         Column {
             Row {
-                MediumTextField(modifier = Modifier.padding(10.dp), value = emptyBilling.doctorName)
+                MediumTextField(modifier = Modifier.padding(10.dp), value = billing.doctorName)
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Initial sum to pay: " + emptyBilling.finalSum.toString())
+                SmallTextField(value = "Initial sum to pay: " + billing.finalSum.toString())
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Covered by insurance: " + emptyBilling.discount.toString() + "%")
+                SmallTextField(value = "Covered by insurance: " + billing.discount.toString() + "%")
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Final sum to pay: " + emptyBilling.finalSum.toString())
+                SmallTextField(value = "Final sum to pay: " + billing.finalSum.toString())
             }
             Row {
                 DefaultButton(onClick = {
                     val downloader = Downloader(context = context)
-                    emptyBilling.files.forEach {
+                    billing.files.forEach {
                         downloader.downloadFromFirebaseStorage(
                             it
                         )
                     }
-                }, alignment = Alignment.Center, text = "Download bills", modifier = Modifier.fillMaxWidth().padding(10.dp))
+                }, alignment = Alignment.Center, text = "Download bills", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp))
             }
 
+        }
+    }
+}
+
+fun exportAll(list: List<Billing>, context: Context) {
+    val downloader = Downloader(context)
+    list.forEach { bill ->
+        bill.files.forEach { string ->
+            downloader.downloadFromFirebaseStorage(string)
         }
     }
 }

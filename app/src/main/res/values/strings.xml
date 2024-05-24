@@ -45,4 +45,5 @@
     <string name="publicKey">9d99f71a3b5515da7ec41dbe75b6d7ea</string>
     <string name="title_activity_billings_list">BillingsList</string>
     <string name="title_activity_billing_creator">BillingCreator</string>
+    <string name="title_activity_checker">CheckerActivity</string>
 </resources>
