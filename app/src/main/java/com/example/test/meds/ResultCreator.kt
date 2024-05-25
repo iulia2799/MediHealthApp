@@ -34,6 +34,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -282,7 +283,7 @@ class ResultCreator : ComponentActivity() {
                                     color = Color.Blue, fontWeight = FontWeight.Bold
                                 )
                             ) {
-                                append("Here is your valid URL (${index+1})")
+                                append("URL (${index+1})")
                             }
                             pop()
                         }
@@ -301,7 +302,7 @@ class ResultCreator : ComponentActivity() {
                                 }
                             })
                             Spacer(modifier = Modifier.weight(1f))
-                            Button(onClick = { optionalFilesUrl -= optionalFilesUrl[index]
+                            IconButton(onClick = { optionalFilesUrl -= optionalFilesUrl[index]
                             Log.d("Siiiiize:",optionalFilesUrl.size.toString())}) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,

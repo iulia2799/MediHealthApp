@@ -1,11 +1,14 @@
 package com.example.test.Components
 
 import Models.Conversation
+import Models.Diseases.symptomList
 import Models.Doctor
 import Models.Patient
 import android.content.Context
+import androidx.compose.ui.text.capitalize
 import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Timestamp
+import okhttp3.internal.filterList
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.util.Calendar
@@ -105,4 +108,29 @@ fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String>
 
 fun convertBooleanToResult(accepted: Boolean): String {
     return if (accepted) "Yes" else "No"
+}
+
+fun filterSymptomList(query: String): Map<Int, String> {
+    val filtered = symptomList.filter { value ->
+        value.contains(query, ignoreCase = true)
+    }
+    val results = filtered.associateBy({ symptomList.indexOf(it) }, { it })
+    return results
+}
+
+fun toTitleCase(value: String): String {
+    return value.replace("_"," ")
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+}
+
+fun makeDiscountedNumber(value: String, discount: String): String {
+    return if(value.isEmpty()) ""
+    else {
+        try {
+            val discountedSum = value.toFloat() * discount.toFloat() / 100.0
+            discountedSum.toString()
+        } catch (exception: Exception) {
+            "NAN"
+        }
+    }
 }

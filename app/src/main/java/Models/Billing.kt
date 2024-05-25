@@ -14,5 +14,5 @@ data class Billing(
     var finalSum: Int = 0,
     var AccountNumber: String = "",
     var files: List<String> = emptyList(),
-    var currency: String = ""
+    var currency: Currency = Currency.getInstance(Locale.US)
 )
