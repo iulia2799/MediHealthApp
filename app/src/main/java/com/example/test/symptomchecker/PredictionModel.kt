@@ -29,16 +29,25 @@ class PredictionModel {
     }
     //this function must get a 2d list but with only a single row ; the list looks like this : [[item1,item2,......,itemN]]
     // this list has the same shape as the inputs in the trained model and dataset
-    fun interpret(inputs: List<List<Int>> = listOf(emptyList())) : String {
+    fun interpret(inputs: List<Int> = emptyList()) : String {
+        val expanded = preprocessData(inputs)
         return if(inputs.isEmpty()) {
             "The prompt is incorrect!"
         } else {
             val outputData = ""
-            interpreter.run(inputs,outputData)
+            interpreter.run(expanded,outputData)
             outputData.ifEmpty {
                 "Sorry, we could not solve this prompt."
             }
         }
         
+    }
+
+    private fun preprocessData(inputs: List<Int> = emptyList()): Array<Array<Long>> {
+        var expanded = LongArray(inputs.size)
+        for (i in inputs.indices) {
+            expanded[i] = inputs[i].toLong()
+        }
+        return Array(1) { expanded.toTypedArray() }
     }
 }
