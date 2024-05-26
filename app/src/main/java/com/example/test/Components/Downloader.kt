@@ -76,7 +76,8 @@ class FilePicker {
         onRetrieval: (Uri) -> Unit,
         storage: FirebaseStorage,
         db: FirebaseFirestore,
-        directory: String
+        directory: String,
+        storageLink: String = RECORDS_STORAGE
     ) {
         if (result.data != null) {
             onLoadingChange()
@@ -95,7 +96,7 @@ class FilePicker {
                                 val resultUri = snapshot.storage.downloadUrl.await()
                                 onRetrieval(resultUri)
                                 onLoadingChange()
-                                addUrlToFirestore(resultUri.toString(), db)
+                                addUrlToFirestore(resultUri.toString(), db, storageLink)
                             } catch (e: Exception) {
                                 onLoadingChange()
                                 println("Error uploading file: $e")
@@ -107,8 +108,8 @@ class FilePicker {
         }
     }
 
-    private fun addUrlToFirestore(fileUrl: String, db: FirebaseFirestore) {
-        db.collection(RECORDS_STORAGE)
+    private fun addUrlToFirestore(fileUrl: String, db: FirebaseFirestore, storage: String = RECORDS_STORAGE) {
+        db.collection(storage)
             .add(hashMapOf("fileUrl" to fileUrl)) // Add document with "fileUrl" field
             .addOnSuccessListener { documentReference ->
                 println("Document written with ID: ${documentReference.id}")

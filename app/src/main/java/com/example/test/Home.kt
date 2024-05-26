@@ -69,10 +69,13 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
+import com.example.test.billing.BillingCreator
+import com.example.test.billing.BillingsList
 import com.example.test.map.MapActivity
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
+import com.example.test.symptomchecker.CheckerActivity
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.boldPrimary
@@ -212,7 +215,8 @@ class Home : ComponentActivity() {
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
             db.collection(APPOINTMENTS_DATA).whereEqualTo(field, ref)
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
-                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).addSnapshotListener { value, error ->
+                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end))
+                .addSnapshotListener { value, error ->
                     if (value != null) {
                         data = emptyMap()
                         Log.d("fdsfds", value.documents.toString())
@@ -273,7 +277,7 @@ class Home : ComponentActivity() {
         }, floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                          //context.startActivity(Intent(context,MapActivity::class.java))
+                    //context.startActivity(Intent(context,MapActivity::class.java))
                     context.startActivity(Intent(context, ConvoList::class.java))
                 }, contentColor = universalPrimary, containerColor = universalBackground
             ) {
@@ -367,6 +371,38 @@ class Home : ComponentActivity() {
                     )
                 }
                 Row {
+                    DefaultButton(
+                        onClick = {
+                            if (type) {
+                                context.startActivity(Intent(context, BillingCreator::class.java))
+                            } else {
+                                context.startActivity(Intent(context, BillingsList::class.java))
+                            }
+                        },
+                        alignment = Alignment.Center,
+                        text = "Billing",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(200.dp)
+                            .padding(20.dp)
+                    )
+                }
+                if (!type) {
+                    Row {
+                        DefaultButton(
+                            onClick = {
+                                context.startActivity(Intent(context, CheckerActivity::class.java))
+                            },
+                            alignment = Alignment.Center,
+                            text = "Assistant",
+                            modifier = Modifier
+                                .height(100.dp)
+                                .width(200.dp)
+                                .padding(20.dp)
+                        )
+                    }
+                }
+                Row {
                     if (!type) {
                         DefaultButton(
                             onClick = {
@@ -397,6 +433,8 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
+
+
             }
         }
     }
