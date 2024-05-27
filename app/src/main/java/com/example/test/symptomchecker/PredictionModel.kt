@@ -5,6 +5,7 @@ import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions
 import com.google.firebase.ml.modeldownloader.DownloadType
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader
 import org.tensorflow.lite.Interpreter
+import java.io.Serializable
 
 class PredictionModel {
     private lateinit var interpreter : Interpreter
@@ -13,7 +14,7 @@ class PredictionModel {
             .requireWifi()  // Also possible: .requireCharging() and .requireDeviceIdle()
             .build()
         FirebaseModelDownloader.getInstance()
-            .getModel("predict_disease_v1", DownloadType.LOCAL_MODEL_UPDATE_IN_BACKGROUND,
+            .getModel("prediction_v2", DownloadType.LOCAL_MODEL_UPDATE_IN_BACKGROUND,
                 conditions)
             .addOnSuccessListener { model: CustomModel? ->
                 // Download complete. Depending on your app, you could enable the ML
@@ -29,25 +30,30 @@ class PredictionModel {
     }
     //this function must get a 2d list but with only a single row ; the list looks like this : [[item1,item2,......,itemN]]
     // this list has the same shape as the inputs in the trained model and dataset
-    fun interpret(inputs: List<Int> = emptyList()) : String {
-        val expanded = preprocessData(inputs)
-        return if(inputs.isEmpty()) {
-            "The prompt is incorrect!"
-        } else {
-            val outputData = ""
-            interpreter.run(expanded,outputData)
-            outputData.ifEmpty {
-                "Sorry, we could not solve this prompt."
-            }
+    fun interpret(inputs: List<Int>): Array<FloatArray>? {
+        if (inputs.size != 132) {
+            return null
         }
-        
+
+        val expanded = preprocessData(inputs)
+        val outputData = Array(1) { FloatArray(41) } // Replace with your model's output size
+
+        interpreter.run(expanded, outputData)
+
+        // Process or interpret the output data (e.g., calculate probabilities, etc.)
+        // ...
+
+        return outputData // Replace with your output processing logic
     }
 
-    private fun preprocessData(inputs: List<Int> = emptyList()): Array<Array<Long>> {
-        var expanded = LongArray(inputs.size)
+
+    private fun preprocessData(inputs: List<Int>): LongArray {
+        val processedData = LongArray(inputs.size)
         for (i in inputs.indices) {
-            expanded[i] = inputs[i].toLong()
+            processedData[i] = inputs[i].toLong() // Convert each element to Long
         }
-        return Array(1) { expanded.toTypedArray() }
+        return processedData
     }
+
+
 }
