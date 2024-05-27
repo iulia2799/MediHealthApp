@@ -114,8 +114,6 @@ class Home : ComponentActivity() {
 
                 Log.d("TAaaaaaaG1", token)
             })
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
         }
     }
 
@@ -536,10 +534,10 @@ class Home : ComponentActivity() {
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            Log.d("HELLO", "TOJE")
+            Log.d("NOTIFICATION", "OLD VERSION")
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
+                    Log.w("TAG1", "Fetching FCM registration token failed", task.exception)
                     return@OnCompleteListener
                 }
 

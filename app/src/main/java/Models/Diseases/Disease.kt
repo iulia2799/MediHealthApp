@@ -2,13 +2,15 @@ package Models.Diseases
 
 data class Disease(
     val name: String,
-    val causes: String = "",
-    val treatment: String = "",
-    val cure: String = ""
+    val description: String = "",
+    val treatmentToDo: List<String> = emptyList()
 )
 
 val diseaseList = listOf(
-    Disease("AIDS"),
+    Disease(
+        "AIDS",
+        "Acquired immunodeficiency syndrome (AIDS) is a chronic, potentially life-threatening condition caused by the human immunodeficiency virus (HIV). By damaging your immune system, HIV interferes with your body's ability to fight infection and disease.\n"
+    ),
     Disease("Acne"),
     Disease("Alcoholic Hepatitis"),
     Disease("Allergy"),
@@ -21,7 +23,10 @@ val diseaseList = listOf(
     Disease("Dengue"),
     Disease("Diabetes"),
     Disease("Dimorphic Hemmorhoids (piles)"),
-    Disease("Drug Reaction"),
+    Disease(
+        "Drug Reaction",
+        "An adverse drug reaction (ADR) is an injury caused by taking medication. ADRs may occur following a single dose or prolonged administration of a drug or result from the combination of two or more drugs."
+    ),
     Disease("Fungal Infection"),
     Disease("GERD"),
     Disease("Gastroenteritis"),
