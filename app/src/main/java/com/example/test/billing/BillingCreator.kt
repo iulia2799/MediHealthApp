@@ -9,17 +9,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
@@ -31,7 +27,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,14 +42,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.CustomTextField
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.FilePicker
 import com.example.test.Components.LargeTextField
+import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.UserSearch
 import com.example.test.Components.filterByFieldP
@@ -72,7 +66,6 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
-import java.util.Currency
 
 class BillingCreator : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -232,7 +225,7 @@ fun Creator() {
             }
             Row {
                 //initial sum
-                CustomTextField(
+                LongTextField(
                     text = initialSum,
                     labelValue = "Initial sum",
                     onTextChange = { newValue ->
@@ -249,7 +242,7 @@ fun Creator() {
             }
             if (covered) {
                 Row {
-                    CustomTextField(
+                    LongTextField(
                         text = discount,
                         labelValue = "Discount",
                         onTextChange = { newValue ->
@@ -268,7 +261,7 @@ fun Creator() {
                 )
             }
             Row {
-                CustomTextField(
+                LongTextField(
                     text = currency,
                     labelValue = "Type your country code",
                     onTextChange = { newValue ->
@@ -277,7 +270,7 @@ fun Creator() {
                     })
             }
             Row {
-                CustomTextField(text = account,
+                LongTextField(text = account,
                     labelValue = "Account Number to send money",
                     onTextChange = { newValue ->
                         account = newValue

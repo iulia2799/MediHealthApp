@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -108,7 +107,7 @@ fun Content() {
     }) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
-            .verticalScroll(rememberScrollState())) {
+) {
             Row {
                 DefaultButton(
                     onClick = { optionsList[option.toInt()] = 1 },
@@ -127,11 +126,15 @@ fun Content() {
                 ) { key, callback ->
                     SearchItem(item = key, removable = true, onRemove = {
                         val index = symptomList.indexOf(it)
-                        optionsList[index] = 0
+                        val newList = optionsList.toMutableList()
+                        newList[index] = 0
+                        optionsList = newList
                     }, onClick = {
                         val index = symptomList.indexOf(key)
                         option = index.toString()
-                        optionsList[index] = 1
+                        val newList = optionsList.toMutableList()
+                        newList[index] = 1
+                        optionsList = newList
                         callback()
                     })
                 }
@@ -141,10 +144,14 @@ fun Content() {
                     itemsIndexed(optionsList) { index, item ->
                         if (item != 0)
                             SearchItem(item = symptomList[index], removable = true, onRemove = {
-                                optionsList[index] = 0
+                                val newList = optionsList.toMutableList()
+                                newList[index] = 0
+                                optionsList = newList
                             }, onClick = {
                                 option = index.toString()
-                                optionsList[index] = 1
+                                val newList = optionsList.toMutableList()
+                                newList[option.toInt()] = 1
+                                optionsList = newList
                             })
                     }
                 }
@@ -181,7 +188,7 @@ fun Content() {
             if (prediction.isNotEmpty()) {
                 Row {
                     LargeTextField(
-                        value = "Result: ${prediction}",
+                        value = "Result: $prediction",
                         modifier = Modifier
                             .padding(10.dp)
                             .fillMaxWidth()

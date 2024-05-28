@@ -5,10 +5,8 @@ import Models.Diseases.symptomList
 import Models.Doctor
 import Models.Patient
 import android.content.Context
-import androidx.compose.ui.text.capitalize
 import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Timestamp
-import okhttp3.internal.filterList
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.util.Calendar
