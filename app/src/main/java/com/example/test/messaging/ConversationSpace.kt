@@ -42,7 +42,6 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.utils.getMessages
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class ConversationSpace : ComponentActivity() {
@@ -130,7 +129,7 @@ class ConversationSpace : ComponentActivity() {
                     data.messagesRef?.collection("messages")?.add(input)?.addOnCompleteListener {
                         text = ""
                     }
-                    data.messagesRef?.update("lastUpdated",System.currentTimeMillis())
+                    data.messagesRef?.update("lastUpdated", System.currentTimeMillis())
                         ?.addOnCompleteListener {
 
                         }
@@ -150,8 +149,8 @@ class ConversationSpace : ComponentActivity() {
                 }
             }
 
-            if(active && otheruser != null) {
-                if(localStorage.getRole()){
+            if (active && otheruser != null) {
+                if (localStorage.getRole()) {
                     PatientDialog(patientRef = otheruser, type = true) {
                         active = false
                     }

@@ -2,7 +2,6 @@ package com.example.test.meds
 
 import Models.Patient
 import Models.ResultRecord
-import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -29,7 +28,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +64,6 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalBackground
-import com.example.test.utils.RECORDS_STORAGE
 import com.example.test.utils.RESULTS_RECORDS
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -80,7 +76,6 @@ class ResultCreator : ComponentActivity() {
 
     private lateinit var storage: FirebaseStorage
     private lateinit var db: FirebaseFirestore
-    private val timeMillis: Long = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -303,7 +298,7 @@ class ResultCreator : ComponentActivity() {
                             })
                             Spacer(modifier = Modifier.weight(1f))
                             IconButton(onClick = { optionalFilesUrl -= optionalFilesUrl[index]
-                            Log.d("Siiiiize:",optionalFilesUrl.size.toString())}) {
+                            Log.d("Size:",optionalFilesUrl.size.toString())}) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
                                     contentDescription = "Delete file",
@@ -443,15 +438,5 @@ class ResultCreator : ComponentActivity() {
         }.addOnFailureListener {
 
         }
-    }
-
-    private fun addUrlToFirestore(fileUrl: String) {
-        db.collection(RECORDS_STORAGE)
-            .add(hashMapOf("fileUrl" to fileUrl)) // Add document with "fileUrl" field
-            .addOnSuccessListener { documentReference ->
-                println("Document written with ID: ${documentReference.id}")
-            }.addOnFailureListener { e ->
-                println("Error adding document: $e")
-            }
     }
 }

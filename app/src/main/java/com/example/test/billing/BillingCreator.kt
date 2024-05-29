@@ -109,12 +109,6 @@ fun Creator() {
     var finalSum by remember {
         mutableStateOf("0")
     }
-    var description by remember {
-        mutableStateOf("")
-    }
-    var fileList by remember {
-        mutableStateOf(emptyList<String>())
-    }
     var account by remember {
         mutableStateOf("")
     }

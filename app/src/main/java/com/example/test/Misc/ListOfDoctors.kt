@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
+import com.example.test.ui.theme.universalPrimary
 import com.example.test.utils.createNewConversation
 import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
@@ -57,7 +60,6 @@ class ListOfDoctors : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Content()
             }
         }
@@ -65,7 +67,6 @@ class ListOfDoctors : ComponentActivity() {
 
     @Composable
     fun Content() {
-        val db = Firebase.firestore
         val context = LocalContext.current
         var searchService = Search(context)
         var isLoading by remember {
@@ -73,8 +74,7 @@ class ListOfDoctors : ComponentActivity() {
         }
         var doctorMap by remember { mutableStateOf(emptyMap<String, Doctor>()) }
         var searchText by remember { mutableStateOf("") }
-        var selectedDepartment by remember { mutableStateOf(departmentList[0]) } // State for selected department
-        var coroutine = rememberCoroutineScope()
+        var selectedDepartment by remember { mutableStateOf(departmentList[0]) }
         LaunchedEffect(searchText, selectedDepartment) {
             isLoading = true
             delay(1000)
@@ -104,9 +104,10 @@ class ListOfDoctors : ComponentActivity() {
                 options = departmentList, selectedOption = selectedDepartment, onOptionSelected = {
                     selectedDepartment = it
                     searchText =
-                        if (selectedDepartment != Department.NA.displayName) Department.values().find { el ->
-                            el.displayName == selectedDepartment
-                        }?.name ?: "NA"
+                        if (selectedDepartment != Department.NA.displayName) Department.values()
+                            .find { el ->
+                                el.displayName == selectedDepartment
+                            }?.name ?: "NA"
                         else ""
                 }, text = "Select a department", modifier = Modifier.fillMaxWidth()
             )
@@ -142,7 +143,13 @@ class ListOfDoctors : ComponentActivity() {
             mutableStateOf(Conversation())
         }
         Card(
-            modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
+            modifier = Modifier.fillMaxWidth().padding(10.dp), shape = RoundedCornerShape(8.dp),
+            colors = CardColors(
+                containerColor = universalPrimary,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.Black
+            )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -180,16 +187,17 @@ class ListOfDoctors : ComponentActivity() {
                                     val flow = getNewConversation(id)
                                     isLoading = true
                                     coroutine.launch {
-                                        flow.takeWhile{
+                                        flow.takeWhile {
                                             isLoading
                                         }.collect {
                                             if (it != null) {
                                                 convo = it
-                                                Log.d("CONVERSATIONS","going to conversation")
-                                                if(convo.messagesRef == null) {
-                                                    convo.messagesRef = Firebase.firestore.document("convolist/$id")
+                                                Log.d("CONVERSATIONS", "going to conversation")
+                                                if (convo.messagesRef == null) {
+                                                    convo.messagesRef =
+                                                        Firebase.firestore.document("convolist/$id")
                                                 }
-                                                goToConvo(context, convo){
+                                                goToConvo(context, convo) {
                                                     isLoading = false
                                                 }
                                             }

@@ -71,7 +71,6 @@ import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
 import com.example.test.billing.BillingCreator
 import com.example.test.billing.BillingsList
-import com.example.test.map.MapActivity
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,6 +38,7 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.jejugothicFamily
+import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.DOCTORS
 import com.google.firebase.firestore.ktx.firestore
@@ -123,7 +125,13 @@ fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
                 .fillMaxWidth()
                 .clickable {
                     onClick()
-                }, shape = RoundedCornerShape(8.dp)
+                }, shape = RoundedCornerShape(8.dp),
+            colors = CardColors(
+                containerColor = universalPrimary,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.Black
+            )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(

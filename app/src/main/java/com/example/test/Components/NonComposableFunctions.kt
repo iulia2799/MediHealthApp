@@ -1,7 +1,6 @@
 package com.example.test.Components
 
 import Models.Conversation
-import Models.Diseases.symptomList
 import Models.Doctor
 import Models.Patient
 import android.content.Context
@@ -106,14 +105,6 @@ fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String>
 
 fun convertBooleanToResult(accepted: Boolean): String {
     return if (accepted) "Yes" else "No"
-}
-
-fun filterSymptomList(query: String): Map<Int, String> {
-    val filtered = symptomList.filter { value ->
-        value.contains(query, ignoreCase = true)
-    }
-    val results = filtered.associateBy({ symptomList.indexOf(it) }, { it })
-    return results
 }
 
 fun toTitleCase(value: String): String {

@@ -12,7 +12,6 @@ import com.example.test.Misc.ListOfDoctors
 import com.example.test.Misc.ListOfPatients
 import com.example.test.messaging.ConversationSpace
 import com.example.test.utils.removeTokenFromServer
-import kotlinx.coroutines.delay
 
 fun back(context: Context) {
     context.startActivity(Intent(context, MainActivity::class.java))

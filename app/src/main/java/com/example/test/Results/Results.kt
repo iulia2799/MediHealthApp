@@ -33,6 +33,7 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.Downloader
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.convertMillisToExactDate
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.utils.RESULTS_RECORDS
@@ -157,7 +158,7 @@ class Results : ComponentActivity() {
     @Composable
     private fun ResultCard(result: ResultRecord) {
         val context = LocalContext.current
-        var isDowloading by remember {
+        val isDownloading by remember {
             mutableStateOf(false)
         }
         Card(
@@ -187,6 +188,8 @@ class Results : ComponentActivity() {
                     value = "Doctor: " + result.doctorName
                 )
                 Spacer(modifier = Modifier.weight(1f))
+                MediumTextField(modifier = Modifier.fillMaxWidth().padding(10.dp), value = convertMillisToExactDate(result.unix))
+                Spacer(modifier = Modifier.weight(1f))
                 DefaultButton(
                     onClick = {
                         val downloader = Downloader(context)
@@ -215,7 +218,7 @@ class Results : ComponentActivity() {
                     }
                 }
 
-                if (isDowloading) {
+                if (isDownloading) {
                     CircularProgressIndicator()
                 }
 

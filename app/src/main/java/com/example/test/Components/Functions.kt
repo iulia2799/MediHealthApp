@@ -32,8 +32,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -55,7 +53,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.boldPrimary
@@ -346,8 +343,7 @@ fun FormSelector(
         )
     )
 
-    DropdownMenu(
-        modifier = modifier,
+    DropdownMenu(modifier = modifier,
         expanded = expanded,
         onDismissRequest = { expanded = false }) {
         options.forEach { option ->
@@ -471,39 +467,6 @@ fun DatePickerCard(onSelection: (String) -> Unit, onDismiss: () -> Unit) {
         )
     }) {
         DatePicker(state = state)
-    }
-
-}
-
-
-//optional for preview
-@Composable
-@Preview
-fun preview() {
-    var alocatedTime by remember { mutableStateOf("") }
-    var unit by remember { mutableStateOf("Minutes") }
-    Column {
-        OutlinedTextField(value = alocatedTime,
-            onValueChange = { newValue ->
-                alocatedTime = newValue.filter { it.isDigit() }
-            },
-            label = { Text("Enter alocatedTime:") },
-            isError = alocatedTime.isNotEmpty() && alocatedTime.toIntOrNull() == null
-        )
-        Row {
-            RadioButton(
-                selected = unit == "Minutes",
-                onClick = { unit = "Minutes" },
-                colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
-            )
-            Text("Minutes")
-            RadioButton(
-                selected = unit == "Hours",
-                onClick = { unit = "Hours" },
-                colors = RadioButtonDefaults.colors(selectedColor = universalAccent)
-            )
-            Text("Hours")
-        }
     }
 
 }

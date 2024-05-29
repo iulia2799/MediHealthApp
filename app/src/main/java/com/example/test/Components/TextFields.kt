@@ -78,8 +78,3 @@ fun Welcome(modifier: Modifier = Modifier, name: String) {
         textAlign = TextAlign.Left
     )
 }
-
-@Composable
-fun ListItem(content: Any) {
-    Text(text = content.toString())
-}

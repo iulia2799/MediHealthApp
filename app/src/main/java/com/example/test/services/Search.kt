@@ -2,10 +2,8 @@ package com.example.test.services
 
 import Models.Department
 import Models.Doctor
-import Models.DoctorSearchResult
 import Models.Schedule
 import android.content.Context
-import android.util.Log
 import androidx.core.content.ContextCompat.getString
 import com.algolia.search.client.ClientSearch
 import com.algolia.search.model.APIKey
@@ -15,8 +13,6 @@ import com.algolia.search.model.IndexName
 import com.algolia.search.model.search.Query
 import com.example.test.R
 import com.example.test.utils.DOCTORS
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.serialization.json.jsonObject
 
 class Search(context: Context) {
@@ -44,11 +40,9 @@ class Search(context: Context) {
 
     suspend fun retrieveValues(searchString: String = ""): MutableMap<String, Doctor> {
         val list : MutableMap<String, Doctor> = mutableMapOf()
-        val query: Query = Query(
+        val query = Query(
             query = searchString, attributesToRetrieve = attributes
         )
-        var gson = Gson()
-        val type = object : TypeToken<Schedule>() {}.type
         val response = index.search(query)
         val hits = response.hits
         hits.forEach { hit ->

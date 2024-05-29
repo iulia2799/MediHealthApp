@@ -9,9 +9,7 @@ import android.util.Log
 import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -38,13 +36,14 @@ fun sendTokenToServer(context: Context, firestore: FirebaseFirestore, token: Str
 
 fun removeTokenFromServer(ref: String, token: String) {
     val firestore = Firebase.firestore
-    firestore.collection(TOKEN_DATA).whereEqualTo("token", token).whereEqualTo("userUid", ref)
-        .get().addOnCompleteListener {
+    firestore.collection(TOKEN_DATA).whereEqualTo("token", token).whereEqualTo("userUid", ref).get()
+        .addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result.forEach { device ->
-                    firestore.collection(TOKEN_DATA).document(device.id).delete().addOnCompleteListener {
+                    firestore.collection(TOKEN_DATA).document(device.id).delete()
+                        .addOnCompleteListener {
 
-                    }
+                        }
                 }
             }
         }
@@ -75,10 +74,7 @@ fun getMessages(convesation: Conversation) = callbackFlow {
 }
 
 fun createNewConversation(
-    context: Context,
-    ref: String,
-    name: String,
-    callBack: (String) -> Unit
+    context: Context, ref: String, name: String, callBack: (String) -> Unit
 ) {
     val localStorage = LocalStorage(context)
     val db = Firebase.firestore
@@ -89,21 +85,23 @@ fun createNewConversation(
     val conversation = Conversation(userUids, userName)
 
 
-    val query = db.collection(CONVO_LIST).whereEqualTo("userUids",userUids)
-    val permutted = db.collection(CONVO_LIST).whereEqualTo("userUids",userUids)
+    val query = db.collection(CONVO_LIST).whereEqualTo("userUids", userUids)
+    val permutted = db.collection(CONVO_LIST).whereEqualTo("userUids", userUids2)
 
     query.get().addOnCompleteListener { task ->
         if (task.isSuccessful) {
             if (task.result.isEmpty) {
                 // No existing conversation, create a new one
                 permutted.get().addOnCompleteListener { task2 ->
-                    if(task2.isSuccessful) {
-                        if(task2.result.isEmpty){
+                    if (task2.isSuccessful) {
+                        if (task2.result.isEmpty) {
                             db.collection(CONVO_LIST).add(conversation).addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     callBack(it.result.id) // New conversation created, pass null for error
                                 } else {
-                                    Log.d("fjdsfjorieghesupghrges",it.exception?.message.toString()) // Error creating conversation
+                                    Log.d(
+                                        "fjdsfjorieghesupghrges", it.exception?.message.toString()
+                                    ) // Error creating conversation
                                 }
                             }
                         } else {
@@ -119,7 +117,7 @@ fun createNewConversation(
             }
         } else {
             // Error fetching conversations
-            Log.d("SFJREUOISGHE",task.exception?.message.toString())
+            Log.d("SFJREUOISGHE", task.exception?.message.toString())
         }
     }
 }
@@ -146,29 +144,26 @@ fun getNewConversation(id: String) = callbackFlow {
 }
 
 fun sendFirstMessage(
-    text: String,
-    messageRef: DocumentReference,
-    sender: String,
-    receiver: String
+    text: String, messageRef: DocumentReference, sender: String, receiver: String
 ) {
     val message = Message(
         text, sender, receiver
     )
     messageRef.collection("messages").add(message).addOnCompleteListener {
-        if(!it.isSuccessful) {
-            Log.d("error",it.exception?.message.toString())
+        if (!it.isSuccessful) {
+            Log.d("error", it.exception?.message.toString())
         }
-        Log.d("SUCCESS","SUCCESS")
+        Log.d("SUCCESS", "SUCCESS")
     }
 }
 
 fun sendBilling(billing: Billing, context: Context, onDone: () -> Unit) {
     val db = Firebase.firestore
     db.collection(BILLING_DATA).add(billing).addOnCompleteListener {
-        if(it.isSuccessful) {
+        if (it.isSuccessful) {
             onDone()
         } else {
-            Log.d("Exception","Exception here: ${it.exception?.message.toString()}")
+            Log.d("Exception", "Exception here: ${it.exception?.message.toString()}")
         }
     }
 }

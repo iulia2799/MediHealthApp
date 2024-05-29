@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -90,18 +89,16 @@ class ListOfPrescriptions : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
-            Scaffold(
-                snackbarHost = {
-                    SnackbarHost(hostState = snackbarState) { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            actionColor = universalAccent,
-                            containerColor = universalBackground,
-                            contentColor = universalTertiary
-                        )
-                    }
+            Scaffold(snackbarHost = {
+                SnackbarHost(hostState = snackbarState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        actionColor = universalAccent,
+                        containerColor = universalBackground,
+                        contentColor = universalTertiary
+                    )
                 }
-            ) {paddingValues ->
+            }) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
                     Row {
                         var text = "Your prescriptions"
@@ -196,11 +193,12 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
                             }) {
                                 Text("Change")
                             }
-                        } else if(localStorage.getRef() == list[index]?.doctorUid) {
+                        } else if (localStorage.getRef() == list[index]?.doctorUid) {
                             TextButton(onClick = {
-                                db.collection(MEDICATION_DATA).document(index).delete().addOnCompleteListener {
-                                    removeCallBack()
-                                }
+                                db.collection(MEDICATION_DATA).document(index).delete()
+                                    .addOnCompleteListener {
+                                        removeCallBack()
+                                    }
                             }) {
                                 Text("Remove prescription")
                             }

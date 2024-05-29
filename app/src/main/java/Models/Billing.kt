@@ -11,5 +11,6 @@ data class Billing(
     var finalSum: Float = 0f,
     var AccountNumber: String = "",
     var files: List<String> = emptyList(),
-    var currency: String = ""
+    var currency: String = "",
+    var unix: Long = System.currentTimeMillis()
 )

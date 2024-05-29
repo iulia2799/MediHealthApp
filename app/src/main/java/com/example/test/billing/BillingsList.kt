@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.Downloader
@@ -51,9 +48,8 @@ import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
 import com.example.test.utils.BILLING_DATA
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.storage.storage
 
 class BillingsList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,9 +76,10 @@ fun Content() {
     var billingsList by remember {
         mutableStateOf(emptyList<Billing>())
     }
+    val query = db.collection(BILLING_DATA).whereEqualTo("patientUid",userReference).orderBy("unix",Query.Direction.DESCENDING)
     LaunchedEffect(key1 = userReference) {
         areResultsLoading = true
-        db.collection(BILLING_DATA).addSnapshotListener { value, error ->
+        query.addSnapshotListener { value, error ->
             if(error != null) {
                 areResultsLoading = false
                 Log.d("Error retrieving bills: ", error.message.toString())

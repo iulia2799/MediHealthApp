@@ -124,15 +124,13 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomTextField(
-                    text = firstName,
+                CustomTextField(text = firstName,
                     labelValue = "First Name",
                     onTextChange = { newValue ->
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(
-                    text = lastName,
+                CustomTextField(text = lastName,
                     labelValue = "Last Name",
                     onTextChange = { newValue ->
                         lastName = newValue

@@ -244,25 +244,23 @@ class Profile : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Checkbox(
-                                checked = available, // Set your desired initial state
-                                onCheckedChange = { newValue -> available = newValue }
-                            )
+                            Checkbox(checked = available, // Set your desired initial state
+                                onCheckedChange = { newValue -> available = newValue })
                             Spacer(modifier = Modifier.width(16.dp)) // Add spacing between checkbox and text field
-                            MediumTextField(modifier = Modifier, value = "Are you available for messaging?")
+                            MediumTextField(
+                                modifier = Modifier, value = "Are you available for messaging?"
+                            )
                         }
                     }
                     Row {
-                        LongTextField(
-                            text = phone,
+                        LongTextField(text = phone,
                             labelValue = "Phone",
                             onTextChange = { newValue ->
                                 phone = newValue
                             })
                     }
                     Row {
-                        LongTextField(
-                            text = address,
+                        LongTextField(text = address,
                             labelValue = "Address",
                             onTextChange = { newValue ->
                                 address = newValue
@@ -270,8 +268,7 @@ class Profile : ComponentActivity() {
                     }
                     if (datap.lastName.isNotEmpty()) {
                         Row {
-                            LongTextField(
-                                text = age,
+                            LongTextField(text = age,
                                 labelValue = "Age",
                                 onTextChange = { newValue ->
                                     age = newValue
@@ -358,8 +355,7 @@ class Profile : ComponentActivity() {
                                     start = newValue
                                 })
                             Spacer(modifier = Modifier.weight(1f))
-                            CustomTextField(
-                                text = end,
+                            CustomTextField(text = end,
                                 labelValue = "Ending hour",
                                 onTextChange = { newValue ->
                                     end = newValue

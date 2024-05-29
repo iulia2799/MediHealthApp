@@ -171,7 +171,7 @@ class MedicationManager : ComponentActivity() {
                             text = pills.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                pills = if(newValue.isEmpty()) {
+                                pills = if (newValue.isEmpty()) {
                                     0
                                 } else {
                                     newValue.toInt()
@@ -184,7 +184,7 @@ class MedicationManager : ComponentActivity() {
                             text = days.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                days = if(newValue.isEmpty()) {
+                                days = if (newValue.isEmpty()) {
                                     0
                                 } else {
                                     newValue.toInt()
@@ -198,7 +198,7 @@ class MedicationManager : ComponentActivity() {
                             text = pillsPerPortion.toString(),
                             type = "number",
                             onTextChange = { newValue ->
-                                pillsPerPortion = if(newValue.isEmpty()) {
+                                pillsPerPortion = if (newValue.isEmpty()) {
                                     0
                                 } else {
                                     newValue.toInt()
@@ -269,7 +269,7 @@ class MedicationManager : ComponentActivity() {
                                                 )
                                             }", modifier = Modifier.padding(4.dp)
                                         )
-                                        Log.d("aaaaalalala", alarmTime.toString())
+                                        Log.d("alarmTime:", alarmTime.toString())
                                         IconButton(
                                             onClick = { alarms -= alarmTime },
                                             modifier = Modifier.padding(4.dp)

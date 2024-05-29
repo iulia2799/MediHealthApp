@@ -32,7 +32,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +50,6 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
-import com.example.test.Components.filterSymptomList
 import com.example.test.Components.toTitleCase
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalBackground
@@ -77,7 +75,7 @@ class CheckerActivity : ComponentActivity() {
 @Composable
 @Preview
 fun Content() {
-    var form = IntArray(132) { 0 }.toMutableList()
+    val form = IntArray(132) { 0 }.toMutableList()
     var optionsList by remember {
         mutableStateOf(form)
     }
@@ -89,19 +87,8 @@ fun Content() {
     var option by remember {
         mutableStateOf("")
     }
-    var searchResults by remember {
-        mutableStateOf(emptyMap<Int, String>())
-    }
-    var searchText by remember {
-        mutableStateOf("")
-    }
     val model = PredictionModel()
     model.getModel()
-
-    LaunchedEffect(key1 = searchText, key2 = optionsList) {
-        searchResults = filterSymptomList(searchText)
-    }
-
     Scaffold(topBar = {
         InfoHeader()
     }) { paddingValues ->
@@ -291,7 +278,7 @@ fun <K> SimpleSearch(
     var active by remember {
         mutableStateOf(false)
     }
-    var filter by remember { mutableStateOf(emptyList<K>()) }
+    var filter by remember { mutableStateOf(data) }
     Row {
         SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
             text = it

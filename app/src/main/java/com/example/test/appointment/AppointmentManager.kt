@@ -20,27 +20,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,17 +43,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.test.Components.CustomTextField
 import com.example.test.Components.DatePickerCard
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.convertDateToTimeStamp
-import com.example.test.Components.convertMillisToDate
 import com.example.test.Components.convertTimestampToDate
 import com.example.test.Components.filterByField
 import com.example.test.Components.filterByFieldP
@@ -68,7 +58,6 @@ import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.DoctorItemWithAction
 import com.example.test.Profile.PatientItemWithAction
 import com.example.test.ui.theme.AppTheme
-import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
@@ -139,7 +128,7 @@ class AppointmentManager : ComponentActivity() {
                 appointment.doctorName = otherName
             }
         }
-        Log.d("TYYYYYPE", localStorage.getName())
+        Log.d("TYPE", localStorage.getName())
         val formDate = convertTimestampToDate(appointment.date).first
         var date by remember { mutableStateOf(if (mode == "edit") formDate else "Change the date") }
         var doctor by remember { mutableStateOf(if (type) localStorage.getName() else appointment.doctorName) }
@@ -330,8 +319,7 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
-                OutlinedTextField(
-                    value = alocatedTime,
+                OutlinedTextField(value = alocatedTime,
                     onValueChange = { newValue ->
                         alocatedTime = newValue.filter { it.isDigit() }
                     },
