@@ -134,7 +134,6 @@ class Home : ComponentActivity() {
         val context = LocalContext.current
         askNotificationPermission(context)
         val local = LocalStorage(context)
-        //TODO PLEASE REMOVE IF IT CAUSES MORE PROBLEMS THAN IT SOLVES
         onBackPressedDispatcher.addCallback {
             local.logOutUser()
             context.startActivity(Intent(context, MainActivity::class.java))
