@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -78,6 +79,8 @@ import com.example.test.symptomchecker.CheckerActivity
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.boldPrimary
+import com.example.test.ui.theme.darkPrimary
+import com.example.test.ui.theme.offWhite
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
@@ -366,7 +369,7 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
-                Row {
+                Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
                     DefaultButton(
                         onClick = {
                             if (type) {
@@ -384,17 +387,20 @@ class Home : ComponentActivity() {
                     )
                 }
                 if (!type) {
-                    Row {
+                    Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
                         DefaultButton(
                             onClick = {
                                 context.startActivity(Intent(context, CheckerActivity::class.java))
                             },
                             alignment = Alignment.Center,
-                            text = "Assistant",
+                            text = "✨Virtual Assistant✨",
                             modifier = Modifier
                                 .height(100.dp)
-                                .width(200.dp)
-                                .padding(20.dp)
+                                .width(300.dp)
+                                .padding(20.dp),
+                            fontWeight = FontWeight.Bold,
+                            backgroundColor = darkPrimary,
+                            contentColor = offWhite
                         )
                     }
                 }

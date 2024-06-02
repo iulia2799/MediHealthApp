@@ -23,7 +23,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -52,7 +54,12 @@ import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
 import com.example.test.Components.toTitleCase
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.darkAccent
+import com.example.test.ui.theme.darkPrimary
+import com.example.test.ui.theme.darkTertiary
 import com.example.test.ui.theme.universalBackground
+import com.example.test.ui.theme.universalPrimary
+import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.EMERGENCY_NUMBERS
 
 class CheckerActivity : ComponentActivity() {
@@ -92,9 +99,10 @@ fun Content() {
     Scaffold(topBar = {
         InfoHeader()
     }) { paddingValues ->
-        Column(modifier = Modifier
-            .padding(paddingValues)
-) {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
             Row {
                 DefaultButton(
                     onClick = { optionsList[option.toInt()] = 1 },
@@ -111,7 +119,7 @@ fun Content() {
                     data = symptomList,
                     filterCallback = ::searchByValue
                 ) { key, callback ->
-                    SearchItem(item = key, removable = true, onRemove = {
+                    SearchItem(item = key, removable = false, onRemove = {
                         val index = symptomList.indexOf(it)
                         val newList = optionsList.toMutableList()
                         newList[index] = 0
@@ -228,6 +236,12 @@ fun SearchItem(
     onRemove: (String) -> Unit = {}
 ) {
     Card(
+        colors = CardColors(
+            contentColor = universalTertiary,
+            containerColor = universalPrimary,
+            disabledContentColor = Color.DarkGray,
+            disabledContainerColor = Color.LightGray
+        ),
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
@@ -241,7 +255,7 @@ fun SearchItem(
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
-                MediumTextField(value = toTitleCase(item), modifier = Modifier)
+                MediumTextField(value = toTitleCase(item), modifier = Modifier, color = darkTertiary)
             }
             if (removable) {
                 Row(
@@ -250,8 +264,16 @@ fun SearchItem(
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
                 ) {
-                    TextButton(onClick = { onRemove(item) }) {
-                        SmallTextField(value = "Remove")
+                    TextButton(
+                        onClick = { onRemove(item) },
+                        colors = ButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.Black,
+                            disabledContainerColor = Color.LightGray,
+                            disabledContentColor = Color.DarkGray
+                        )
+                    ) {
+                        MediumTextField(value = "Remove",modifier = Modifier)
                     }
                 }
             }
