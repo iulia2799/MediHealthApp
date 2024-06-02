@@ -192,7 +192,7 @@ fun Creator() {
                     sendBilling(newBilling, context) {
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar(
-                                "Billing was sent succesfully ! ",
+                                "Billing was sent successfully ! ",
                                 "ok",
                                 duration = SnackbarDuration.Short
                             )

@@ -162,13 +162,13 @@ fun BillingCard(billing: Billing) {
                 MediumTextField(modifier = Modifier.padding(10.dp), value = billing.doctorName)
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Initial sum to pay: " + billing.finalSum.toString())
+                SmallTextField(value = "Initial sum to pay: " + billing.finalSum.toString() + billing.currency)
             }
             Row(modifier = Modifier.padding(10.dp)) {
                 SmallTextField(value = "Covered by insurance: " + billing.discount.toString() + "%")
             }
             Row(modifier = Modifier.padding(10.dp)) {
-                SmallTextField(value = "Final sum to pay: " + billing.finalSum.toString())
+                SmallTextField(value = "Final sum to pay: " + billing.finalSum.toString() + billing.currency)
             }
             Row {
                 DefaultButton(onClick = {
