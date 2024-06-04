@@ -2,6 +2,7 @@ package com.example.test.appointment
 
 import Models.Appointment
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -47,12 +48,8 @@ fun AppointmentDialog(
 ) {
     val context = LocalContext.current
     val db = Firebase.firestore
-    var isOpen by remember {
-        mutableStateOf(false)
-    }
-    var isOpen2 by remember {
-        mutableStateOf(false)
-    }
+    val (isOpen, setIsOpen) = remember { mutableStateOf(false) }
+    val (isOpen2, setIsOpen2) = remember { mutableStateOf(false) }
     val intent = Intent(context, AppointmentManager::class.java)
     Dialog(
         onDismissRequest = { onDismiss() }, properties = DialogProperties(
@@ -83,11 +80,11 @@ fun AppointmentDialog(
                 Spacer(modifier = Modifier.weight(1f))
 
                 MediumTextField(modifier = Modifier.clickable {
-                    isOpen = true
+                    setIsOpen(true)
                 }, value = "Doctor: ${appointment.doctorName}")
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(modifier = Modifier.clickable {
-                    isOpen2 = true
+                    setIsOpen2(true)
                 }, value = "Patient: ${appointment.patientName}")
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(modifier = Modifier, value = "Patient: ${appointment.description}")
@@ -207,9 +204,11 @@ fun AppointmentDialog(
         }
     }
     if (isOpen) {
-        DoctorDialog(docRef = appointment.doctorUid, type = type) { isOpen = false }
+        DoctorDialog(docRef = appointment.doctorUid, type = type, onDismissRequest = {
+            setIsOpen(false)
+        }) { setIsOpen(true) }
     }
-    if (isOpen) {
-        PatientDialog(patientRef = appointment.patientUid, type = type) { isOpen2 = false }
+    if (isOpen2) {
+        PatientDialog(patientRef = appointment.patientUid, type = type) { setIsOpen2(false) }
     }
 }

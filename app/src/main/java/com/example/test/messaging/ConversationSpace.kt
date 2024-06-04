@@ -155,8 +155,10 @@ class ConversationSpace : ComponentActivity() {
                         active = false
                     }
                 } else {
-                    DoctorDialog(docRef = otheruser, type = false) {
+                    DoctorDialog(docRef = otheruser, type = false, onDismissRequest = {
                         active = false
+                    }) {
+                        active = true
                     }
                 }
             }

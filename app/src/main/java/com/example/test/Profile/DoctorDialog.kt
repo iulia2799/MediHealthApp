@@ -3,6 +3,7 @@ package com.example.test.Profile
 import Models.Doctor
 import Models.nullDoc
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -38,6 +40,7 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.ui.theme.jejugothicFamily
+import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.DOCTORS
@@ -46,7 +49,12 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
+fun DoctorDialog(
+    docRef: String,
+    type: Boolean = false,
+    onDismissRequest: () -> Unit = {},
+    onLoaded: () -> Unit = {}
+) {
     val context = LocalContext.current
     val db = Firebase.firestore
     val intent = Intent(context, AppointmentManager::class.java)
@@ -56,19 +64,20 @@ fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
     LaunchedEffect(key1 = docRef) {
         db.collection(DOCTORS).document(docRef).get().addOnSuccessListener {
             doctor = it.toObject<Doctor>()!!
+            onLoaded()
         }.addOnFailureListener {
             Toast.makeText(context, "Oops there was an error.", Toast.LENGTH_SHORT).show()
         }
     }
     Dialog(
-        onDismissRequest = { onDismiss() }, properties = DialogProperties(
+        onDismissRequest = { onDismissRequest() }, properties = DialogProperties(
             dismissOnBackPress = true, dismissOnClickOutside = true
         )
     ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(420.dp)
+                .height(360.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
@@ -103,6 +112,17 @@ fun DoctorDialog(docRef: String, type: Boolean = false, onDismiss: () -> Unit) {
                     ) {
                         Text(text = "Schedule Appointment")
                     }
+                }
+                TextButton(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(), onClick = {
+                        onDismissRequest()
+                    }, colors = ButtonDefaults.textButtonColors(
+                        contentColor = universalAccent
+                    )
+                ) {
+                    Text("Close")
                 }
 
             }
