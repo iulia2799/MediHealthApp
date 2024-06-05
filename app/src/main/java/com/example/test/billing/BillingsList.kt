@@ -50,6 +50,7 @@ import com.example.test.Components.Downloader
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.SmallTextField
+import com.example.test.Components.convertMillisToExactDate
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.offWhite
@@ -220,6 +221,9 @@ fun BillingCard(billing: Billing, onSnackbarCall: () -> Unit = {}) {
             }
             Row(modifier = Modifier.padding(10.dp)) {
                 SmallTextField(value = "Final sum to pay: " + billing.finalSum.toString() + billing.currency)
+            }
+            Row(modifier = Modifier.padding(10.dp)) {
+                SmallTextField(value = "Date: " + convertMillisToExactDate(billing.unix))
             }
             Row {
                 DefaultButton(
