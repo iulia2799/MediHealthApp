@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -59,7 +60,7 @@ fun AppointmentDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
+                .height(420.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
@@ -79,13 +80,21 @@ fun AppointmentDialog(
                 LargeTextField(value = "Appointment Details", modifier = Modifier.padding(4.dp))
                 Spacer(modifier = Modifier.weight(1f))
 
-                MediumTextField(modifier = Modifier.clickable {
-                    setIsOpen(true)
-                }, value = "Doctor: ${appointment.doctorName}")
+                MediumTextField(
+                    modifier = Modifier.clickable {
+                        setIsOpen(true)
+                    },
+                    value = "Doctor: ${appointment.doctorName}",
+                    textDecoration = TextDecoration.Underline
+                )
                 Spacer(modifier = Modifier.weight(1f))
-                MediumTextField(modifier = Modifier.clickable {
-                    setIsOpen2(true)
-                }, value = "Patient: ${appointment.patientName}")
+                MediumTextField(
+                    modifier = Modifier.clickable {
+                        setIsOpen2(true)
+                    },
+                    value = "Patient: ${appointment.patientName}",
+                    textDecoration = TextDecoration.Underline
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 MediumTextField(modifier = Modifier, value = "Patient: ${appointment.description}")
                 Spacer(modifier = Modifier.weight(1f))

@@ -172,7 +172,7 @@ class MedicationManager : ComponentActivity() {
                             type = "number",
                             onTextChange = { newValue ->
                                 pills = if (newValue.isEmpty()) {
-                                    0
+                                    "00".toInt()
                                 } else {
                                     newValue.toInt()
                                 }
@@ -185,7 +185,7 @@ class MedicationManager : ComponentActivity() {
                             type = "number",
                             onTextChange = { newValue ->
                                 days = if (newValue.isEmpty()) {
-                                    0
+                                    "00".toInt()
                                 } else {
                                     newValue.toInt()
                                 }
@@ -199,7 +199,7 @@ class MedicationManager : ComponentActivity() {
                             type = "number",
                             onTextChange = { newValue ->
                                 pillsPerPortion = if (newValue.isEmpty()) {
-                                    0
+                                    "00".toInt()
                                 } else {
                                     newValue.toInt()
                                 }

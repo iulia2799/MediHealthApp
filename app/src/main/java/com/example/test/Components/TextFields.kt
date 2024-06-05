@@ -9,31 +9,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.jejugothicFamily
 
 @Composable
-fun LargeTextField(value: String, modifier: Modifier, color: Color = Color.Black) {
+fun LargeTextField(
+    value: String,
+    modifier: Modifier,
+    color: Color = Color.Black,
+    textDecoration: TextDecoration = TextDecoration.None
+) {
     Text(
         modifier = modifier,
         text = value,
         fontFamily = jejugothicFamily,
         fontSize = 25.sp,
         fontWeight = FontWeight.Bold,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }
 
 @Composable
-fun MediumTextField(modifier: Modifier, value: String, color: Color = Color.Black) {
+fun MediumTextField(
+    modifier: Modifier,
+    value: String,
+    color: Color = Color.Black,
+    textDecoration: TextDecoration = TextDecoration.None
+) {
     Text(
         modifier = modifier,
         text = value,
         fontFamily = jejugothicFamily,
         fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
-        color = color
+        color = color,
+        textDecoration = textDecoration
     )
 }
 

@@ -31,14 +31,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.dialNumber
+import com.example.test.Components.goToGoogleMaps
+import com.example.test.Components.goToMail
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.MedicationManager
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalTertiary
@@ -91,9 +96,27 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
                     value = "${patient.firstName} ${patient.lastName}",
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                MediumTextField(value = "Address: ${patient.address}", modifier = Modifier)
-                MediumTextField(value = "Email: ${patient.email}", modifier = Modifier)
-                MediumTextField(value = "Phone: ${patient.phone}", modifier = Modifier)
+                MediumTextField(
+                    value = "Address: ${patient.address}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(patient.address, context)
+                    })
+                MediumTextField(
+                    value = "Email: ${patient.email}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(patient.email, context)
+                    })
+                MediumTextField(
+                    value = "Phone: ${patient.phone}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(patient.phone, context)
+                    })
                 Text(text = "Age: ${patient.age}")
                 if (type) {
                     TextButton(
@@ -137,6 +160,7 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
 
 @Composable
 fun PatientCard(patient: Patient) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,9 +184,27 @@ fun PatientCard(patient: Patient) {
                 value = "${patient.firstName} ${patient.lastName}",
                 modifier = Modifier.padding(bottom = 4.dp)
             )
-            MediumTextField(value = "Address: ${patient.address}", modifier = Modifier)
-            MediumTextField(value = "Email: ${patient.email}", modifier = Modifier)
-            MediumTextField(value = "Phone: ${patient.phone}", modifier = Modifier)
+            MediumTextField(
+                value = "Address: ${patient.address}",
+                color = boldPrimary,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    goToGoogleMaps(patient.address, context)
+                })
+            MediumTextField(
+                value = "Email: ${patient.email}",
+                color = boldPrimary,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    goToMail(patient.email, context)
+                })
+            MediumTextField(
+                value = "Phone: ${patient.phone}",
+                color = boldPrimary,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    dialNumber(patient.phone, context)
+                })
             MediumTextField(value = "Age: ${patient.age} years", modifier = Modifier)
 
         }

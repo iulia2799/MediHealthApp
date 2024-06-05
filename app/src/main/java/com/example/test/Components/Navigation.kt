@@ -3,6 +3,15 @@ package com.example.test.Components
 import Models.Conversation
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.contentColorFor
+import androidx.compose.ui.platform.UriHandler
 import com.example.test.Connect.LoginActivity
 import com.example.test.Connect.RegisterActivity
 import com.example.test.LocalStorage.LocalStorage
@@ -49,4 +58,27 @@ fun goToConvo(context: Context, convo: Conversation, callBack: () -> Unit = {}) 
     intent.putExtra("data", parcel)
     context.startActivity(intent)
     callBack()
+}
+
+fun goToGoogleMaps(address: String, context: Context) {
+    val parsedAddress = address.replace(" ", "+")
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=$parsedAddress"))
+    context.startActivity(intent)
+}
+
+fun goToMail(mail: String, context: Context) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "message/rfc822"
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(mail))
+    }
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        Toast.makeText(context, "No app selected of found", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun dialNumber(number: String, context: Context) {
+    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))
+    context.startActivity(intent)
 }

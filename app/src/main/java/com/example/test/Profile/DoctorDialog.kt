@@ -32,13 +32,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.dialNumber
+import com.example.test.Components.goToGoogleMaps
+import com.example.test.Components.goToMail
 import com.example.test.appointment.AppointmentManager
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalPrimary
@@ -77,7 +82,7 @@ fun DoctorDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp)
+                .height(420.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
@@ -97,9 +102,27 @@ fun DoctorDialog(
                     value = "${doctor.firstName} ${doctor.lastName} - ${doctor.department.displayName}",
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                MediumTextField(value = "Address: ${doctor.address}", modifier = Modifier)
-                MediumTextField(value = "Email: ${doctor.email}", modifier = Modifier)
-                MediumTextField(value = "Phone: ${doctor.phone}", modifier = Modifier)
+                MediumTextField(
+                    value = "Address: ${doctor.address}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(doctor.address, context)
+                    })
+                MediumTextField(
+                    value = "Email: ${doctor.email}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(doctor.email, context)
+                    })
+                MediumTextField(
+                    value = "Phone: ${doctor.phone}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(doctor.phone, context)
+                    })
                 Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
                 if (!type) {
                     TextButton(
@@ -135,6 +158,7 @@ fun DoctorDialog(
 @Composable
 fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
     val name = doctor.firstName + ", " + doctor.lastName
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -160,9 +184,27 @@ fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
                     )
                 )
                 Text(text = "Department: ${doctor.department.displayName}")
-                Text(text = "Phone: ${doctor.phone}")
-                Text(text = "Email: ${doctor.email}")
-                Text(text = "Address: ${doctor.address}")
+                MediumTextField(
+                    value = "Address: ${doctor.address}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(doctor.address, context)
+                    })
+                MediumTextField(
+                    value = "Email: ${doctor.email}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(doctor.email, context)
+                    })
+                MediumTextField(
+                    value = "Phone: ${doctor.phone}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(doctor.phone, context)
+                    })
                 Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
             }
         }

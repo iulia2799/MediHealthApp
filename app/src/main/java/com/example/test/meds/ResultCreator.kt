@@ -182,7 +182,7 @@ class ResultCreator : ComponentActivity() {
             filePicker.pickMultipleFiles(result, { isLoading = !isLoading }, { downloadUri ->
                 val uri = downloadUri.toString()
                 optionalFilesUrl += uri
-                Log.d("OPTIONAL FILES",downloadUri.toString())
+                Log.d("OPTIONAL FILES", downloadUri.toString())
             }, storage, db, "${patientRef}_${doctorRef}")
         }
 
@@ -194,6 +194,9 @@ class ResultCreator : ComponentActivity() {
                     .padding(16.dp)
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
             ) {
                 Row {
                     LargeTextField(
@@ -257,7 +260,7 @@ class ResultCreator : ComponentActivity() {
                             multipleFileLauncher.launch(
                                 Intent(Intent.ACTION_GET_CONTENT).setType(
                                     "*/*"
-                                ).putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
+                                ).putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                             )
                         },
                         alignment = Alignment.Center,
@@ -278,7 +281,7 @@ class ResultCreator : ComponentActivity() {
                                     color = Color.Blue, fontWeight = FontWeight.Bold
                                 )
                             ) {
-                                append("URL (${index+1})")
+                                append("URL (${index + 1})")
                             }
                             pop()
                         }
@@ -297,8 +300,10 @@ class ResultCreator : ComponentActivity() {
                                 }
                             })
                             Spacer(modifier = Modifier.weight(1f))
-                            IconButton(onClick = { optionalFilesUrl -= optionalFilesUrl[index]
-                            Log.d("Size:",optionalFilesUrl.size.toString())}) {
+                            IconButton(onClick = {
+                                optionalFilesUrl -= optionalFilesUrl[index]
+                                Log.d("Size:", optionalFilesUrl.size.toString())
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Clear,
                                     contentDescription = "Delete file",

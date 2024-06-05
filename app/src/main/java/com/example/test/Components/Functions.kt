@@ -53,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.ui.theme.boldPrimary
@@ -343,7 +344,8 @@ fun FormSelector(
         )
     )
 
-    DropdownMenu(modifier = modifier,
+    DropdownMenu(
+        modifier = modifier,
         expanded = expanded,
         onDismissRequest = { expanded = false }) {
         options.forEach { option ->
@@ -428,7 +430,8 @@ fun SentMessage(message: Message) {
 @Composable
 fun Header(username: String, onClick: () -> Unit = {}) {
     Row {
-        LargeTextField(value = "Conversation with $username",
+        LargeTextField(value = username,
+            textDecoration = TextDecoration.Underline,
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
