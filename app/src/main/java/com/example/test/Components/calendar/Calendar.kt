@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -65,7 +66,7 @@ fun CustomCalendar(
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         TopCalendarBar(week, onPrevClickListener, onNextClickListener)
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
+        LazyRow(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
             items(items = week.week) {
                 CalendarItem(date = it, onDateClickListener)
             }

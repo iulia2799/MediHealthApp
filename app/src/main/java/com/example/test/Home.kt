@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -69,13 +70,17 @@ import com.example.test.Misc.ListOfPatients
 import com.example.test.Profile.Profile
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentDialog
-import com.example.test.map.MapActivity
+import com.example.test.billing.BillingCreator
+import com.example.test.billing.BillingsList
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.ResultCreator
 import com.example.test.messaging.ConvoList
+import com.example.test.symptomchecker.CheckerActivity
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.appBarContainerColor
 import com.example.test.ui.theme.boldPrimary
+import com.example.test.ui.theme.darkPrimary
+import com.example.test.ui.theme.offWhite
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
@@ -111,8 +116,6 @@ class Home : ComponentActivity() {
 
                 Log.d("TAaaaaaaG1", token)
             })
-        } else {
-            // TODO: Inform user that that your app will not show notifications.
         }
     }
 
@@ -134,7 +137,6 @@ class Home : ComponentActivity() {
         val context = LocalContext.current
         askNotificationPermission(context)
         val local = LocalStorage(context)
-        //TODO PLEASE REMOVE IF IT CAUSES MORE PROBLEMS THAN IT SOLVES
         onBackPressedDispatcher.addCallback {
             local.logOutUser()
             context.startActivity(Intent(context, MainActivity::class.java))
@@ -212,7 +214,8 @@ class Home : ComponentActivity() {
             val end = today.plusDays(1).atStartOfDay(ZoneId.of("UTC")).minusNanos(1)
             db.collection(APPOINTMENTS_DATA).whereEqualTo(field, ref)
                 .whereGreaterThanOrEqualTo("date", zonedDateTimeToTimestampFirebase(start))
-                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end)).addSnapshotListener { value, error ->
+                .whereLessThan("date", zonedDateTimeToTimestampFirebase(end))
+                .addSnapshotListener { value, error ->
                     if (value != null) {
                         data = emptyMap()
                         Log.d("fdsfds", value.documents.toString())
@@ -273,7 +276,7 @@ class Home : ComponentActivity() {
         }, floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                          //context.startActivity(Intent(context,MapActivity::class.java))
+                    //context.startActivity(Intent(context,MapActivity::class.java))
                     context.startActivity(Intent(context, ConvoList::class.java))
                 }, contentColor = universalPrimary, containerColor = universalBackground
             ) {
@@ -366,6 +369,41 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
+                Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                    DefaultButton(
+                        onClick = {
+                            if (type) {
+                                context.startActivity(Intent(context, BillingCreator::class.java))
+                            } else {
+                                context.startActivity(Intent(context, BillingsList::class.java))
+                            }
+                        },
+                        alignment = Alignment.Center,
+                        text = "Billing",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(200.dp)
+                            .padding(20.dp)
+                    )
+                }
+                if (!type) {
+                    Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                        DefaultButton(
+                            onClick = {
+                                context.startActivity(Intent(context, CheckerActivity::class.java))
+                            },
+                            alignment = Alignment.Center,
+                            text = "✨Virtual Assistant✨",
+                            modifier = Modifier
+                                .height(100.dp)
+                                .width(300.dp)
+                                .padding(20.dp),
+                            fontWeight = FontWeight.Bold,
+                            backgroundColor = darkPrimary,
+                            contentColor = offWhite
+                        )
+                    }
+                }
                 Row {
                     if (!type) {
                         DefaultButton(
@@ -397,6 +435,8 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
+
+
             }
         }
     }
@@ -498,10 +538,10 @@ class Home : ComponentActivity() {
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             }
         } else {
-            Log.d("HELLO", "TOJE")
+            Log.d("NOTIFICATION", "OLD VERSION")
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
+                    Log.w("TAG1", "Fetching FCM registration token failed", task.exception)
                     return@OnCompleteListener
                 }
 

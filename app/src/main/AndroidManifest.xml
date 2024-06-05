@@ -31,6 +31,11 @@
         android:theme="@style/Theme.App"
         tools:targetApi="31">
         <activity
+            android:name=".symptomchecker.CheckerActivity"
+            android:exported="false"
+            android:label="@string/title_activity_checker"
+            android:theme="@style/Theme.App" />
+        <activity
             android:name=".billing.BillingCreator"
             android:exported="false"
             android:label="@string/title_activity_billing_creator"

@@ -28,7 +28,8 @@ class TokenService : FirebaseMessagingService() {
                 val importance = NotificationManager.IMPORTANCE_DEFAULT
                 val notificationBuilder =
                     NotificationCompat.Builder(this, channelId).setContentTitle(title)
-                        .setContentText(body).setSmallIcon(R.drawable.notif).setStyle(NotificationCompat.BigTextStyle().bigText(body))
+                        .setContentText(body).setSmallIcon(R.drawable.notif)
+                        .setStyle(NotificationCompat.BigTextStyle().bigText(body))
 
                 val notificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class LocalStorage(context: Context) {
-    private val DETAILS = "userDetails"
+    private val _details = "userDetails"
     private val preferences: SharedPreferences =
-        context.getSharedPreferences(DETAILS, Context.MODE_PRIVATE)
+        context.getSharedPreferences(_details, Context.MODE_PRIVATE)
     private val editor = preferences.edit()
 
     fun putUserDetails(specialist: Boolean, ref: String) {

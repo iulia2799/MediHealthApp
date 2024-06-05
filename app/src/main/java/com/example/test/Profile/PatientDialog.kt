@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -39,6 +40,7 @@ import com.example.test.Components.MediumTextField
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.MedicationManager
 import com.example.test.ui.theme.jejugothicFamily
+import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.PATIENTS
 import com.google.firebase.firestore.ktx.firestore
@@ -69,7 +71,7 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(420.dp)
+                .height(300.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
@@ -114,6 +116,17 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
                     ) {
                         Text(text = "Create Prescription")
                     }
+                }
+                TextButton(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(), onClick = {
+                        onDismiss()
+                    }, colors = ButtonDefaults.textButtonColors(
+                        contentColor = universalAccent
+                    )
+                ) {
+                    Text("Close")
                 }
 
             }

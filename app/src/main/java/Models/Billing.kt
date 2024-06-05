@@ -1,18 +1,16 @@
 package Models
 
-import java.util.Currency
-import java.util.Locale
-
 data class Billing(
     var patientUid: String = "",
     var doctorUid: String = "",
     var patientName: String = "",
     var doctorName: String = "",
-    var initialSum: Int = 0,
+    var initialSum: Float = 0f,
     var coveredByInsurance: Boolean = false,
-    var discount: Int = 0,
-    var finalSum: Int = 0,
+    var discount: Float = 0f,
+    var finalSum: Float = 0f,
     var AccountNumber: String = "",
     var files: List<String> = emptyList(),
-    var currency: String = ""
+    var currency: String = "",
+    var unix: Long = System.currentTimeMillis()
 )

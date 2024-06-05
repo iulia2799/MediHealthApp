@@ -124,19 +124,26 @@ class RegisterActivity : ComponentActivity() {
                 }
             }
             Row {
-                CustomTextField(
-                    text = firstName,
+                CustomTextField(text = firstName,
                     labelValue = "First Name",
                     onTextChange = { newValue ->
                         firstName = newValue
                     })
                 Spacer(modifier = Modifier.weight(1f))
-                CustomTextField(
-                    text = lastName,
+                CustomTextField(text = lastName,
                     labelValue = "Last Name",
                     onTextChange = { newValue ->
                         lastName = newValue
                     })
+            }
+            Row {
+                MediumTextField(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                    value = "The email must have a valid email format (for example abc@mail.com) and the password must have at least 8 characters that include both letters and numbers."
+                )
             }
             Row {
                 CustomTextField(

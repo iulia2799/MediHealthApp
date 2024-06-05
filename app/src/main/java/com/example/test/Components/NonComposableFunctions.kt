@@ -106,3 +106,20 @@ fun getFromUserUids(convo: Conversation, context: Context): Pair<String, String>
 fun convertBooleanToResult(accepted: Boolean): String {
     return if (accepted) "Yes" else "No"
 }
+
+fun toTitleCase(value: String): String {
+    return value.replace("_"," ")
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+}
+
+fun makeDiscountedNumber(value: String, discount: String): String {
+    return if(value.isEmpty()) ""
+    else {
+        try {
+            val discountedSum = value.toFloat() * discount.toFloat() / 100.0
+            discountedSum.toString()
+        } catch (exception: Exception) {
+            "NAN"
+        }
+    }
+}

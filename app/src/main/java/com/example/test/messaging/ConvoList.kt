@@ -81,34 +81,32 @@ class ConvoList : ComponentActivity() {
         var list by remember {
             mutableStateOf(initialList)
         }
-            if (ref != null) {
-                db.collection(CONVO_LIST).whereArrayContains("userUids", ref)
-                    .addSnapshotListener { value, error ->
-                        if (value != null) {
-                            if (!value.isEmpty) {
-                                val results = value.documents
-                                list = emptyList()
-                                results.iterator().forEach {
-                                    val element = it.toObject<Conversation>()
-                                    if (element != null) {
-                                        Log.d("element", element.userNames[0])
-                                        list += element
-                                    }
+        if (ref != null) {
+            db.collection(CONVO_LIST).whereArrayContains("userUids", ref)
+                .addSnapshotListener { value, error ->
+                    if (value != null) {
+                        if (!value.isEmpty) {
+                            val results = value.documents
+                            list = emptyList()
+                            results.iterator().forEach {
+                                val element = it.toObject<Conversation>()
+                                if (element != null) {
+                                    Log.d("element", element.userNames[0])
+                                    list += element
                                 }
-                            } else {
-
-                            }
-
-                        } else {
-                            if (error != null) {
-                                error.message?.let { Log.d("errorcriiii", it) }
                             }
                         }
+
+                    } else {
                         if (error != null) {
-                            error.message?.let { Log.d("errorcriiii", it) }
+                            error.message?.let { Log.d("error", it) }
                         }
                     }
-            }
+                    if (error != null) {
+                        error.message?.let { Log.d("error2", it) }
+                    }
+                }
+        }
         Surface(
             modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
@@ -142,7 +140,7 @@ class ConvoList : ComponentActivity() {
                 )
             }) {
                 LazyColumn(modifier = Modifier.padding(it)) {
-                    items(list) {convo ->
+                    items(list) { convo ->
                         ConvoItem(convo)
                     }
                 }
@@ -167,7 +165,8 @@ class ConvoList : ComponentActivity() {
                 }
                 Row {
                     Text(
-                        text = "Last updated: ${convertMillisToDate(convo.lastUpdated)}", fontFamily = jejugothicFamily
+                        text = "Last updated: ${convertMillisToDate(convo.lastUpdated)}",
+                        fontFamily = jejugothicFamily
                     )
                 }
             }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,7 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
+import com.example.test.ui.theme.universalPrimary
 import com.example.test.utils.PATIENTS
 import com.example.test.utils.createNewConversation
 import com.example.test.utils.getNewConversation
@@ -133,7 +136,13 @@ class ListOfPatients : ComponentActivity() {
             mutableStateOf(false)
         }
         Card(
-            modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(8.dp)
+            modifier = Modifier.fillMaxWidth().padding(10.dp), shape = RoundedCornerShape(8.dp),
+            colors = CardColors(
+                containerColor = universalPrimary,
+                contentColor = Color.Black,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.Black
+            )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(

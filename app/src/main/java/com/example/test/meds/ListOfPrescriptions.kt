@@ -7,14 +7,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,8 +43,12 @@ import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.darkAccent
+import com.example.test.ui.theme.darkPrimary
+import com.example.test.ui.theme.darkTertiary
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
+import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
@@ -90,18 +96,16 @@ class ListOfPrescriptions : ComponentActivity() {
         Surface(
             modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
-            Scaffold(
-                snackbarHost = {
-                    SnackbarHost(hostState = snackbarState) { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            actionColor = universalAccent,
-                            containerColor = universalBackground,
-                            contentColor = universalTertiary
-                        )
-                    }
+            Scaffold(snackbarHost = {
+                SnackbarHost(hostState = snackbarState) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        actionColor = universalAccent,
+                        containerColor = universalBackground,
+                        contentColor = universalTertiary
+                    )
                 }
-            ) {paddingValues ->
+            }) { paddingValues ->
                 Column(modifier = Modifier.padding(paddingValues)) {
                     Row {
                         var text = "Your prescriptions"
@@ -157,7 +161,13 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
         LazyColumn {
             items(list.keys.toList()) { index ->
                 Card(
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
+                    colors = CardColors(
+                        containerColor = universalPrimary,
+                        contentColor = universalAccent,
+                        disabledContentColor = Color.Black,
+                        disabledContainerColor = Color.LightGray
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(text = "Name: ${list[index]?.medicationName}")
@@ -174,7 +184,12 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
                             Text(text = "${pair.first}:${pair.second}")
                         }
                         if (!localStorage.getRole()) {
-                            TextButton(onClick = {
+                            TextButton(colors = ButtonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = darkPrimary,
+                                disabledContainerColor = Color.LightGray,
+                                disabledContentColor = Color.Black
+                            ), onClick = {
                                 val parcel = list[index]?.let {
                                     PrescriptionParceled(
                                         it.doctorUid,
@@ -196,11 +211,12 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
                             }) {
                                 Text("Change")
                             }
-                        } else if(localStorage.getRef() == list[index]?.doctorUid) {
+                        } else if (localStorage.getRef() == list[index]?.doctorUid) {
                             TextButton(onClick = {
-                                db.collection(MEDICATION_DATA).document(index).delete().addOnCompleteListener {
-                                    removeCallBack()
-                                }
+                                db.collection(MEDICATION_DATA).document(index).delete()
+                                    .addOnCompleteListener {
+                                        removeCallBack()
+                                    }
                             }) {
                                 Text("Remove prescription")
                             }
