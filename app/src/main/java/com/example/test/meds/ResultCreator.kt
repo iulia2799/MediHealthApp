@@ -16,8 +16,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -187,16 +187,15 @@ class ResultCreator : ComponentActivity() {
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(), color = universalBackground
+            modifier = Modifier.fillMaxWidth(), color = universalBackground
         ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
                     .verticalScroll(
                         rememberScrollState()
                     )
+                    .heightIn(min = 1000.dp, max = 10000.dp)
             ) {
                 Row {
                     LargeTextField(
@@ -228,7 +227,7 @@ class ResultCreator : ComponentActivity() {
                     val hyperLink = buildAnnotatedString {
                         append("Uploaded file URL: ")
                         if (annotation != null) {
-                            pushStringAnnotation(tag = "URL", annotation = annotation!!)
+                            pushStringAnnotation(tag = "URL", annotation = annotation)
                             withStyle(
                                 style = SpanStyle(
                                     color = Color.Blue, fontWeight = FontWeight.Bold
@@ -271,8 +270,7 @@ class ResultCreator : ComponentActivity() {
 
                 if (optionalFilesUrl.isNotEmpty()) {
                     optionalFilesUrl.forEachIndexed { index, url ->
-                        var annotation = ""
-                        annotation = url
+                        var annotation = url
                         val hyperLink = buildAnnotatedString {
                             append("Uploaded file URL: ")
                             pushStringAnnotation(tag = "URL", annotation = annotation)
@@ -351,6 +349,7 @@ class ResultCreator : ComponentActivity() {
                                 .verticalScroll(
                                     rememberScrollState()
                                 )
+                                .heightIn(max = 400.dp)
                         ) {
                             filteredData.forEach {
                                 val name = it.value.firstName + ", " + it.value.lastName
