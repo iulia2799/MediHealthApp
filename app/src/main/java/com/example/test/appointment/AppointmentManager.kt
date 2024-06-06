@@ -128,7 +128,7 @@ class AppointmentManager : ComponentActivity() {
                 appointment.doctorName = otherName
             }
         }
-        Log.d("TYPE", localStorage.getName())
+        Log.d("TYPE", mode)
         val formDate = convertTimestampToDate(appointment.date).first
         var date by remember { mutableStateOf(if (mode == "edit") formDate else "Change the date") }
         var doctor by remember { mutableStateOf(if (type) localStorage.getName() else appointment.doctorName) }
@@ -139,11 +139,18 @@ class AppointmentManager : ComponentActivity() {
             mutableStateOf(appointment.description)
         }
         val datetime = LocalDateTime.now(ZoneId.systemDefault())
+        var hour = datetime.hour
+        var minute = datetime.minute
+        if (mode == "edit") {
+            val converted = convertTimestampToDate(appointment.date)
+            hour = converted.second
+            minute = converted.third
+        }
         var state = remember {
             TimePickerState(
                 is24Hour = true,
-                initialHour = if (mode === "edit") convertTimestampToDate(appointment.date).second else datetime.hour,
-                initialMinute = if (mode === "edit") convertTimestampToDate(appointment.date).third else datetime.minute,
+                initialHour = hour,
+                initialMinute = minute,
             )
         }
         var text by remember { mutableStateOf("") }
@@ -319,7 +326,8 @@ class AppointmentManager : ComponentActivity() {
 
                 }
 
-                OutlinedTextField(value = alocatedTime,
+                OutlinedTextField(
+                    value = alocatedTime,
                     onValueChange = { newValue ->
                         alocatedTime = newValue.filter { it.isDigit() }
                     },
@@ -395,12 +403,15 @@ class AppointmentManager : ComponentActivity() {
                 }
                 if (showSnackbar) {
                     Row {
-                        Text(text = "Appointment Confirmed!")
+                        Text(
+                            text = "Appointment Confirmed!",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             }
-
-
         }
     }
 

@@ -189,11 +189,13 @@ fun BillingCard(billing: Billing, onSnackbarCall: () -> Unit = {}) {
     ) {
         Column {
             Row {
-                MediumTextField(modifier = Modifier.padding(10.dp), value = billing.doctorName)
+                MediumTextField(modifier = Modifier.padding(10.dp), value = billing.doctorName, color = offWhite)
             }
             Row {
                 val hyperLink = buildAnnotatedString {
-                    append("Account number: ")
+                    withStyle(style = SpanStyle(color= offWhite)) {
+                        append("Account number: ")
+                    }
                     pushStringAnnotation(tag = "URL", annotation = billing.AccountNumber)
                     withStyle(
                         style = SpanStyle(
