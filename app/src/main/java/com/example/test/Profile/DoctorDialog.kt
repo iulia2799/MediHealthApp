@@ -184,22 +184,22 @@ fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
                     )
                 )
                 Text(text = "Department: ${doctor.department.displayName}")
-                MediumTextField(
-                    value = "Address: ${doctor.address}",
+                Text(
+                    text = "Address: ${doctor.address}",
                     color = boldPrimary,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable {
                         goToGoogleMaps(doctor.address, context)
                     })
-                MediumTextField(
-                    value = "Email: ${doctor.email}",
+                Text(
+                    text = "Email: ${doctor.email}",
                     color = boldPrimary,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable {
                         goToMail(doctor.email, context)
                     })
-                MediumTextField(
-                    value = "Phone: ${doctor.phone}",
+                Text(
+                    text = "Phone: ${doctor.phone}",
                     color = boldPrimary,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable {

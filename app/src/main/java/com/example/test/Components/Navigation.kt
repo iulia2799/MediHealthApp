@@ -74,7 +74,7 @@ fun goToMail(mail: String, context: Context) {
     if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
     } else {
-        Toast.makeText(context, "No app selected of found", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "No app selected or found", Toast.LENGTH_SHORT).show()
     }
 }
 

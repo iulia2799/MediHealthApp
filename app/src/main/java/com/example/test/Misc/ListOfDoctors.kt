@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,14 +36,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.FormSelector
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.dialNumber
 import com.example.test.Components.goToConvo
+import com.example.test.Components.goToGoogleMaps
+import com.example.test.Components.goToMail
 import com.example.test.appointment.AppointmentManager
 import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalPrimary
@@ -156,9 +162,27 @@ class ListOfDoctors : ComponentActivity() {
                     text = name, style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily)
                 )
                 Text(text = "${doctor.department}")
-                Text(text = "Phone: ${doctor.phone}")
-                Text(text = "Email: ${doctor.email}")
-                Text(text = "Address: ${doctor.address}")
+                Text(
+                    text = "Address: ${doctor.address}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(doctor.address, context)
+                    })
+                Text(
+                    text = "Email: ${doctor.email}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(doctor.email, context)
+                    })
+                Text(
+                    text = "Phone: ${doctor.phone}",
+                    color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(doctor.phone, context)
+                    })
                 Text(text = "Schedule: ${doctor.officeHours.start} - ${doctor.officeHours.end}; ${doctor.officeHours.weekStart} to ${doctor.officeHours.weekend}")
                 Row(
                     modifier = Modifier

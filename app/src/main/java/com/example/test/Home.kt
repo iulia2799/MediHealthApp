@@ -26,7 +26,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.MailOutline
@@ -276,7 +278,6 @@ class Home : ComponentActivity() {
         }, floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    //context.startActivity(Intent(context,MapActivity::class.java))
                     context.startActivity(Intent(context, ConvoList::class.java))
                 }, contentColor = universalPrimary, containerColor = universalBackground
             ) {
@@ -284,7 +285,7 @@ class Home : ComponentActivity() {
             }
         }) { padding ->
             Column(
-                modifier = Modifier.padding(padding),
+                modifier = Modifier.padding(padding).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Row {
@@ -369,7 +370,11 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
-                Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
                     DefaultButton(
                         onClick = {
                             if (type) {
@@ -386,23 +391,25 @@ class Home : ComponentActivity() {
                             .padding(20.dp)
                     )
                 }
-                if (!type) {
-                    Row(modifier = Modifier.fillMaxWidth().wrapContentWidth(Alignment.CenterHorizontally)) {
-                        DefaultButton(
-                            onClick = {
-                                context.startActivity(Intent(context, CheckerActivity::class.java))
-                            },
-                            alignment = Alignment.Center,
-                            text = "✨Virtual Assistant✨",
-                            modifier = Modifier
-                                .height(100.dp)
-                                .width(300.dp)
-                                .padding(20.dp),
-                            fontWeight = FontWeight.Bold,
-                            backgroundColor = darkPrimary,
-                            contentColor = offWhite
-                        )
-                    }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
+                    DefaultButton(
+                        onClick = {
+                            context.startActivity(Intent(context, CheckerActivity::class.java))
+                        },
+                        alignment = Alignment.Center,
+                        text = "✨Virtual Assistant✨",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .width(300.dp)
+                            .padding(20.dp),
+                        fontWeight = FontWeight.Bold,
+                        backgroundColor = darkPrimary,
+                        contentColor = offWhite
+                    )
                 }
                 Row {
                     if (!type) {
@@ -505,7 +512,6 @@ class Home : ComponentActivity() {
 
     private fun askNotificationPermission(context: Context) {
         Log.d("TAaaaaaaG", "token")
-        // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     this, android.Manifest.permission.POST_NOTIFICATIONS
@@ -520,19 +526,12 @@ class Home : ComponentActivity() {
 
                     // Get new FCM registration token
                     val token = task.result
-
-                    // Log and toast
-                    //val msg = getString(R.string.msg_token_fmt, token)
                     Log.d("TAaaaaaaG2", token)
                     LocalStorage(context).putToken(token)
                     sendTokenToServer(context, db, token)
-                    //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                 })
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
+
             } else {
                 // Directly ask for the permission
                 requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
@@ -547,12 +546,8 @@ class Home : ComponentActivity() {
 
                 // Get new FCM registration token
                 val token = task.result
-
-                // Log and toast
-                //val msg = getString(R.string.msg_token_fmt, token)
                 Log.d("TAaaaaaaG3", token)
                 sendTokenToServer(context, db, token)
-                //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             })
         }
     }

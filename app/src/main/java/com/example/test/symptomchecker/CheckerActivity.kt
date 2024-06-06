@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,6 +35,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +63,7 @@ import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.EMERGENCY_NUMBERS
+import kotlinx.coroutines.delay
 
 class CheckerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +72,7 @@ class CheckerActivity : ComponentActivity() {
             AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     color = universalBackground
                 ) {
                     Content()
@@ -102,6 +105,7 @@ fun Content() {
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState()).heightIn(max = 1200.dp)
         ) {
             Row {
                 DefaultButton(
@@ -301,6 +305,10 @@ fun <K> SimpleSearch(
         mutableStateOf(false)
     }
     var filter by remember { mutableStateOf(data) }
+    LaunchedEffect(key1 = text) {
+        delay(100)
+        filter = filterCallback(data,text)
+    }
     Row {
         SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
             text = it

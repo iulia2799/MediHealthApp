@@ -164,8 +164,8 @@ fun PatientCard(patient: Patient) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
-            .padding(4.dp),
+            .height(160.dp)
+            .padding(8.dp),
         shape = RoundedCornerShape(16.dp),
         border = BorderStroke(
             1.dp, universalTertiary
@@ -177,7 +177,7 @@ fun PatientCard(patient: Patient) {
     ) {
         Column(
             modifier = Modifier
-                .padding(2.dp)
+                .padding(8.dp)
                 .wrapContentSize(Alignment.Center)
         ) {
             LargeTextField(
@@ -213,6 +213,7 @@ fun PatientCard(patient: Patient) {
 
 @Composable
 fun PatientItemWithAction(patient: Patient, onClick: () -> Unit = {}) {
+    val context = LocalContext.current
     val name = patient.firstName + ", " + patient.lastName
     Row(
         modifier = Modifier
@@ -232,9 +233,21 @@ fun PatientItemWithAction(patient: Patient, onClick: () -> Unit = {}) {
                         fontSize = 20.sp, fontFamily = jejugothicFamily
                     )
                 )
-                Text(text = "Phone: ${patient.phone}")
-                Text(text = "Email: ${patient.email}")
-                Text(text = "Address: ${patient.address}")
+                Text(text = "Phone: ${patient.phone}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(patient.phone, context)
+                    })
+                Text(text = "Email: ${patient.email}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(patient.email, context)
+                    })
+                Text(text = "Address: ${patient.address}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(patient.address, context)
+                    })
             }
         }
     }

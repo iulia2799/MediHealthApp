@@ -86,7 +86,6 @@ class MedicationManager : ComponentActivity() {
         var pills by remember { mutableStateOf(0) }
         var pillsPerPortion by remember { mutableStateOf(0) }
         var days by remember { mutableStateOf(0) }
-        var department by remember { mutableStateOf(Department.NA.displayName) }
         var alarms by remember {
             mutableStateOf<Set<Long>>(emptySet())
         }
@@ -100,6 +99,8 @@ class MedicationManager : ComponentActivity() {
         }
         val localStorage = LocalStorage(context)
         patientRef = intent.getStringExtra("otherRef").toString()
+
+        val department = localStorage.getDep()
 
         LaunchedEffect(key1 = patientRef) {
             db.collection("patients").document(patientRef).get().addOnCompleteListener {
@@ -207,18 +208,6 @@ class MedicationManager : ComponentActivity() {
                             })
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    Row {
-                        FormSelector(
-                            options = Department.values().map { it.displayName },
-                            selectedOption = department,
-                            onOptionSelected = {
-                                department = it
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                        )
-                    }
                     val currentTime by remember {
                         mutableStateOf(LocalTime.now())
                     }
@@ -290,7 +279,7 @@ class MedicationManager : ComponentActivity() {
                     DefaultButton(
                         onClick = {
                             val med = localStorage.getRef()?.let { it1 ->
-                                Department.values().find { dep -> dep.displayName == department }
+                                Department.values().find { dep -> dep.ordinal == department }
                                     ?.let { it2 ->
                                         Medication(
                                             doctorUid = it1,

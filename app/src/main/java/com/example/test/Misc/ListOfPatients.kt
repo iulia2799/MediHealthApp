@@ -6,8 +6,10 @@ import Models.Patient
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,16 +38,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test.Components.dialNumber
 import com.example.test.Components.filterByFieldP
 import com.example.test.Components.goToConvo
+import com.example.test.Components.goToGoogleMaps
+import com.example.test.Components.goToMail
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.MedicationManager
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
@@ -126,8 +133,12 @@ class ListOfPatients : ComponentActivity() {
     @Composable
     fun PatientItem(patient: Patient, ref: String) {
         val context = LocalContext.current
+        val db = Firebase.firestore
         val localStorage = LocalStorage(context)
         val name = patient.firstName + ", " + patient.lastName
+        val department = localStorage.getDep()
+        Log.d("depeartment",department.toString())
+        Log.d("depeartment1",Department.GP.ordinal.toString())
         val coroutine = rememberCoroutineScope()
         var convo by remember {
             mutableStateOf(Conversation())
@@ -136,7 +147,9 @@ class ListOfPatients : ComponentActivity() {
             mutableStateOf(false)
         }
         Card(
-            modifier = Modifier.fillMaxWidth().padding(10.dp), shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp), shape = RoundedCornerShape(8.dp),
             colors = CardColors(
                 containerColor = universalPrimary,
                 contentColor = Color.Black,
@@ -148,9 +161,21 @@ class ListOfPatients : ComponentActivity() {
                 Text(
                     text = name, style = TextStyle(fontSize = 20.sp, fontFamily = jejugothicFamily)
                 )
-                Text(text = "Phone: ${patient.phone}")
-                Text(text = "Email: ${patient.email}")
-                Text(text = "Address: ${patient.address}")
+                Text(text = "Phone: ${patient.phone}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        dialNumber(patient.phone, context)
+                    })
+                Text(text = "Email: ${patient.email}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToMail(patient.email, context)
+                    })
+                Text(text = "Address: ${patient.address}", color = boldPrimary,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable {
+                        goToGoogleMaps(patient.address, context)
+                    })
                 Text(text = "Age: ${patient.age} years")
                 Row(
                     modifier = Modifier
@@ -203,7 +228,7 @@ class ListOfPatients : ComponentActivity() {
                             contentColor = universalAccent,
                         )
                     ) {
-                        Text("View Prescriptions")
+                        Text("Prescriptions")
                     }
                     if (localStorage.getRole() && patient.doctorUid == localStorage.getRef()) {
                         TextButton(
@@ -215,7 +240,7 @@ class ListOfPatients : ComponentActivity() {
                                 contentColor = universalAccent,
                             )
                         ) {
-                            Text("View Results")
+                            Text("Results")
                         }
                     }
 
@@ -245,6 +270,30 @@ class ListOfPatients : ComponentActivity() {
                         )
                     ) {
                         Text("Message")
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center)
+                )  {
+                    if (department > 1) {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp), onClick = {
+                                db.collection(PATIENTS).document(ref).update(mapOf("doctorUid" to "")).addOnCompleteListener {
+                                    if(it.isSuccessful) {
+                                        Toast.makeText(context,"Patient successfully removed.",Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(context,"Oops ! There was an error.",Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }, colors = ButtonDefaults.textButtonColors(
+                                contentColor = universalAccent,
+                            )
+                        ) {
+                            Text("Remove patient")
+                        }
                     }
                 }
             }
