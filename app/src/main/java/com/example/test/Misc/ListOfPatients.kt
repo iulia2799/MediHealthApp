@@ -137,8 +137,8 @@ class ListOfPatients : ComponentActivity() {
         val localStorage = LocalStorage(context)
         val name = patient.firstName + ", " + patient.lastName
         val department = localStorage.getDep()
-        Log.d("depeartment",department.toString())
-        Log.d("depeartment1",Department.GP.ordinal.toString())
+        Log.d("depeartment", department.toString())
+        Log.d("depeartment1", Department.GP.ordinal.toString())
         val coroutine = rememberCoroutineScope()
         var convo by remember {
             mutableStateOf(Conversation())
@@ -230,19 +230,19 @@ class ListOfPatients : ComponentActivity() {
                     ) {
                         Text("Prescriptions")
                     }
-                    if (localStorage.getRole() && patient.doctorUid == localStorage.getRef()) {
-                        TextButton(
-                            modifier = Modifier.padding(4.dp), onClick = {
-                                val intent = Intent(context, Results::class.java)
-                                intent.putExtra("ref", ref)
-                                context.startActivity(intent)
-                            }, colors = ButtonDefaults.textButtonColors(
-                                contentColor = universalAccent,
-                            )
-                        ) {
-                            Text("Results")
-                        }
+                    // TODO: MAKE IT AVAILABLE FOR ALL DOCTORS
+                    TextButton(
+                        modifier = Modifier.padding(4.dp), onClick = {
+                            val intent = Intent(context, Results::class.java)
+                            intent.putExtra("ref", ref)
+                            context.startActivity(intent)
+                        }, colors = ButtonDefaults.textButtonColors(
+                            contentColor = universalAccent,
+                        )
+                    ) {
+                        Text("Results")
                     }
+
 
                     TextButton(
                         modifier = Modifier.padding(4.dp), onClick = {
@@ -277,15 +277,24 @@ class ListOfPatients : ComponentActivity() {
                         .fillMaxWidth()
                         .padding(8.dp)
                         .wrapContentSize(Alignment.Center)
-                )  {
+                ) {
                     if (department > 1) {
                         TextButton(
                             modifier = Modifier.padding(4.dp), onClick = {
-                                db.collection(PATIENTS).document(ref).update(mapOf("doctorUid" to "")).addOnCompleteListener {
-                                    if(it.isSuccessful) {
-                                        Toast.makeText(context,"Patient successfully removed.",Toast.LENGTH_SHORT).show()
+                                db.collection(PATIENTS).document(ref)
+                                    .update(mapOf("doctorUid" to "")).addOnCompleteListener {
+                                    if (it.isSuccessful) {
+                                        Toast.makeText(
+                                            context,
+                                            "Patient successfully removed.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } else {
-                                        Toast.makeText(context,"Oops ! There was an error.",Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Oops ! There was an error.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                             }, colors = ButtonDefaults.textButtonColors(

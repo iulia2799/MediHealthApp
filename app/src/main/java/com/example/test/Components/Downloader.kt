@@ -102,6 +102,23 @@ class FilePicker {
                         }
                     }
                 }
+            } else {
+                val storageRef =
+                    storage.reference.child("${directory}/${result.data!!.data?.lastPathSegment}_${System.currentTimeMillis()}")
+                result.data!!.data?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val snapshot = storageRef.putFile(it).await()
+                            val downloadUri = snapshot.storage.downloadUrl.await()
+                            onRetrieval(downloadUri)
+                            onLoadingChange()
+                            addUrlToFirestore(downloadUri.toString(), db)
+                        } catch (e: Exception) {
+                            onLoadingChange()
+                            println("Error uploading file: $e")
+                        }
+                    }
+                }
             }
         }
     }

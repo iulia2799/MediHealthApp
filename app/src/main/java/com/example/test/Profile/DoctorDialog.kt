@@ -3,7 +3,6 @@ package com.example.test.Profile
 import Models.Doctor
 import Models.nullDoc
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,10 +41,10 @@ import com.example.test.Components.dialNumber
 import com.example.test.Components.goToGoogleMaps
 import com.example.test.Components.goToMail
 import com.example.test.appointment.AppointmentManager
+import com.example.test.ui.theme.CARD_COLORS
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
-import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
 import com.example.test.utils.DOCTORS
 import com.google.firebase.firestore.ktx.firestore
@@ -170,12 +168,7 @@ fun DoctorItemWithAction(doctor: Doctor, onClick: () -> Unit = {}) {
                 .clickable {
                     onClick()
                 }, shape = RoundedCornerShape(8.dp),
-            colors = CardColors(
-                containerColor = universalPrimary,
-                contentColor = Color.Black,
-                disabledContainerColor = Color.LightGray,
-                disabledContentColor = Color.Black
-            )
+            colors = CARD_COLORS
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(

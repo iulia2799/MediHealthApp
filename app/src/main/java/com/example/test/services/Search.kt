@@ -39,7 +39,7 @@ class Search(context: Context) {
     )
 
     suspend fun retrieveValues(searchString: String = ""): MutableMap<String, Doctor> {
-        val list : MutableMap<String, Doctor> = mutableMapOf()
+        val list: MutableMap<String, Doctor> = mutableMapOf()
         val query = Query(
             query = searchString, attributesToRetrieve = attributes
         )
@@ -47,24 +47,28 @@ class Search(context: Context) {
         val hits = response.hits
         hits.forEach { hit ->
             val officeHours = hit.getValue("officeHours").jsonObject
-            val officeObj = Schedule (
+            val messageAvailableObj = hit["messageAvailable"].toString()
+            var messageAvailable: Boolean = messageAvailableObj == "true"
+            val officeObj = Schedule(
                 start = officeHours["start"].toString().trim('"'),
                 end = officeHours["end"].toString().trim('"'),
                 weekStart = officeHours["weekStart"].toString().trim('"'),
                 weekend = officeHours["weekend"].toString().trim('"')
             )
-            val user = departments.find { el -> el.name == hit["department"].toString().trim('"') }?.let {dep ->
-                Doctor(
-                    firstName = hit["firstName"].toString().trim('"'),
-                    lastName = hit["lastName"].toString().trim('"'),
-                    address = hit["address"].toString().trim('"'),
-                    phone = hit["phone"].toString().trim('"'),
-                    email = hit["email"].toString().trim('"'),
-                    department = dep,
-                    officeHours = officeObj
-                )
-            }
-            if(user != null) {
+            val user = departments.find { el -> el.name == hit["department"].toString().trim('"') }
+                ?.let { dep ->
+                    Doctor(
+                        firstName = hit["firstName"].toString().trim('"'),
+                        lastName = hit["lastName"].toString().trim('"'),
+                        address = hit["address"].toString().trim('"'),
+                        phone = hit["phone"].toString().trim('"'),
+                        email = hit["email"].toString().trim('"'),
+                        department = dep,
+                        officeHours = officeObj,
+                        messageAvailable = messageAvailable
+                    )
+                }
+            if (user != null) {
                 list[hit["objectID"].toString().trim('"')] = user
             }
         }

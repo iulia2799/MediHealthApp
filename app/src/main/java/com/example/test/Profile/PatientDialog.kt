@@ -43,6 +43,7 @@ import com.example.test.Components.goToGoogleMaps
 import com.example.test.Components.goToMail
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.MedicationManager
+import com.example.test.ui.theme.CARD_COLORS
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalAccent
@@ -225,7 +226,7 @@ fun PatientItemWithAction(patient: Patient, onClick: () -> Unit = {}) {
                 .fillMaxWidth()
                 .clickable {
                     onClick()
-                }, shape = RoundedCornerShape(8.dp)
+                }, shape = RoundedCornerShape(8.dp), colors = CARD_COLORS
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(

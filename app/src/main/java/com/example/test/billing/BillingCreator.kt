@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
@@ -101,13 +104,13 @@ fun Creator() {
     }
 
     var initialSum by remember {
-        mutableStateOf("0")
+        mutableStateOf("")
     }
     var discount by remember {
-        mutableStateOf("0")
+        mutableStateOf("")
     }
     var finalSum by remember {
-        mutableStateOf("0")
+        mutableStateOf("")
     }
     var account by remember {
         mutableStateOf("")
@@ -174,6 +177,10 @@ fun Creator() {
                 .wrapContentWidth(Alignment.CenterHorizontally)
         ) {
             DefaultButton(onClick = {
+                Log.d("patientUid", patientUid)
+                if (discount.isEmpty()) {
+                    discount = "0"
+                }
                 val newBilling = userUid?.let {
                     Billing(
                         patientUid = patientUid,
@@ -185,7 +192,8 @@ fun Creator() {
                         coveredByInsurance = covered,
                         finalSum = finalSum.toFloat(),
                         AccountNumber = account,
-                        files = optionalFilesUrl
+                        files = optionalFilesUrl,
+                        currency = currency
                     )
                 }
                 if (newBilling != null) {
@@ -205,17 +213,28 @@ fun Creator() {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .heightIn(max = 2000.dp)
         ) {
 
             Row {
-                UserSearch(data = data, filterCallback = ::filterByFieldP) {key, callback ->
+                UserSearch(data = data, filterCallback = ::filterByFieldP) { index,key, callback ->
                     val name = key.firstName + ", " + key.lastName
                     PatientItemWithAction(patient = key) {
                         patientName = name
-                        patientUid = ""
+                        patientUid = index
                         callback()
                     }
                 }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
+                MediumTextField(
+                    modifier = Modifier.padding(4.dp), value = "Patient: $patientName"
+                )
             }
             Row {
                 //initial sum
@@ -231,14 +250,15 @@ fun Creator() {
                 MediumTextField(modifier = Modifier.padding(10.dp), value = "Covered by insurance")
                 RadioButton(selected = covered, onClick = {
                     covered = !covered
-                    discount = "0"
+                    discount = ""
+                    finalSum = makeDiscountedNumber(initialSum, discount)
                 })
             }
             if (covered) {
                 Row {
                     LongTextField(
                         text = discount,
-                        labelValue = "Discount",
+                        labelValue = "Discount in percentage (%)",
                         onTextChange = { newValue ->
                             discount = newValue
                             finalSum = makeDiscountedNumber(initialSum, discount)
@@ -257,7 +277,7 @@ fun Creator() {
             Row {
                 LongTextField(
                     text = currency,
-                    labelValue = "Type your country code",
+                    labelValue = "Type your currency (symbol or acronym)",
                     onTextChange = { newValue ->
                         currency = newValue
                         finalSum = makeDiscountedNumber(initialSum, discount)
@@ -270,7 +290,9 @@ fun Creator() {
                         account = newValue
                     })
             }
-            Row {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)) {
                 DefaultButton(
                     onClick = {
                         multipleFileLauncher.launch(
@@ -285,7 +307,7 @@ fun Creator() {
                 )
             }
             if (optionalFilesUrl.isNotEmpty()) {
-                Log.d("optional files",optionalFilesUrl.size.toString())
+                Log.d("optional files", optionalFilesUrl.size.toString())
                 optionalFilesUrl.forEachIndexed { index, url ->
                     var annotation = ""
                     annotation = url

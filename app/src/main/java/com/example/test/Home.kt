@@ -102,6 +102,7 @@ import kotlin.properties.Delegates
 
 class Home : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
+    private lateinit var globalContext: Context
     private var type by Delegates.notNull<Boolean>()
     private lateinit var ref: String
     private val requestPermissionLauncher = registerForActivityResult(
@@ -113,9 +114,9 @@ class Home : ComponentActivity() {
                     Log.w("TAssssG", "Fetching FCM registration token failed", task.exception)
                     return@OnCompleteListener
                 }
-
                 val token = task.result
-
+                LocalStorage(globalContext).putToken(token)
+                sendTokenToServer(globalContext,db,token)
                 Log.d("TAaaaaaaG1", token)
             })
         }
@@ -137,6 +138,7 @@ class Home : ComponentActivity() {
 
         db = Firebase.firestore
         val context = LocalContext.current
+        globalContext = context
         askNotificationPermission(context)
         val local = LocalStorage(context)
         onBackPressedDispatcher.addCallback {
@@ -547,6 +549,7 @@ class Home : ComponentActivity() {
                 // Get new FCM registration token
                 val token = task.result
                 Log.d("TAaaaaaaG3", token)
+                LocalStorage(context).putToken(token)
                 sendTokenToServer(context, db, token)
             })
         }

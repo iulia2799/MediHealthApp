@@ -21,11 +21,16 @@ fun sendTokenToServer(context: Context, firestore: FirebaseFirestore, token: Str
     val deviceToken = ref?.let { DeviceToken(it, token) }
     if (deviceToken != null) {
         firestore.collection(TOKEN_DATA).whereEqualTo("token", token).whereEqualTo("userUid", ref)
-            .get().addOnCompleteListener {
+            .get().addOnCompleteListener { it ->
                 if (it.isSuccessful) {
+                    Log.d("TOKEN_SIZE",it.result.size().toString())
                     if (it.result.size() == 0) {
                         firestore.collection(TOKEN_DATA).add(deviceToken).addOnCompleteListener {
-
+                            if(it.isSuccessful) {
+                                Log.d("SUCCESS_TOKEN", "SUCCESS")
+                            } else {
+                                Log.d("ERROR_TOKEN", it.exception?.message.toString())
+                            }
                         }
                     }
                 }

@@ -36,6 +36,7 @@ import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +49,7 @@ import com.example.test.Components.CustomTextField
 import com.example.test.Components.DatePickerCard
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
+import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.convertDateToTimeStamp
 import com.example.test.Components.convertTimestampToDate
@@ -57,6 +59,7 @@ import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.DoctorItemWithAction
 import com.example.test.Profile.PatientItemWithAction
+import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
@@ -67,6 +70,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -113,6 +118,7 @@ class AppointmentManager : ComponentActivity() {
     @Composable
     fun Content() {
         val context = LocalContext.current
+        var searchService = Search(context)
         db = Firebase.firestore
         localStorage = LocalStorage(context)
         type = localStorage.getRole()
@@ -162,18 +168,17 @@ class AppointmentManager : ComponentActivity() {
 
         var alocatedTime by remember { mutableStateOf("${appointment.alocatedTime / 60}") }
         var unit by remember { mutableStateOf("Minutes") }
-
-        if (!type) {
-            db.collection("doctors").get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    it.result.forEach { it1 ->
-                        val app = it1.toObject<Doctor>()
-                        datad += (it1.reference.id to app)
-                    }
+        LaunchedEffect(text) {
+            if (!type) {
+                delay(1000)
+                Log.d("COROUTINE", "SCOPE")
+                launch {
+                    datad = searchService.retrieveValues(text)
                     filter1 = datad
                 }
             }
-        } else {
+        }
+        if (type) {
             db.collection("patients").get().addOnCompleteListener {
                 if (it.isSuccessful) {
                     it.result.forEach { it1 ->
@@ -207,7 +212,7 @@ class AppointmentManager : ComponentActivity() {
                         text = it
                     }, onSearch = {
                         if (!type) {
-                            filter1 = filterByField(datad, text)
+                            //filter1 = filterByField(datad, text)
                         } else {
                             filter2 = filterByFieldP(datap, text)
                         }
@@ -302,8 +307,9 @@ class AppointmentManager : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)
+                        .padding(10.dp)
                 ) {
-                    CustomTextField(text = description, labelValue = "Description", onTextChange = {
+                    LongTextField(text = description, labelValue = "Description", onTextChange = {
                         description = it
                     })
                 }

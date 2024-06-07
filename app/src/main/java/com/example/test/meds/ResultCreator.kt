@@ -59,8 +59,10 @@ import com.example.test.Components.FilePicker
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
+import com.example.test.Components.UserSearch
 import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.Profile.PatientItemWithAction
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.jejugothicFamily
 import com.example.test.ui.theme.universalBackground
@@ -314,72 +316,12 @@ class ResultCreator : ComponentActivity() {
                 }
 
                 Row {
-                    SearchBar(query = text,
-                        onQueryChange = { text = it },
-                        onSearch = { filteredData = filterByFieldP(data, text) },
-                        active = active,
-                        onActiveChange = { active = it },
-                        placeholder = {
-                            Text(text = "Search for a patient")
-                        },
-                        leadingIcon = {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-                        },
-                        trailingIcon = {
-                            if (active) {
-                                Icon(imageVector = Icons.Default.Clear,
-                                    contentDescription = "close",
-                                    modifier = Modifier.clickable {
-                                        if (text.isNotEmpty()) {
-                                            text = ""
-                                        } else {
-                                            active = false
-                                        }
-                                    })
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .verticalScroll(
-                                    rememberScrollState()
-                                )
-                                .heightIn(max = 400.dp)
-                        ) {
-                            filteredData.forEach {
-                                val name = it.value.firstName + ", " + it.value.lastName
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
-                                ) {
-                                    Card(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                patientName = name
-                                                patientRef = it.key
-                                                active = false
-                                            }, shape = RoundedCornerShape(8.dp)
-                                    ) {
-                                        Column(modifier = Modifier.padding(16.dp)) {
-                                            Text(
-                                                text = name, style = TextStyle(
-                                                    fontSize = 20.sp, fontFamily = jejugothicFamily
-                                                )
-                                            )
-                                            Text(text = "Phone: ${it.value.phone}")
-                                            Text(text = "Email: ${it.value.email}")
-                                            Text(text = "Address: ${it.value.address}")
-                                        }
-                                    }
-                                }
-                            }
+                    UserSearch(data = data, filterCallback = ::filterByFieldP) { index,key, callback ->
+                        val name = key.firstName + ", " + key.lastName
+                        PatientItemWithAction(patient = key) {
+                            patientName = name
+                            patientRef = index
+                            callback()
                         }
                     }
                 }

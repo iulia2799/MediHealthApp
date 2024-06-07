@@ -1,6 +1,8 @@
 package com.example.test.ui.theme
 
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,4 +41,11 @@ labelSmall = TextStyle(
     letterSpacing = 0.5.sp
 )
 */
+)
+
+val CARD_COLORS = CardColors(
+    containerColor = universalPrimary,
+    contentColor = Color.Black,
+    disabledContainerColor = Color.LightGray,
+    disabledContentColor = Color.Black
 )

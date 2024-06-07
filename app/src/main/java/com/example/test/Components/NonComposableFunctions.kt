@@ -1,6 +1,7 @@
 package com.example.test.Components
 
 import Models.Conversation
+import Models.Department
 import Models.Doctor
 import Models.Patient
 import android.content.Context
@@ -108,16 +109,18 @@ fun convertBooleanToResult(accepted: Boolean): String {
 }
 
 fun toTitleCase(value: String): String {
-    return value.replace("_"," ")
+    return value.replace("_", " ")
         .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 }
 
 fun makeDiscountedNumber(value: String, discount: String): String {
-    return if(value.isEmpty()) ""
+    return if (value.isEmpty()) "0.00"
+    else if (discount.isEmpty()) value
     else {
         try {
             val discountedSum = value.toFloat() * discount.toFloat() / 100.0
-            discountedSum.toString()
+            val result = value.toFloat() - discountedSum
+            result.toString()
         } catch (exception: Exception) {
             "NAN"
         }

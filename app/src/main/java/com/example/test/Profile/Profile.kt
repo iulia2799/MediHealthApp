@@ -5,6 +5,7 @@ import Models.Patient
 import Models.nullDoc
 import Models.nullPatient
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +52,7 @@ import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.filterByField
 import com.example.test.LocalStorage.LocalStorage
+import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
@@ -60,6 +63,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -84,7 +88,7 @@ class Profile : ComponentActivity() {
         val coroutineScope = rememberCoroutineScope()
         val context = LocalContext.current
         val local = LocalStorage(context)
-
+        var searchService = Search(context)
         var start by remember {
             mutableStateOf("")
         }
@@ -137,6 +141,16 @@ class Profile : ComponentActivity() {
         }
         ref = local.getRef().toString()
         type = local.getRole()
+        LaunchedEffect(text) {
+            if (!type) {
+                delay(1000)
+                Log.d("COROUTINE", "SCOPE")
+                launch {
+                    doctors = searchService.retrieveValues("$text gp")
+                    filteredDoctors = doctors
+                }
+            }
+        }
         if (!type) {
             this.ref.let { it ->
                 db.collection(PATIENTS).document(it).get().addOnCompleteListener {
@@ -153,15 +167,6 @@ class Profile : ComponentActivity() {
                         }
                     }
                 }
-                db.collection(DOCTORS).whereEqualTo("department", "GP").get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            it.result.forEach { it1 ->
-                                val d = it1.toObject<Doctor>()
-                                doctors += (it1.reference.id to d)
-                            }
-                        }
-                    }
             }
         } else {
             this.ref.let { it ->
@@ -393,7 +398,7 @@ class Profile : ComponentActivity() {
                                             "phone" to phone,
                                             "address" to address,
                                             "officeHours" to schedule,
-                                            "available" to available
+                                            "messageAvailable" to available
                                         )
                                     ).addOnSuccessListener {
                                         coroutineScope.launch {

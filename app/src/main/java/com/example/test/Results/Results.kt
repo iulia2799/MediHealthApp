@@ -169,7 +169,7 @@ class Results : ComponentActivity() {
         }
         Card(
             modifier = Modifier
-                .height(300.dp)
+                .height(360.dp)
                 .padding(16.dp),
             colors = CardColors(
                 containerColor = offWhite,
@@ -222,7 +222,7 @@ class Results : ComponentActivity() {
                                 downloader.downloadFromFirebaseStorage(it)
                             },
                             alignment = Alignment.Center,
-                            text = "Download",
+                            text = "Download optional files",
                             modifier = Modifier
                                 .padding(10.dp)
                                 .fillMaxWidth()

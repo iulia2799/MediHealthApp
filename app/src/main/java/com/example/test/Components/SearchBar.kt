@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 fun <T, K> UserSearch(
     data: Map<T, K>,
     filterCallback: (Map<T, K>, String) -> Map<T, K>,
-    content: @Composable (K, () -> Unit) -> Unit
+    content: @Composable (T, K, () -> Unit) -> Unit
 ) {
     var text by remember {
         mutableStateOf("")
@@ -39,6 +39,7 @@ fun <T, K> UserSearch(
     Row {
         SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
             text = it
+            filter = filterCallback(data, text)
         }, onSearch = {
             filter = filterCallback(data, text)
         }, active = active, onActiveChange = {
@@ -72,7 +73,7 @@ fun <T, K> UserSearch(
                     )
             ) {
                 filter.forEach {
-                    content(it.value) {
+                    content(it.key,it.value) {
                         active = false
                     }
                 }

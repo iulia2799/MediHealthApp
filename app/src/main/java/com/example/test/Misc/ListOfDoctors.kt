@@ -149,7 +149,9 @@ class ListOfDoctors : ComponentActivity() {
             mutableStateOf(Conversation())
         }
         Card(
-            modifier = Modifier.fillMaxWidth().padding(10.dp), shape = RoundedCornerShape(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp), shape = RoundedCornerShape(8.dp),
             colors = CardColors(
                 containerColor = universalPrimary,
                 contentColor = Color.Black,
@@ -204,7 +206,9 @@ class ListOfDoctors : ComponentActivity() {
                     ) {
                         Text("Make Appointment")
                     }
+                    Log.d("MESSAGEAVAILABLE", doctor.messageAvailable.toString())
                     if (doctor.messageAvailable) {
+
                         TextButton(
                             modifier = Modifier.padding(4.dp), onClick = {
                                 createNewConversation(context, ref, name) { id ->
