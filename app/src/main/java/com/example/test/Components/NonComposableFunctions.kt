@@ -1,17 +1,21 @@
 package com.example.test.Components
 
 import Models.Conversation
-import Models.Department
 import Models.Doctor
 import Models.Patient
 import android.content.Context
 import com.example.test.LocalStorage.LocalStorage
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.time.ZoneOffset.UTC
 
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
@@ -125,4 +129,23 @@ fun makeDiscountedNumber(value: String, discount: String): String {
             "NAN"
         }
     }
+}
+
+fun convertToUtcDailySeconds(value: Long): Long {
+    val atMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
+    val currentDateTime = atMidnight.plusSeconds(value) //alarm as a DateTime object
+    val utcTime =
+        currentDateTime.atZone(ZoneId.systemDefault()).toInstant().atZone(UTC).toLocalDateTime() //convert to UTC
+    val hour = utcTime.hour
+    val minute = utcTime.minute
+    val second = utcTime.second
+    return (hour * 3600 + minute * 60 + second).toLong()
+
+}
+
+fun deconvertToDailySeconds(value: Long): Long {
+    val atMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
+    val currentDateTime = atMidnight.plusSeconds(value)
+    val zonedTime = currentDateTime.atZone(UTC).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+    return (zonedTime.hour * 3600 + zonedTime.minute * 60 + zonedTime.second).toLong()
 }

@@ -44,19 +44,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.DefaultButton
-import com.example.test.Components.FormSelector
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
 import com.example.test.Components.timeUnitToString
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
+import com.example.test.Components.convertToUtcDailySeconds
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.PatientCard
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
-import com.example.test.ui.theme.universalError
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.utils.MEDICATION_DATA
 import com.google.firebase.firestore.ktx.firestore
@@ -220,7 +219,6 @@ class MedicationManager : ComponentActivity() {
                         )
                     }
                     DefaultButton(onClick = {
-
                         alarms += convertTimeToTimestamp(state.hour, state.minute)
 
                         Log.d("alarms", alarms.size.toString())
@@ -293,7 +291,9 @@ class MedicationManager : ComponentActivity() {
                                             days = days,
                                             medType = it2,
                                             description = description,
-                                            alarms = alarms.toList(),
+                                            alarms = alarms.map { alarm ->
+                                                convertToUtcDailySeconds(alarm)
+                                            }.toList(),
                                             pillsPerPortion = pillsPerPortion
                                         )
                                     }

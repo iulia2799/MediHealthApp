@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.convertDayStampToHourAndMinute
+import com.example.test.Components.deconvertToDailySeconds
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
@@ -180,8 +181,11 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
                         Text(text = "Days: ${list[index]?.days} days")
                         Text(text = "Alarms:")
                         list[index]?.alarms?.forEach { alarm ->
-                            val pair = convertDayStampToHourAndMinute(alarm)
-                            Text(text = "${pair.first}:${pair.second}")
+                            val timeZoned = deconvertToDailySeconds(alarm)
+                            val pair = convertDayStampToHourAndMinute(timeZoned)
+                            val hour = if(pair.first < 10) "0${pair.first}" else pair.first.toString()
+                            val minute = if(pair.second < 10) "0${pair.second}" else pair.second.toString()
+                            Text(text = "${hour}:${minute}")
                         }
                         if (!localStorage.getRole()) {
                             TextButton(colors = ButtonColors(

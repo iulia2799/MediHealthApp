@@ -1,7 +1,6 @@
 package Models
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import com.google.firebase.Timestamp
 
 data class Medication(
     val doctorUid: String = "0",
@@ -15,5 +14,6 @@ data class Medication(
     val days: Int = 0,
     val pillsPerPortion: Int = 0,
     val medType: Department = Department.NA,
-    val alarms: List<Long> = emptyList()
+    val alarms: List<Long> = emptyList(),
+    val timestamp : Timestamp = Timestamp.now()
 )

@@ -2,6 +2,7 @@ package com.example.test.meds
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -9,9 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -38,6 +42,8 @@ import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.convertDayStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
+import com.example.test.Components.convertToUtcDailySeconds
+import com.example.test.Components.deconvertToDailySeconds
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.universalAccent
@@ -78,7 +84,7 @@ class ChangeAlerts : ComponentActivity() {
             mutableStateOf(myList)
         }
         Surface(
-            modifier = Modifier.fillMaxSize(), color = universalBackground
+            modifier = Modifier.fillMaxWidth(), color = universalBackground
         ) {
             Scaffold(
                 modifier = Modifier,
@@ -93,7 +99,7 @@ class ChangeAlerts : ComponentActivity() {
                     }
                 },
             ) {
-                Column {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState()).heightIn(max=1200.dp)) {
                     Row {
                         LargeTextField(
                             value = "Change alerts",
@@ -143,7 +149,7 @@ class ChangeAlerts : ComponentActivity() {
                                 if (reference != null) {
                                     db.collection(MEDICATION_DATA).document(reference).update(
                                         mapOf(
-                                            "alarms" to list,
+                                            "alarms" to list.map { item -> convertToUtcDailySeconds(item) },
                                         )
                                     ).addOnSuccessListener {
                                         coroutineScope.launch {
@@ -178,7 +184,9 @@ class ChangeAlerts : ComponentActivity() {
                     Row {
                         LazyColumn(modifier = Modifier.padding(it)) {
                             items(list.size) { index ->
-                                val pair = convertDayStampToHourAndMinute(list[index])
+                                Log.d("TIME",list[index].toString())
+                                val toLocalTime = deconvertToDailySeconds(list[index])
+                                val pair = convertDayStampToHourAndMinute(toLocalTime)
                                 var state = remember {
                                     TimePickerState(
                                         is24Hour = true,
@@ -193,6 +201,7 @@ class ChangeAlerts : ComponentActivity() {
                                         if (i1 == index) convertTimeToTimestamp(
                                             state.hour, state.minute
                                         ) else time
+
                                     }
                                 }
                                 Row {
