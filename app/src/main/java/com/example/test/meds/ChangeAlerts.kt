@@ -8,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -40,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
-import com.example.test.Components.convertDayStampToHourAndMinute
+import com.example.test.Components.convertTimeStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.Components.convertToUtcDailySeconds
 import com.example.test.Components.deconvertToDailySeconds
@@ -99,7 +98,11 @@ class ChangeAlerts : ComponentActivity() {
                     }
                 },
             ) {
-                Column(modifier = Modifier.verticalScroll(rememberScrollState()).heightIn(max=1200.dp)) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(max = 1200.dp)
+                ) {
                     Row {
                         LargeTextField(
                             value = "Change alerts",
@@ -149,7 +152,11 @@ class ChangeAlerts : ComponentActivity() {
                                 if (reference != null) {
                                     db.collection(MEDICATION_DATA).document(reference).update(
                                         mapOf(
-                                            "alarms" to list.map { item -> convertToUtcDailySeconds(item) },
+                                            "alarms" to list.map { item ->
+                                                convertToUtcDailySeconds(
+                                                    item
+                                                )
+                                            },
                                         )
                                     ).addOnSuccessListener {
                                         coroutineScope.launch {
@@ -184,9 +191,9 @@ class ChangeAlerts : ComponentActivity() {
                     Row {
                         LazyColumn(modifier = Modifier.padding(it)) {
                             items(list.size) { index ->
-                                Log.d("TIME",list[index].toString())
+                                Log.d("TIME", list[index].toString())
                                 val toLocalTime = deconvertToDailySeconds(list[index])
-                                val pair = convertDayStampToHourAndMinute(toLocalTime)
+                                val pair = convertTimeStampToHourAndMinute(toLocalTime)
                                 var state = remember {
                                     TimePickerState(
                                         is24Hour = true,

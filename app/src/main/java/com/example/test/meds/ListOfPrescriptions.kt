@@ -39,14 +39,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.test.Components.CenteredBox
 import com.example.test.Components.LargeTextField
-import com.example.test.Components.convertDayStampToHourAndMinute
+import com.example.test.Components.convertTimeStampToHourAndMinute
 import com.example.test.Components.deconvertToDailySeconds
+import com.example.test.Components.timeUnitToString
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.LocalStorage.PrescriptionParceled
 import com.example.test.ui.theme.AppTheme
-import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.darkPrimary
-import com.example.test.ui.theme.darkTertiary
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
@@ -162,8 +161,7 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
         LazyColumn {
             items(list.keys.toList()) { index ->
                 Card(
-                    modifier = Modifier.padding(8.dp),
-                    colors = CardColors(
+                    modifier = Modifier.padding(8.dp), colors = CardColors(
                         containerColor = universalPrimary,
                         contentColor = universalAccent,
                         disabledContentColor = Color.Black,
@@ -182,9 +180,9 @@ fun ListOfMedicationsCards(list: Map<String, Medication>, removeCallBack: () -> 
                         Text(text = "Alarms:")
                         list[index]?.alarms?.forEach { alarm ->
                             val timeZoned = deconvertToDailySeconds(alarm)
-                            val pair = convertDayStampToHourAndMinute(timeZoned)
-                            val hour = if(pair.first < 10) "0${pair.first}" else pair.first.toString()
-                            val minute = if(pair.second < 10) "0${pair.second}" else pair.second.toString()
+                            val pair = convertTimeStampToHourAndMinute(timeZoned)
+                            val hour = timeUnitToString(pair.first)
+                            val minute = timeUnitToString(pair.second)
                             Text(text = "${hour}:${minute}")
                         }
                         if (!localStorage.getRole()) {

@@ -47,7 +47,7 @@ import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.LongTextField
 import com.example.test.Components.timeUnitToString
-import com.example.test.Components.convertDayStampToHourAndMinute
+import com.example.test.Components.convertTimeStampToHourAndMinute
 import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.Components.convertToUtcDailySeconds
 import com.example.test.LocalStorage.LocalStorage
@@ -246,7 +246,7 @@ class MedicationManager : ComponentActivity() {
                             if (alarms.isNotEmpty()) {
                                 LargeTextField(modifier = Modifier, value = "Added Alarms:")
                                 alarms.forEach { alarmTime ->
-                                    val pair = convertDayStampToHourAndMinute(alarmTime)
+                                    val pair = convertTimeStampToHourAndMinute(alarmTime)
                                     Row(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {

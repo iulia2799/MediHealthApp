@@ -85,9 +85,9 @@ fun convertDateToTimeStamp(hour: Int, minute: Int, dateString: String): Timestam
     return timestamp
 }
 
-fun convertDayStampToHourAndMinute(seconds: Long): Pair<Int, Int> {
-    val hours = (seconds / (60 * 60)).toInt()
-    val minutes = ((seconds % (60 * 60)) / 60).toInt()
+fun convertTimeStampToHourAndMinute(seconds: Long): Pair<Int, Int> {
+    val hours = (seconds / 3600).toInt()
+    val minutes = ((seconds % 3600) / 60).toInt()
     return Pair(hours, minutes)
 }
 
@@ -132,20 +132,17 @@ fun makeDiscountedNumber(value: String, discount: String): String {
 }
 
 fun convertToUtcDailySeconds(value: Long): Long {
-    val atMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
-    val currentDateTime = atMidnight.plusSeconds(value) //alarm as a DateTime object
-    val utcTime =
-        currentDateTime.atZone(ZoneId.systemDefault()).toInstant().atZone(UTC).toLocalDateTime() //convert to UTC
-    val hour = utcTime.hour
-    val minute = utcTime.minute
-    val second = utcTime.second
-    return (hour * 3600 + minute * 60 + second).toLong()
+    val midnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
+    val current = midnight.plusSeconds(value)
+    val utc = current.atZone(ZoneId.systemDefault()).toInstant().atZone(UTC)
+        .toLocalDateTime()
+    return (utc.hour * 3600 + utc.minute * 60 + utc.second).toLong()
 
 }
 
 fun deconvertToDailySeconds(value: Long): Long {
-    val atMidnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
-    val currentDateTime = atMidnight.plusSeconds(value)
-    val zonedTime = currentDateTime.atZone(UTC).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
-    return (zonedTime.hour * 3600 + zonedTime.minute * 60 + zonedTime.second).toLong()
+    val midnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
+    val current = midnight.plusSeconds(value)
+    val timezoned = current.atZone(UTC).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+    return (timezoned.hour * 3600 + timezoned.minute * 60 + timezoned.second).toLong()
 }
