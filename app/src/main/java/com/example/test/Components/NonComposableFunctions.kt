@@ -134,8 +134,7 @@ fun makeDiscountedNumber(value: String, discount: String): String {
 fun convertToUtcDailySeconds(value: Long): Long {
     val midnight = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT)
     val current = midnight.plusSeconds(value)
-    val utc = current.atZone(ZoneId.systemDefault()).toInstant().atZone(UTC)
-        .toLocalDateTime()
+    val utc = current.atZone(ZoneId.systemDefault()).toInstant().atZone(UTC).toLocalDateTime()
     return (utc.hour * 3600 + utc.minute * 60 + utc.second).toLong()
 
 }
