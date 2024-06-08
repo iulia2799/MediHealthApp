@@ -59,6 +59,7 @@ import com.example.test.Components.makeDiscountedNumber
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.PatientItemWithAction
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
@@ -158,7 +159,7 @@ fun Creator() {
                 snackbarData = data,
                 actionColor = universalAccent,
                 containerColor = universalBackground,
-                contentColor = universalError
+                contentColor = darkAccent
             )
         }
     }, topBar = {

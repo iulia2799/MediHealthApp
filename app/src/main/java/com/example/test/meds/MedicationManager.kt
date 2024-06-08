@@ -53,6 +53,7 @@ import com.example.test.Components.convertTimeToTimestamp
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.PatientCard
 import com.example.test.ui.theme.AppTheme
+import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalError
@@ -122,7 +123,7 @@ class MedicationManager : ComponentActivity() {
                             snackbarData = data,
                             actionColor = universalAccent,
                             containerColor = universalBackground,
-                            contentColor = universalError
+                            contentColor = darkAccent
                         )
                     }
                 },
