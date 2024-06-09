@@ -120,7 +120,7 @@ class ResultCreator : ComponentActivity() {
 
         var filteredData by remember { mutableStateOf(emptyMap<String, Patient>()) }
 
-        db.collection("patients").get().addOnCompleteListener {
+        /*db.collection("patients").get().addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result.forEach { it1 ->
                     val app = it1.toObject<Patient>()
@@ -128,7 +128,7 @@ class ResultCreator : ComponentActivity() {
                 }
                 filteredData = data
             }
-        }
+        }*/
         var text by remember { mutableStateOf("") }
         var active by remember {
             mutableStateOf(false)
@@ -316,7 +316,7 @@ class ResultCreator : ComponentActivity() {
                 }
 
                 Row {
-                    UserSearch(data = data, filterCallback = ::filterByFieldP) { index,key, callback ->
+                    UserSearch{ index,key, callback ->
                         val name = key.firstName + ", " + key.lastName
                         PatientItemWithAction(patient = key) {
                             patientName = name

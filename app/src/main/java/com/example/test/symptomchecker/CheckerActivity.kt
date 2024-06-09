@@ -1,6 +1,6 @@
 package com.example.test.symptomchecker
 
-import Models.Diseases.diseaseList
+import Models.Diseases.Disease
 import Models.Diseases.symptomList
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +9,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,16 +53,17 @@ import androidx.compose.ui.unit.dp
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
 import com.example.test.Components.MediumTextField
-import com.example.test.Components.SmallTextField
 import com.example.test.Components.toTitleCase
 import com.example.test.ui.theme.AppTheme
-import com.example.test.ui.theme.darkAccent
-import com.example.test.ui.theme.darkPrimary
 import com.example.test.ui.theme.darkTertiary
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.ui.theme.universalTertiary
+import com.example.test.utils.DISEASES
 import com.example.test.utils.EMERGENCY_NUMBERS
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.delay
 
 class CheckerActivity : ComponentActivity() {
@@ -85,13 +86,23 @@ class CheckerActivity : ComponentActivity() {
 @Composable
 @Preview
 fun Content() {
+    val db = Firebase.firestore
     val form = IntArray(132) { 0 }.toMutableList()
+    val initialList = emptyList<String>()
     var optionsList by remember {
         mutableStateOf(form)
     }
 
     var prediction by remember {
         mutableStateOf("")
+    }
+
+    var description by remember {
+        mutableStateOf("")
+    }
+
+    var treatments by remember {
+        mutableStateOf(initialList)
     }
 
     var option by remember {
@@ -105,7 +116,8 @@ fun Content() {
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState()).heightIn(max = 1200.dp)
+                .verticalScroll(rememberScrollState())
+                .heightIn(max = 1200.dp)
         ) {
             Row {
                 DefaultButton(
@@ -169,8 +181,11 @@ fun Content() {
                                     el == biggest
                                 }
                                 Log.d("RESULT", biggest.toString())
-                                Log.d("RESULT", diseaseList[index].name)
-                                prediction = diseaseList[index].name
+                                getDiseaseFromDatabase(index) { result ->
+                                    prediction = result.name
+                                    description = result.description
+                                    treatments = result.treatmentToDo
+                                }
                             }
                         } else {
                             Log.d("results", "OOPS")
@@ -193,6 +208,30 @@ fun Content() {
                             .fillMaxWidth()
                             .wrapContentWidth(Alignment.CenterHorizontally)
                     )
+                }
+                Row {
+                    MediumTextField(
+                        value = "Description: $description",
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
+                if(treatments.isNotEmpty()) {
+                    Row {
+                        LazyColumn {
+                            items(treatments) {
+                                MediumTextField(
+                                    value = " - $it",
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -259,7 +298,11 @@ fun SearchItem(
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
-                MediumTextField(value = toTitleCase(item), modifier = Modifier, color = darkTertiary)
+                MediumTextField(
+                    value = toTitleCase(item),
+                    modifier = Modifier,
+                    color = darkTertiary
+                )
             }
             if (removable) {
                 Row(
@@ -277,7 +320,7 @@ fun SearchItem(
                             disabledContentColor = Color.DarkGray
                         )
                     ) {
-                        MediumTextField(value = "Remove",modifier = Modifier)
+                        MediumTextField(value = "Remove", modifier = Modifier)
                     }
                 }
             }
@@ -307,7 +350,7 @@ fun <K> SimpleSearch(
     var filter by remember { mutableStateOf(data) }
     LaunchedEffect(key1 = text) {
         delay(100)
-        filter = filterCallback(data,text)
+        filter = filterCallback(data, text)
     }
     Row {
         SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
@@ -352,6 +395,16 @@ fun <K> SimpleSearch(
             }
         }
 
+    }
+}
+
+fun getDiseaseFromDatabase(index: Int, onDiseaseCallback: (Disease) -> Unit = {}) {
+    val db = Firebase.firestore
+    db.collection(DISEASES).document(index.toString()).get().addOnCompleteListener {
+        if (it.isSuccessful) {
+            val result = it.result.toObject<Disease>()!!
+            onDiseaseCallback(result)
+        }
     }
 }
 

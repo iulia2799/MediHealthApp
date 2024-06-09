@@ -1,5 +1,8 @@
 package com.example.test.Components
 
+import Models.Department
+import Models.Patient
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,19 +18,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.test.LocalStorage.LocalStorage
+import com.example.test.services.Search
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T, K> UserSearch(
-    data: Map<T, K>,
-    filterCallback: (Map<T, K>, String) -> Map<T, K>,
-    content: @Composable (T, K, () -> Unit) -> Unit
+fun UserSearch(
+    content: @Composable (String, Patient, () -> Unit) -> Unit
 ) {
     var text by remember {
         mutableStateOf("")
@@ -35,13 +42,28 @@ fun <T, K> UserSearch(
     var active by remember {
         mutableStateOf(false)
     }
-    var filter by remember { mutableStateOf(emptyMap<T, K>()) }
+    var filter by remember { mutableStateOf(emptyMap<String, Patient>()) }
+    var searchService = Search(LocalContext.current)
+    val dep = LocalStorage(LocalContext.current).getDep()
+    var ref = LocalStorage(LocalContext.current).getRef()
+
+    LaunchedEffect(text) {
+        delay(1000)
+        Log.d("COROUTINE", "SCOPE")
+        launch {
+            var query = text
+            if(dep == Department.GP.ordinal) {
+                query = "$text $ref"
+            }
+            filter = searchService.retrievePatientValues(query)
+        }
+    }
+
     Row {
         SearchBar(modifier = Modifier.fillMaxWidth(), query = text, onQueryChange = {
             text = it
-            filter = filterCallback(data, text)
         }, onSearch = {
-            filter = filterCallback(data, text)
+            //filter = filterCallback(text)
         }, active = active, onActiveChange = {
             active = it
         }, placeholder = {

@@ -1,6 +1,7 @@
 package com.example.test.appointment
 
 import Models.Appointment
+import Models.Department
 import Models.Doctor
 import Models.Patient
 import android.os.Build
@@ -122,6 +123,7 @@ class AppointmentManager : ComponentActivity() {
         db = Firebase.firestore
         localStorage = LocalStorage(context)
         type = localStorage.getRole()
+        val dep = localStorage.getDep()
         if (mode == "create") {
             otherRef = intent.getStringExtra("otherRef").toString()
             otherName = intent.getStringExtra("otherName").toString()
@@ -176,15 +178,16 @@ class AppointmentManager : ComponentActivity() {
                     datad = searchService.retrieveValues(text)
                     filter1 = datad
                 }
-            }
-        }
-        if (type) {
-            db.collection("patients").get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    it.result.forEach { it1 ->
-                        val app = it1.toObject<Patient>()
-                        datap += (it1.reference.id to app)
+            } else {
+                delay(1000)
+                Log.d("COROUTINE", "SCOPE")
+                launch {
+                    val ref = localStorage.getRef()
+                    var query = text
+                    if(dep == Department.GP.ordinal){
+                        query = "$text $ref"
                     }
+                    datap = searchService.retrievePatientValues(query)
                     filter2 = datap
                 }
             }
@@ -214,7 +217,7 @@ class AppointmentManager : ComponentActivity() {
                         if (!type) {
                             //filter1 = filterByField(datad, text)
                         } else {
-                            filter2 = filterByFieldP(datap, text)
+                            //filter2 = filterByFieldP(datap, text)
                         }
                     }, active = active, onActiveChange = {
                         active = it

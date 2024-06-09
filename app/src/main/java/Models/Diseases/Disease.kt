@@ -1,59 +1,9 @@
 package Models.Diseases
 
 data class Disease(
-    val name: String,
+    val name: String = "",
     val description: String = "",
     val treatmentToDo: List<String> = emptyList()
-)
-
-val diseaseList = listOf(
-    Disease(
-        "AIDS",
-        "Acquired immunodeficiency syndrome (AIDS) is a chronic, potentially life-threatening condition caused by the human immunodeficiency virus (HIV). By damaging your immune system, HIV interferes with your body's ability to fight infection and disease.\n"
-    ),
-    Disease("Acne"),
-    Disease("Alcoholic Hepatitis"),
-    Disease("Allergy"),
-    Disease("Arthritis"),
-    Disease("Bronchial Asthma"),
-    Disease("Cervical Spondylosis"),
-    Disease("Chickenpox"),
-    Disease("Chronic Cholestasis"),
-    Disease("Common Cold"),
-    Disease("Dengue"),
-    Disease("Diabetes"),
-    Disease("Dimorphic Hemmorhoids (piles)"),
-    Disease(
-        "Drug Reaction",
-        "An adverse drug reaction (ADR) is an injury caused by taking medication. ADRs may occur following a single dose or prolonged administration of a drug or result from the combination of two or more drugs."
-    ),
-    Disease("Fungal Infection"),
-    Disease("GERD"),
-    Disease("Gastroenteritis"),
-    Disease("Heart Attack"),
-    Disease("Hepatitis A"),
-    Disease("Hepatitis B"),
-    Disease("Hepatitis C"),
-    Disease("Hepatitis D"),
-    Disease("Hepatitis E"),
-    Disease("Hypertension"),
-    Disease("Hyperthyroidism"),
-    Disease("Hypoglycemia"),
-    Disease("Hypothyroidism"),
-    Disease("Impetigo"),
-    Disease("Jaundice"),
-    Disease("Malaria"),
-    Disease("Migraine"),
-    Disease("Osteoarthritis"),
-    Disease("Paralysis (brain hemorrhage)"),
-    Disease("Peptic Ulcer Disease"),
-    Disease("Pneumonia"),
-    Disease("Psoriasis"),
-    Disease("Tuberculosis"),
-    Disease("Typhoid"),
-    Disease("Urinary Tract Infection"),
-    Disease("Varicose Veins"),
-    Disease("Vertigo")
 )
 
 val symptomList = listOf(

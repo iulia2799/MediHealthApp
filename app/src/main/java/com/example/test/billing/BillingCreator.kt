@@ -58,6 +58,7 @@ import com.example.test.Components.filterByFieldP
 import com.example.test.Components.makeDiscountedNumber
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.PatientItemWithAction
+import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.universalAccent
@@ -142,7 +143,7 @@ fun Creator() {
         }, storage, db, "${userUid}_${username}", BILLING_STORAGE)
     }
 
-    LaunchedEffect(key1 = ref) {
+    /*LaunchedEffect(key1 = ref) {
         db.collection("patients").get().addOnCompleteListener {
             if (it.isSuccessful) {
                 it.result.forEach { it1 ->
@@ -151,7 +152,7 @@ fun Creator() {
                 }
             }
         }
-    }
+    }*/
 
     Scaffold(snackbarHost = {
         SnackbarHost(hostState = snackbarHostState) { data ->
@@ -219,7 +220,7 @@ fun Creator() {
         ) {
 
             Row {
-                UserSearch(data = data, filterCallback = ::filterByFieldP) { index,key, callback ->
+                UserSearch{ index: String,key: Patient, callback ->
                     val name = key.firstName + ", " + key.lastName
                     PatientItemWithAction(patient = key) {
                         patientName = name

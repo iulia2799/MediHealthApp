@@ -41,6 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.test.Components.MediumTextField
 import com.example.test.Components.dialNumber
 import com.example.test.Components.filterByFieldP
 import com.example.test.Components.goToConvo
@@ -51,6 +52,7 @@ import com.example.test.Results.Results
 import com.example.test.appointment.AppointmentManager
 import com.example.test.meds.ListOfPrescriptions
 import com.example.test.meds.MedicationManager
+import com.example.test.services.Search
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.boldPrimary
 import com.example.test.ui.theme.jejugothicFamily
@@ -63,6 +65,7 @@ import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 
@@ -83,13 +86,41 @@ class ListOfPatients : ComponentActivity() {
             modifier = Modifier.fillMaxSize(), color = universalBackground
         ) {
             val db = Firebase.firestore
+            var searchService = Search(LocalContext.current)
             var patientMap by remember { mutableStateOf(emptyMap<String, Patient>()) }
             var searchText by remember { mutableStateOf("") }
             val local = LocalStorage(LocalContext.current)
             val dep = local.getDep()
             val ref = local.getRef()
+            var isLoading by remember {
+                mutableStateOf(false)
+            }
 
-            LaunchedEffect(Unit) {
+            LaunchedEffect(searchText) {
+                isLoading = true
+                delay(1000)
+                Log.d("COROUTINE", "SCOPE")
+                var query = searchText
+                if(dep == Department.GP.ordinal) query = "$searchText $ref"
+                launch {
+                    patientMap = searchService.retrievePatientValues(query)
+                    isLoading = false
+                }
+                //val query = db.collection("doctors")
+                /*query.get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val documents = it.result!!.documents
+                        val doctorMapTemp = mutableMapOf<String, Doctor>()
+                        documents.forEach { document ->
+                            val doctor = document.toObject<Doctor>()!!
+                            doctorMapTemp[document.id] = doctor
+                        }
+                        doctorMap = doctorMapTemp
+                    }
+                }*/
+            }
+
+            /*LaunchedEffect(Unit) {
                 var query = db.collection(PATIENTS).get()
                 if (dep == Department.GP.ordinal) {
                     Log.d("gP", dep.toString())
@@ -106,9 +137,11 @@ class ListOfPatients : ComponentActivity() {
                         patientMap = patientMapTemp
                     }
                 }
-            }
+            }*/
+
 
             Column {
+                if (isLoading) MediumTextField(modifier = Modifier.fillMaxWidth(), value = "Loading...")
                 OutlinedTextField(
                     value = searchText,
                     onValueChange = { searchText = it },
@@ -116,10 +149,9 @@ class ListOfPatients : ComponentActivity() {
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                val filteredPatients = filterByFieldP(patientMap, searchText)
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(filteredPatients.keys.toList()) {
-                        filteredPatients[it]?.let { it1 ->
+                    items(patientMap.keys.toList()) {
+                        patientMap[it]?.let { it1 ->
                             PatientItem(
                                 patient = it1, ref = it
                             )
@@ -137,8 +169,6 @@ class ListOfPatients : ComponentActivity() {
         val localStorage = LocalStorage(context)
         val name = patient.firstName + ", " + patient.lastName
         val department = localStorage.getDep()
-        Log.d("depeartment", department.toString())
-        Log.d("depeartment1", Department.GP.ordinal.toString())
         val coroutine = rememberCoroutineScope()
         var convo by remember {
             mutableStateOf(Conversation())
