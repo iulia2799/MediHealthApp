@@ -142,7 +142,8 @@ class RegisterActivity : ComponentActivity() {
                         .padding(10.dp)
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally),
-                    value = "The email must have a valid email format (for example abc@mail.com) and the password must have at least 8 characters that include both letters and numbers."
+                    value = "The email must have a valid email format (for example abc@mail.com) and the password must have at least 8 characters that include both letters and numbers. \n" +
+                            "Special characters are optional but recommended."
                 )
             }
             Row {
