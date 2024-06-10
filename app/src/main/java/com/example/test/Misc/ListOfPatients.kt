@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.dialNumber
-import com.example.test.Components.filterByFieldP
 import com.example.test.Components.goToConvo
 import com.example.test.Components.goToGoogleMaps
 import com.example.test.Components.goToMail
@@ -63,7 +62,6 @@ import com.example.test.utils.PATIENTS
 import com.example.test.utils.createNewConversation
 import com.example.test.utils.getNewConversation
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.takeWhile

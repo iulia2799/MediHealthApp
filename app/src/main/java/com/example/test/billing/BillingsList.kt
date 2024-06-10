@@ -28,7 +28,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,7 +55,6 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.offWhite
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
-import com.example.test.ui.theme.universalError
 import com.example.test.utils.BILLING_DATA
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.Query

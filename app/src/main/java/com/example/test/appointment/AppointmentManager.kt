@@ -46,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.test.Components.CustomTextField
 import com.example.test.Components.DatePickerCard
 import com.example.test.Components.DefaultButton
 import com.example.test.Components.LargeTextField
@@ -54,8 +53,6 @@ import com.example.test.Components.LongTextField
 import com.example.test.Components.MediumTextField
 import com.example.test.Components.convertDateToTimeStamp
 import com.example.test.Components.convertTimestampToDate
-import com.example.test.Components.filterByField
-import com.example.test.Components.filterByFieldP
 import com.example.test.LocalStorage.AppointmentParceled
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.Profile.DoctorItemWithAction
@@ -69,7 +66,6 @@ import com.example.test.utils.APPOINTMENTS_DATA
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

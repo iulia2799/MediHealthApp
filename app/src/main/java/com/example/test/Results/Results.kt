@@ -39,9 +39,7 @@ import com.example.test.Components.convertMillisToExactDate
 import com.example.test.LocalStorage.LocalStorage
 import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.darkAccent
-import com.example.test.ui.theme.darkTertiary
 import com.example.test.ui.theme.offWhite
-import com.example.test.ui.theme.universalPrimary
 import com.example.test.utils.RESULTS_RECORDS
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query

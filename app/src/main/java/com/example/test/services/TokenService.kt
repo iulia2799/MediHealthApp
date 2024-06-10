@@ -24,7 +24,7 @@ class TokenService : FirebaseMessagingService() {
                 val body = message.notification!!.body
                 var notificationId = System.nanoTime().toInt()
                 val channelId = "channel_id"
-                val channelName = "My app"
+                val channelName = "MH"
                 val importance = NotificationManager.IMPORTANCE_DEFAULT
                 val notificationBuilder =
                     NotificationCompat.Builder(this, channelId).setContentTitle(title)

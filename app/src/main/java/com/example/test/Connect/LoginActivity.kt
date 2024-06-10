@@ -48,7 +48,6 @@ import com.example.test.ui.theme.AppTheme
 import com.example.test.ui.theme.darkAccent
 import com.example.test.ui.theme.universalAccent
 import com.example.test.ui.theme.universalBackground
-import com.example.test.ui.theme.universalError
 import com.example.test.utils.DOCTORS
 import com.example.test.utils.PATIENTS
 import com.google.firebase.Firebase
