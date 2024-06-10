@@ -21,7 +21,7 @@ class Downloader(private val context: Context) {
         var filename = downloadUrl.substringAfterLast("/")
 
         if (directory.isNotEmpty()) {
-            filename = "$directory/$filename"
+            filename = "MEDIHEALTH/$directory/$filename"
         }
 
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
