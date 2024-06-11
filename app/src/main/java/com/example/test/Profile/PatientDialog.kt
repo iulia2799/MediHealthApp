@@ -77,7 +77,7 @@ fun PatientDialog(patientRef: String, type: Boolean = false, onDismiss: () -> Un
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(400.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             border = BorderStroke(
