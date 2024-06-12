@@ -55,6 +55,7 @@ import com.example.test.ui.theme.unfocusedLabelColor
 import com.example.test.ui.theme.universalBackground
 import com.example.test.ui.theme.universalPrimary
 import com.example.test.utils.CONVO_LIST
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
@@ -82,7 +83,10 @@ class ConvoList : ComponentActivity() {
             mutableStateOf(initialList)
         }
         if (ref != null) {
-            db.collection(CONVO_LIST).whereArrayContains("userUids", ref)
+            db.collection(CONVO_LIST).whereArrayContains("userUids", ref).orderBy(
+                "lastUpdated",
+                Query.Direction.DESCENDING
+            )
                 .addSnapshotListener { value, error ->
                     if (value != null) {
                         if (!value.isEmpty) {
