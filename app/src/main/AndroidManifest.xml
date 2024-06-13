@@ -46,11 +46,6 @@
             android:label="@string/title_activity_billings_list"
             android:theme="@style/Theme.App" />
         <activity
-            android:name=".map.MapActivity"
-            android:exported="false"
-            android:label="@string/title_activity_map"
-            android:theme="@style/Theme.App" />
-        <activity
             android:name=".messaging.ConversationSpace"
             android:exported="false"
             android:label="@string/title_activity_conversation_space"
